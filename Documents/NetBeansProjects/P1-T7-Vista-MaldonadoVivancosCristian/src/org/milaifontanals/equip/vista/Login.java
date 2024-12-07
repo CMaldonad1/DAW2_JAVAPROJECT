@@ -17,31 +17,10 @@ import org.milaifontanals.equip.jdbc.GestorDBEquipJdbc;
  * @author MAVI
  */
 public class Login extends javax.swing.JFrame {
-    private static String nomClassePersistencia=null;
-    private static IGestorBDEquip gBD = null;
-
-    private static String infoError(Throwable ex) {
-        String aux;
-        String info = ex.getMessage();
-        if (info != null) {
-            info += "\n";
-        }
-        while (ex.getCause() != null) {
-            aux = ex.getCause().getMessage();
-            if (aux != null) {
-                aux += "\n";
-            }
-            info = info + aux;
-            ex = ex.getCause();
-        }
-        return info;
-    }
-   
      /**
      * Creates new form Login
      */
     public Login() {
-        connexioBBDD();
         initComponents();
     }
 
@@ -71,15 +50,19 @@ public class Login extends javax.swing.JFrame {
         jPanel2.setPreferredSize(new java.awt.Dimension(600, 400));
 
         titleLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 36)); // NOI18N
+        titleLabel.setForeground(new java.awt.Color(51, 153, 0));
         titleLabel.setText("TOUR TEAM MANAGER");
 
         loginPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Login", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bodoni MT Black", 1, 16))); // NOI18N
+        loginPanel.setForeground(new java.awt.Color(0, 102, 0));
 
         userLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        userLabel.setForeground(new java.awt.Color(0, 153, 51));
         userLabel.setText("User:");
         userLabel.setToolTipText("userLabel");
 
         pswdLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        pswdLabel.setForeground(new java.awt.Color(0, 153, 0));
         pswdLabel.setText("Password: ");
 
         userField.addActionListener(new java.awt.event.ActionListener() {
@@ -88,8 +71,12 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        logButton.setBackground(new java.awt.Color(0, 153, 0));
         logButton.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        logButton.setForeground(new java.awt.Color(255, 255, 255));
         logButton.setText("LOGIN");
+        logButton.setAlignmentX(0.5F);
+        logButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         logButton.setName("log"); // NOI18N
         logButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -137,25 +124,23 @@ public class Login extends javax.swing.JFrame {
         logButton.getAccessibleContext().setAccessibleDescription("");
 
         showErrors.setForeground(new java.awt.Color(255, 51, 51));
+        showErrors.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         showErrors.setText(" ");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(146, 146, 146)
-                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(128, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(111, 111, 111))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(showErrors, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(159, 159, 159))))
+                .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(111, 111, 111))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(146, 146, 146)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(loginPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showErrors, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,71 +184,23 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_userFieldActionPerformed
     //intentem fer la conexió
     private void loginCheck(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginCheck
-        String error=null;
-        System.out.println(error);
-        System.out.println(new String(pswdField.getPassword()));
-        System.out.println(userField.getText());
-        try {
-            gBD.loginApp(userField.getText(), new String(pswdField.getPassword()));
-        } catch (GestorBDEquipException ex) {
-            error=ex.getMessage();
-            pswdField.setText("");
+        String user=userField.getText();
+        String pswd=new String(pswdField.getPassword());
+        //verifiquem que els camps han sigut complerts
+        if(user.length()!=0 && pswd.length()!=0){
+            String error=Constants.verificarUsuari(userField.getText(), new String(pswdField.getPassword()));
+            if(error==null){
+                this.dispose();
+                new MainPage().setVisible(true);
+            }else{
+                showErrors.setText(error);
+            }  
+        }else{
+            //si no han ficat res es mostrará aquest error
+            showErrors.setText("Usuari i contrasenya no poden estar en blanc!");
         }
-        showErrors.setText((error==null)?"Login Correcte!":error);             
     }//GEN-LAST:event_loginCheck
     
-    private static void connexioBBDD(){
-        //showErros.setText("Intentant establir connexió...");
-        try {
-            // Intent de crear objecte per gestionar la connexió amb la BD
-            System.out.println(nomClassePersistencia);
-            gBD = (IGestorBDEquip) Class.forName(nomClassePersistencia).newInstance();;
-            System.out.println("Connexió establerta");
-        } catch (Exception ex) {
-            System.out.println(infoError(ex) + "Finalitzi l'aplicació...");
-            System.out.println(ex.getMessage());
-        }
-        //txtInfo.setText(" ");
-    }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        if (args.length == 0) {
-            JOptionPane.showMessageDialog(null, "Cal passar el nom de la classe que dona la persistència com a primer argument", "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
-            System.exit(0);
-        }
-        nomClassePersistencia = args[0];
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-            }
-        });
-        
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel2;
