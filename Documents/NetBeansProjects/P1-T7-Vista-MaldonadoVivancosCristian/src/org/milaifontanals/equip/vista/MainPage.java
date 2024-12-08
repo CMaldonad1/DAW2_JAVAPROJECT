@@ -26,6 +26,7 @@ public class MainPage extends javax.swing.JFrame {
         initComponents();
         settingComponents();
         loadTemporadas();
+        loadCategories();
     }
     //carregem l'info al comboBox
     public void loadTemporadas(){
@@ -39,6 +40,13 @@ public class MainPage extends javax.swing.JFrame {
         //si hi ha una temporada preseleccionada la seleccionem
         if(!auxSel.toString().isEmpty()){
             listTemp.getModel().setSelectedItem(auxSel.toString());
+        }
+    }
+    public void loadCategories(){
+        List<Categoria> cat=Constants.getCategs();
+        //carregem el comboboxMavi
+        for(Categoria c: cat){
+            listCat.addItem(c.getNom());
         }
     }
     /**
@@ -60,7 +68,7 @@ public class MainPage extends javax.swing.JFrame {
         nomLabel = new javax.swing.JLabel();
         nomEquip = new javax.swing.JTextField();
         catLabel = new javax.swing.JLabel();
-        llistatCat = new javax.swing.JComboBox<>();
+        listCat = new javax.swing.JComboBox<>();
         catLabel1 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
@@ -108,9 +116,10 @@ public class MainPage extends javax.swing.JFrame {
         gestioEq.setText("Gestió Equips");
         gestioEq.setAlignmentX(0.5F);
         gestioEq.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        gestioEq.setName("ge"); // NOI18N
         gestioEq.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                gestioEquipsInfo(evt);
+                panelVisibility(evt);
             }
         });
 
@@ -120,6 +129,12 @@ public class MainPage extends javax.swing.JFrame {
         gestioJug.setText("Gestió Jugadors");
         gestioJug.setAlignmentX(0.5F);
         gestioJug.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        gestioJug.setName("gj"); // NOI18N
+        gestioJug.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelVisibility(evt);
+            }
+        });
 
         llistatEqPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "LLISTAT D'EQUIPS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 14), new java.awt.Color(0, 153, 0))); // NOI18N
         llistatEqPanel.setMaximumSize(new java.awt.Dimension(739, 301));
@@ -128,20 +143,8 @@ public class MainPage extends javax.swing.JFrame {
         nomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         nomLabel.setText("Nom:");
 
-        nomEquip.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                tempInsertValidate(evt);
-            }
-        });
-
         catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         catLabel.setText("Categoria:");
-
-        llistatCat.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                llistatCattempSelected(evt);
-            }
-        });
 
         catLabel1.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         catLabel1.setText("Categories:");
@@ -161,12 +164,7 @@ public class MainPage extends javax.swing.JFrame {
         filtrarEquip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         filtrarEquip.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                filtrarEquipafegirTemporada(evt);
-            }
-        });
-        filtrarEquip.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filtrarEquipActionPerformed(evt);
+                filtrarEquip(evt);
             }
         });
 
@@ -181,7 +179,7 @@ public class MainPage extends javax.swing.JFrame {
                     .addComponent(catLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(llistatCat, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(listCat, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nomEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(69, 69, 69)
                 .addComponent(catLabel)
@@ -193,28 +191,24 @@ public class MainPage extends javax.swing.JFrame {
                 .addComponent(jCheckBox2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28))
+                .addContainerGap())
         );
         llistatEqPanelLayout.setVerticalGroup(
             llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(nomLabel)
-                            .addComponent(nomEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(catLabel)
-                            .addComponent(jCheckBox1)
-                            .addComponent(jCheckBox2)
-                            .addComponent(jCheckBox3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(catLabel1)
-                            .addComponent(llistatCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nomLabel)
+                    .addComponent(nomEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(catLabel)
+                    .addComponent(jCheckBox1)
+                    .addComponent(jCheckBox2)
+                    .addComponent(jCheckBox3)
+                    .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(catLabel1)
+                    .addComponent(listCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(198, Short.MAX_VALUE))
         );
 
         tempError.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
@@ -316,12 +310,9 @@ public class MainPage extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16))))
+                    .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(62, 62, 62)
@@ -338,19 +329,22 @@ public class MainPage extends javax.swing.JFrame {
                     .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23)
+                .addGap(31, 31, 31)
                 .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
+                .addGap(18, 18, 18)
                 .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(63, 63, 63)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(345, Short.MAX_VALUE)))
         );
+
+        gestioJug.getAccessibleContext().setAccessibleName("gj");
+        gestioJug.getAccessibleContext().setAccessibleDescription("gj");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -373,6 +367,7 @@ public class MainPage extends javax.swing.JFrame {
      */
     private void settingComponents(){
         llistatEqPanel.setVisible(false);
+
     }
     private void logOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOut
         this.dispose();
@@ -453,52 +448,41 @@ public class MainPage extends javax.swing.JFrame {
         tempError.setText(err);
     }//GEN-LAST:event_afegirTemporada
 
-    private void filtrarEquipafegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarEquipafegirTemporada
-        // TODO add your handling code here:
-    }//GEN-LAST:event_filtrarEquipafegirTemporada
-
-    private void filtrarEquipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtrarEquipActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_filtrarEquipActionPerformed
-
-    private void llistatCattempSelected(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_llistatCattempSelected
-        // TODO add your handling code here:
-    }//GEN-LAST:event_llistatCattempSelected
-
-    /**
-     * validem que máxim s'afegeixin números i 4 characters
-     * Inspirat de: https://stackoverflow.com/questions/66659541/how-do-i-set-a-textfield-to-accept-numbers-and-backspace-only
-     */
-    private void tempInsertValidate(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tempInsertValidate
-        String value=nomEquip.getText();
-        int lng= value.length();
-        char kCode=evt.getKeyChar();
-        String err="";
-        //només volem que es pugi fer submit si compleix certs criteris, per defecte no esta activat
-        boolean enableSubmit=false;
-        if((kCode>='0' && kCode<='9' && lng<4) || kCode==KeyEvent.VK_BACK_SPACE){
-            nomEquip.setEditable(true);
-            /**
-            * quan afegeix el 4t character el length encara es 3, si ho es
-            * deixarem que l'usuarí pugi fer submit.
-            */
-            if(lng==3){
-                enableSubmit=true;
+    private void filtrarEquip(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarEquip
+        String auxCat=listCat.getSelectedItem().toString();
+        int id=idCategoria(auxCat);
+        System.out.println(id);
+        
+    }//GEN-LAST:event_filtrarEquip
+    //busquem l'id de la categoria seleccionada
+    private int idCategoria(String nom){
+        List<Categoria> cats=Constants.getCategs();
+        int id=-1,i=0, len=cats.size();
+        boolean found=false;
+        do{
+            if(nom.contains(cats.get(i).getNom())){
+                id=cats.get(i).getId();
             }
-        }else{
-            nomEquip.setEditable(false);
-            err=(lng==4)?"<html>La llargaria no pot ser superior a 4 digits!</html>":
-            "<html>Només es permeten números quan s'afegeix una temporada</html>";
+            i++;
+        }while(i<len || found);
+        return id;
+    }
+    //controlem la visibililtat dels panels de Jugadors i Equips
+    private void panelVisibility(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelVisibility
+        boolean show=true;
+        JButton btn = (JButton)evt.getSource();
+        String bPressed = btn.getName();
+        if(bPressed!="ge"){
+            show=false;
         }
-        altaEquip.setEnabled(enableSubmit);
-        tempError.setForeground(Color.red);
-        tempError.setText(err);
-    }//GEN-LAST:event_tempInsertValidate
+        //si el panel d'equips es visible el de botó está desactivat
+        gestioEq.setEnabled(!show);
+        llistatEqPanel.setVisible(show);
+        //el mateix per als equips pero fan servir l'inversa del show
+        gestioJug.setEnabled(show);
+    }//GEN-LAST:event_panelVisibility
 
-    private void gestioEquipsInfo(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gestioEquipsInfo
-        // TODO add your handling code here:
-    }//GEN-LAST:event_gestioEquipsInfo
-    
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton altaEquip;
     private javax.swing.JLabel catLabel;
@@ -514,8 +498,8 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JComboBox<String> listCat;
     private javax.swing.JComboBox<String> listTemp;
-    private javax.swing.JComboBox<String> llistatCat;
     private javax.swing.JPanel llistatEqPanel;
     private javax.swing.JButton logOut;
     private javax.swing.JLabel newTempL1;

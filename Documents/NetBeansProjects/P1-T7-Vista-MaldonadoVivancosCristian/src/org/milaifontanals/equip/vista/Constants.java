@@ -37,6 +37,9 @@ public class Constants {
     public static List<Temporada> getTemp() {
         return temp;
     }
+    public static List<Categoria> getCategs() {
+        return categs;
+    }
     public static Temporada gettSel() {
         return tSel;
     }

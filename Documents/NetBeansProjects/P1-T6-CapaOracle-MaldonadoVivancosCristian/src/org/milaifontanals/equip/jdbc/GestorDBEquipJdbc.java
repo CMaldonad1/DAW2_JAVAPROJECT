@@ -309,7 +309,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         Statement q = null;
         try {
             q = conn.createStatement();
-            ResultSet rs = q.executeQuery("SELECT * FROM TEMPORADA ORDER BY ANY_TEMP");
+            ResultSet rs = q.executeQuery("SELECT * FROM TEMPORADA ORDER BY ANY_TEMP DESC");
             while (rs.next()) {
                 String temp = rs.getString("any_temp");
                 Temporada t = new Temporada(temp);
@@ -342,7 +342,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
             insertTemp.setString(1, temp.toString());
             insertTemp.execute();
         } catch (SQLException ex) {
-            throw new GestorBDEquipException("Error en intentar inserir la temporada " + temp, ex);
+            throw new GestorBDEquipException("Error en intentar inserir la temporada " + temp+", ja existeix!", ex);
         }
     }
     @Override
