@@ -43,7 +43,31 @@ public class Constants {
     public static Temporada gettSel() {
         return tSel;
     }
-    
+    //busquem l'id de la categoria seleccionada segons nom
+    public static int idCategoria(String nom){
+        int id=-1,i=0, len=categs.size();
+        boolean found=false;
+        do{
+            if(nom.contains(categs.get(i).getNom())){
+                id=categs.get(i).getId();
+            }
+            i++;
+        }while(i<len || found);
+        return id;
+    }
+    //busquem el nom de la categoria seleccionada segons id
+    public static String nomCategoria(int id){
+        int i=0, len=categs.size();
+        String nom="";
+        boolean found=false;
+        do{
+            if(id==categs.get(i).getId()){
+                nom=categs.get(i).getNom();
+            }
+            i++;
+        }while(i<len || found);
+        return nom;
+    }
     public static void setgBD(String nomClassePersistencia) {
         connexioBBDD(nomClassePersistencia);
     }

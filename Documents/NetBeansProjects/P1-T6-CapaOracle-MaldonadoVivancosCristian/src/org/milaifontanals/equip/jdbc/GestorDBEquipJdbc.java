@@ -179,11 +179,11 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
          * la sentencía SQL depenent d'aquests.
          */
         if(!filters.isEmpty()){
-            query+=" WHERE ";
+            query+=" AND ";
             String[] keys=filters.keySet().toArray(new String[filters.size()]);
             for(int i=0;i<filters.size();i++){
                 if(keys[i]!="tipus"){
-                    query+=keys[i]+" = '"+filters.get(keys[i])+"'";
+                    query+=keys[i]+" = "+filters.get(keys[i]);
                 }else{
                     query+=keys[i]+" in ("+filters.get(keys[i])+")";
                 }

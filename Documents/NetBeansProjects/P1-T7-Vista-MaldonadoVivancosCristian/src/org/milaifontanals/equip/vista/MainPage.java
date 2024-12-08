@@ -5,15 +5,19 @@
 package org.milaifontanals.equip.vista;
 
 import java.awt.Color;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
+import static java.util.Map.entry;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
-import org.milaifontanals.equip.interficiepersistencia.IGestorBDEquip;
+
 import org.milaifontanals.equip.model.*;
 
 /**
@@ -21,12 +25,31 @@ import org.milaifontanals.equip.model.*;
  * @author MAVI
  */
 public class MainPage extends javax.swing.JFrame {
+    private Map <String, String[]> headers= Map.ofEntries(
+            entry("ge",new String[]{" ","Nom","Categoria","Tipus","Conté Jugadors"," "}),
+            entry("gj",new String[]{"Nom","Cognom","Categoria","Sexe","Data Naixement","Revisió Médica",""}));
+    private DefaultTableModel tabModel;
+    private TableRowSorter<DefaultTableModel> ordenar;
+    private List<JCheckBox> geCB = new ArrayList<>();
+    private List<JCheckBox> gjCB = new ArrayList<>();
     
     public MainPage() {
         initComponents();
         settingComponents();
         loadTemporadas();
         loadCategories();
+        gestorEqListCheckBox();
+        gestorJugListCheckBox();
+    }
+    //fem un llistat dels comboboxs relacionats amb gestio d'equips per iterar-los
+    public void gestorEqListCheckBox(){
+        geCB.add(homeCheck);
+        geCB.add(donaCheck);
+        geCB.add(mixtCheck);
+    }
+    //fem un llistat dels comboboxs relacionats amb gestio de Jugadors per iterar-los
+    public void gestorJugListCheckBox(){
+
     }
     //carregem l'info al comboBox
     public void loadTemporadas(){
@@ -45,8 +68,9 @@ public class MainPage extends javax.swing.JFrame {
     public void loadCategories(){
         List<Categoria> cat=Constants.getCategs();
         //carregem el comboboxMavi
+        categoria.addItem("--Selecciona Categoria--");
         for(Categoria c: cat){
-            listCat.addItem(c.getNom());
+            categoria.addItem(c.getNom());
         }
     }
     /**
@@ -59,38 +83,40 @@ public class MainPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        temporadaLabel = new javax.swing.JLabel();
         logOut = new javax.swing.JButton();
         listTemp = new javax.swing.JComboBox<>();
         gestioEq = new javax.swing.JButton();
         gestioJug = new javax.swing.JButton();
         llistatEqPanel = new javax.swing.JPanel();
         nomLabel = new javax.swing.JLabel();
-        nomEquip = new javax.swing.JTextField();
+        nom = new javax.swing.JTextField();
+        tipusLabel = new javax.swing.JLabel();
+        categoria = new javax.swing.JComboBox<>();
         catLabel = new javax.swing.JLabel();
-        listCat = new javax.swing.JComboBox<>();
-        catLabel1 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
+        homeCheck = new javax.swing.JCheckBox();
+        mixtCheck = new javax.swing.JCheckBox();
+        donaCheck = new javax.swing.JCheckBox();
         filtrarEquip = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaInfo = new javax.swing.JTable();
         tempError = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        newTempL1 = new javax.swing.JLabel();
+        afegirTempPanel = new javax.swing.JPanel();
+        novaTempLabel = new javax.swing.JLabel();
         tempInput = new javax.swing.JTextField();
         insertTemp = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+        infoInsertTemp = new javax.swing.JLabel();
         altaEquip = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setMaximumSize(new java.awt.Dimension(800, 500));
-        jPanel1.setMinimumSize(new java.awt.Dimension(400, 300));
+        jPanel1.setMinimumSize(new java.awt.Dimension(800, 500));
         jPanel1.setPreferredSize(new java.awt.Dimension(800, 500));
 
-        jLabel1.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 153, 0));
-        jLabel1.setText("Temporada");
+        temporadaLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        temporadaLabel.setForeground(new java.awt.Color(51, 153, 0));
+        temporadaLabel.setText("Temporada");
 
         logOut.setBackground(new java.awt.Color(0, 153, 51));
         logOut.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
@@ -137,23 +163,30 @@ public class MainPage extends javax.swing.JFrame {
         });
 
         llistatEqPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "LLISTAT D'EQUIPS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 14), new java.awt.Color(0, 153, 0))); // NOI18N
-        llistatEqPanel.setMaximumSize(new java.awt.Dimension(739, 301));
-        llistatEqPanel.setMinimumSize(new java.awt.Dimension(380, 280));
+        llistatEqPanel.setMaximumSize(new java.awt.Dimension(717, 283));
+        llistatEqPanel.setMinimumSize(new java.awt.Dimension(717, 283));
 
         nomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         nomLabel.setText("Nom:");
 
+        nom.setName("nom"); // NOI18N
+
+        tipusLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        tipusLabel.setText("Tipus:");
+
+        categoria.setName("cat"); // NOI18N
+
         catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        catLabel.setText("Categoria:");
+        catLabel.setText("Categories:");
 
-        catLabel1.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        catLabel1.setText("Categories:");
+        homeCheck.setText("Masculí");
+        homeCheck.setName("H"); // NOI18N
 
-        jCheckBox1.setText("Masculí");
+        mixtCheck.setText("Mixt");
+        mixtCheck.setName("M"); // NOI18N
 
-        jCheckBox2.setText("Mixt");
-
-        jCheckBox3.setText("Femení");
+        donaCheck.setText("Femení");
+        donaCheck.setName("D"); // NOI18N
 
         filtrarEquip.setBackground(new java.awt.Color(0, 153, 51));
         filtrarEquip.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
@@ -168,6 +201,21 @@ public class MainPage extends javax.swing.JFrame {
             }
         });
 
+        tablaInfo.setAutoCreateColumnsFromModel(false);
+        tablaInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tablaInfo.setName("tEquip"); // NOI18N
+        jScrollPane2.setViewportView(tablaInfo);
+
         javax.swing.GroupLayout llistatEqPanelLayout = new javax.swing.GroupLayout(llistatEqPanel);
         llistatEqPanel.setLayout(llistatEqPanelLayout);
         llistatEqPanelLayout.setHorizontalGroup(
@@ -175,22 +223,25 @@ public class MainPage extends javax.swing.JFrame {
             .addGroup(llistatEqPanelLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nomLabel)
-                    .addComponent(catLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(listCat, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nomEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(69, 69, 69)
-                .addComponent(catLabel)
-                .addGap(26, 26, 26)
-                .addComponent(jCheckBox1)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox3)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2)
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nomLabel)
+                            .addComponent(catLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(69, 69, 69)
+                        .addComponent(tipusLabel)
+                        .addGap(26, 26, 26)
+                        .addComponent(homeCheck)
+                        .addGap(18, 18, 18)
+                        .addComponent(donaCheck)
+                        .addGap(18, 18, 18)
+                        .addComponent(mixtCheck)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                        .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         llistatEqPanelLayout.setVerticalGroup(
@@ -198,25 +249,29 @@ public class MainPage extends javax.swing.JFrame {
             .addGroup(llistatEqPanelLayout.createSequentialGroup()
                 .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nomLabel)
-                    .addComponent(nomEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(catLabel)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2)
-                    .addComponent(jCheckBox3)
+                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tipusLabel)
+                    .addComponent(homeCheck)
+                    .addComponent(mixtCheck)
+                    .addComponent(donaCheck)
                     .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(catLabel1)
-                    .addComponent(listCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(198, Short.MAX_VALUE))
+                    .addComponent(catLabel)
+                    .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         tempError.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "Afegir nova Temporada:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 12), new java.awt.Color(0, 153, 0))); // NOI18N
+        afegirTempPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "Afegir nova Temporada:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 12), new java.awt.Color(0, 153, 0))); // NOI18N
+        afegirTempPanel.setMaximumSize(new java.awt.Dimension(455, 92));
+        afegirTempPanel.setMinimumSize(new java.awt.Dimension(455, 92));
 
-        newTempL1.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        newTempL1.setText("Nova Temporada:");
+        novaTempLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        novaTempLabel.setText("Nova Temporada:");
 
         tempInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -238,41 +293,41 @@ public class MainPage extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Arial", 2, 10)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel3.setText("<html>Inserta únicament l'any d'inici de la nova temporada.<br> No pot ser superior al any actual+1 ni posterior a 1980.</html>");
-        jLabel3.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        infoInsertTemp.setFont(new java.awt.Font("Arial", 2, 10)); // NOI18N
+        infoInsertTemp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        infoInsertTemp.setText("<html>Inserta únicament l'any d'inici de la nova temporada.<br> No pot ser superior al any actual+1 ni posterior a 1980.</html>");
+        infoInsertTemp.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout afegirTempPanelLayout = new javax.swing.GroupLayout(afegirTempPanel);
+        afegirTempPanel.setLayout(afegirTempPanelLayout);
+        afegirTempPanelLayout.setHorizontalGroup(
+            afegirTempPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(afegirTempPanelLayout.createSequentialGroup()
+                .addGroup(afegirTempPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(afegirTempPanelLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addComponent(newTempL1)
+                        .addComponent(novaTempLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tempInput, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(insertTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGroup(afegirTempPanelLayout.createSequentialGroup()
                         .addGap(78, 78, 78)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(infoInsertTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+        afegirTempPanelLayout.setVerticalGroup(
+            afegirTempPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(afegirTempPanelLayout.createSequentialGroup()
+                .addGroup(afegirTempPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(insertTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(newTempL1)
+                    .addGroup(afegirTempPanelLayout.createSequentialGroup()
+                        .addGroup(afegirTempPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(novaTempLabel)
                             .addComponent(tempInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(1, 1, 1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(infoInsertTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         altaEquip.setBackground(new java.awt.Color(0, 153, 51));
@@ -301,7 +356,7 @@ public class MainPage extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(105, 105, 105)
-                        .addComponent(jLabel1)
+                        .addComponent(temporadaLabel)
                         .addGap(18, 18, 18)
                         .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
@@ -316,7 +371,7 @@ public class MainPage extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(62, 62, 62)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(afegirTempPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(283, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
@@ -325,7 +380,7 @@ public class MainPage extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
+                    .addComponent(temporadaLabel)
                     .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -335,11 +390,11 @@ public class MainPage extends javax.swing.JFrame {
                 .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(63, 63, 63)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(afegirTempPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(345, Short.MAX_VALUE)))
         );
 
@@ -449,24 +504,15 @@ public class MainPage extends javax.swing.JFrame {
     }//GEN-LAST:event_afegirTemporada
 
     private void filtrarEquip(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarEquip
-        String auxCat=listCat.getSelectedItem().toString();
-        int id=idCategoria(auxCat);
-        System.out.println(id);
-        
+        String mode="";
+        if(!gestioEq.isEnabled()){
+            mode=gestioEq.getName();
+        }else{
+            mode=gestioJug.getName();
+        }
+        crearTableModel(mode);
     }//GEN-LAST:event_filtrarEquip
-    //busquem l'id de la categoria seleccionada
-    private int idCategoria(String nom){
-        List<Categoria> cats=Constants.getCategs();
-        int id=-1,i=0, len=cats.size();
-        boolean found=false;
-        do{
-            if(nom.contains(cats.get(i).getNom())){
-                id=cats.get(i).getId();
-            }
-            i++;
-        }while(i<len || found);
-        return id;
-    }
+
     //controlem la visibililtat dels panels de Jugadors i Equips
     private void panelVisibility(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelVisibility
         boolean show=true;
@@ -480,32 +526,94 @@ public class MainPage extends javax.swing.JFrame {
         llistatEqPanel.setVisible(show);
         //el mateix per als equips pero fan servir l'inversa del show
         gestioJug.setEnabled(show);
+        crearTableModel(bPressed);
     }//GEN-LAST:event_panelVisibility
-
+    private Map<String, String> filtresAplicats(String btn){
+        Map<String, String> auxFilt= new HashMap<>();
+        switch(btn){
+            case "ge": //en el cas del gestor d'equips
+                //verifiquem si han afegit un nom
+                String n=nom.getText();
+                if(!n.isEmpty()){
+                    auxFilt.put(nom.getName(), "'"+n+"'");
+                }
+                //si han seleccionat una categoria
+                if(categoria.getSelectedIndex()>0){
+                    int categ = Constants.idCategoria(categoria.getSelectedItem().toString());
+                    auxFilt.put(categoria.getName(), String.valueOf(categ));
+                }
+                //iterem amb la funcio comboBoxTipus() per veure si han seleccionat un combobox o varis
+                String tipusList=comboBoxTipus();
+                if(tipusList.length()>0){
+                    auxFilt.put("tipus", tipusList);
+                }
+                break;
+            case "gj":
+                break;
+        }
+        return auxFilt;
+    }
+    private String comboBoxTipus(){
+        String sel="";
+        for(JCheckBox c : geCB){
+            if(c.isSelected()){
+                if(sel.length()>0){
+                    sel+=", ";
+                }
+                sel+="'"+c.getName()+"'";
+            }
+        }
+        return sel;
+    }
+    //creem dinámicament la taula
+    private void crearTableModel(String btn){
+        String[] columns=headers.get(btn);
+        Map<String, String> filters = new HashMap<>(filtresAplicats(btn));
+        System.out.println(filters.get("tipus"));
+        Object[][] data= new Object[][]{};
+        if(btn=="ge"){
+            try {
+                List<Equip> info =Constants.getgBD().llistatEquips(Constants.gettSel(), filters);
+            } catch (GestorBDEquipException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }else{
+            
+        }
+        //fiquem els titols
+        tabModel=new DefaultTableModel(headers.get(btn),0);
+        
+        
+        tablaInfo = new JTable(tabModel);
+        ordenar = new TableRowSorter<>(tabModel);
+        tablaInfo.setRowSorter(ordenar);
+    }
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel afegirTempPanel;
     private javax.swing.JButton altaEquip;
     private javax.swing.JLabel catLabel;
-    private javax.swing.JLabel catLabel1;
+    private javax.swing.JComboBox<String> categoria;
+    private javax.swing.JCheckBox donaCheck;
     private javax.swing.JButton filtrarEquip;
     private javax.swing.JButton gestioEq;
     private javax.swing.JButton gestioJug;
+    private javax.swing.JCheckBox homeCheck;
+    private javax.swing.JLabel infoInsertTemp;
     private javax.swing.JButton insertTemp;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JComboBox<String> listCat;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JComboBox<String> listTemp;
     private javax.swing.JPanel llistatEqPanel;
     private javax.swing.JButton logOut;
-    private javax.swing.JLabel newTempL1;
-    private javax.swing.JTextField nomEquip;
+    private javax.swing.JCheckBox mixtCheck;
+    private javax.swing.JTextField nom;
     private javax.swing.JLabel nomLabel;
+    private javax.swing.JLabel novaTempLabel;
+    private javax.swing.JTable tablaInfo;
     private javax.swing.JLabel tempError;
     private javax.swing.JTextField tempInput;
+    private javax.swing.JLabel temporadaLabel;
+    private javax.swing.JLabel tipusLabel;
     // End of variables declaration//GEN-END:variables
 }
