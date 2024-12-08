@@ -240,7 +240,7 @@ public class MainPage extends javax.swing.JFrame {
         insertTemp.setEnabled(false);
         insertTemp.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                insertTempafegirTemporada(evt);
+                afegirTemporada(evt);
             }
         });
 
@@ -290,7 +290,7 @@ public class MainPage extends javax.swing.JFrame {
         altaEquip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         altaEquip.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                afegirTemporada(evt);
+                altaEquip(evt);
             }
         });
 
@@ -399,27 +399,9 @@ public class MainPage extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tempSelected
 
-    private void afegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_afegirTemporada
-        String inputTemp=nomEquip.getText();
-        String auxNewTemp=inputTemp+"/"+(Integer.parseInt(inputTemp)+1);
-        Temporada aux= new Temporada();
-        String err=aux.setAny_temp(auxNewTemp);
-        if(err!=""){
-            tempError.setForeground(Color.RED);
-        }else{
-            try {
-                Constants.getgBD().afegirTemporada(aux);
-                Constants.getgBD().confirmarCanvis();
-                err="<html>Temporada afegida correctament!</html>";
-                tempError.setForeground(Color.GREEN);
-                Constants.setTemp(); //carregem de nou les temporades
-                loadTemporadas(); //tornem a carregar el combobox
-            } catch (GestorBDEquipException ex) {
-                err="<html>"+ex.getMessage()+"</html>";
-            }
-        }
-        tempError.setText(err);
-    }//GEN-LAST:event_afegirTemporada
+    private void altaEquip(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_altaEquip
+
+    }//GEN-LAST:event_altaEquip
     //únicament permitim números per afegir Temporades
     private void controlTemp(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlTemp
         int key=evt.getKeyChar();
@@ -448,9 +430,28 @@ public class MainPage extends javax.swing.JFrame {
         insertTemp.setEnabled(enabled);
     }//GEN-LAST:event_controlTemp
 
-    private void insertTempafegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_insertTempafegirTemporada
-        // TODO add your handling code here:
-    }//GEN-LAST:event_insertTempafegirTemporada
+    private void afegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_afegirTemporada
+        String inputTemp=tempInput.getText();
+        String auxNewTemp=inputTemp+"/"+(Integer.parseInt(inputTemp)+1);
+        Temporada aux= new Temporada();
+        String err=aux.setAny_temp(auxNewTemp);
+        if(err!=""){
+            tempError.setForeground(Color.RED);
+        }else{
+            try {
+                Constants.getgBD().afegirTemporada(aux);
+                Constants.getgBD().confirmarCanvis();
+                err="<html>Temporada afegida correctament!</html>";
+                tempError.setForeground(Color.GREEN);
+                Constants.setTemp(); //carregem de nou les temporades
+                tempInput.setText("");
+                loadTemporadas(); //tornem a carregar el combobox
+            } catch (GestorBDEquipException ex) {
+                err="<html>"+ex.getMessage()+"</html>";
+            }
+        }
+        tempError.setText(err);
+    }//GEN-LAST:event_afegirTemporada
 
     private void filtrarEquipafegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarEquipafegirTemporada
         // TODO add your handling code here:
