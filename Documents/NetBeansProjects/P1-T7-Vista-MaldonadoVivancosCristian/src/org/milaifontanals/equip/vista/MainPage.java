@@ -4,11 +4,14 @@
  */
 package org.milaifontanals.equip.vista;
 
+import java.awt.Color;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
 import org.milaifontanals.equip.interficiepersistencia.IGestorBDEquip;
 import org.milaifontanals.equip.model.*;
@@ -18,17 +21,24 @@ import org.milaifontanals.equip.model.*;
  * @author MAVI
  */
 public class MainPage extends javax.swing.JFrame {
-    /**
-     * Creates new form MainPage
-     */
+    
     public MainPage() {
         initComponents();
+        settingComponents();
+        loadTemporadas();
     }
     //carregem l'info al comboBox
     public void loadTemporadas(){
+        listTemp.removeAllItems();
         List<Temporada> temp=Constants.getTemp();
+        Temporada auxSel=Constants.gettSel();
+        //carregem el comboboxMavi
         for(Temporada t:temp){
             listTemp.addItem(t.toString());
+        }
+        //si hi ha una temporada preseleccionada la seleccionem
+        if(!auxSel.toString().isEmpty()){
+            listTemp.getModel().setSelectedItem(auxSel.toString());
         }
     }
     /**
@@ -42,11 +52,27 @@ public class MainPage extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        logOut = new javax.swing.JButton();
         listTemp = new javax.swing.JComboBox<>();
         gestioEq = new javax.swing.JButton();
         gestioJug = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        llistatEqPanel = new javax.swing.JPanel();
+        nomLabel = new javax.swing.JLabel();
+        nomEquip = new javax.swing.JTextField();
+        catLabel = new javax.swing.JLabel();
+        llistatCat = new javax.swing.JComboBox<>();
+        catLabel1 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
+        jCheckBox3 = new javax.swing.JCheckBox();
+        filtrarEquip = new javax.swing.JButton();
+        tempError = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        newTempL1 = new javax.swing.JLabel();
+        tempInput = new javax.swing.JTextField();
+        insertTemp = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        altaEquip = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -58,20 +84,18 @@ public class MainPage extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(51, 153, 0));
         jLabel1.setText("Temporada");
 
-        jButton1.setBackground(new java.awt.Color(0, 153, 51));
-        jButton1.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Log-out");
-        jButton1.setAlignmentX(0.5F);
-        jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        logOut.setBackground(new java.awt.Color(0, 153, 51));
+        logOut.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        logOut.setForeground(new java.awt.Color(255, 255, 255));
+        logOut.setText("Log-out");
+        logOut.setAlignmentX(0.5F);
+        logOut.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        logOut.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 logOut(evt);
             }
         });
 
-        listTemp.setBackground(new java.awt.Color(255, 255, 255));
-        listTemp.setForeground(new java.awt.Color(0, 0, 0));
         listTemp.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 tempSelected(evt);
@@ -86,7 +110,7 @@ public class MainPage extends javax.swing.JFrame {
         gestioEq.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         gestioEq.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                gestioEqlogOut(evt);
+                gestioEquipsInfo(evt);
             }
         });
 
@@ -96,68 +120,243 @@ public class MainPage extends javax.swing.JFrame {
         gestioJug.setText("Gestió Jugadors");
         gestioJug.setAlignmentX(0.5F);
         gestioJug.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        gestioJug.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                gestioJuglogOut(evt);
+
+        llistatEqPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "LLISTAT D'EQUIPS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 14), new java.awt.Color(0, 153, 0))); // NOI18N
+        llistatEqPanel.setMaximumSize(new java.awt.Dimension(739, 301));
+        llistatEqPanel.setMinimumSize(new java.awt.Dimension(380, 280));
+
+        nomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        nomLabel.setText("Nom:");
+
+        nomEquip.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tempInsertValidate(evt);
             }
         });
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "Afegir nova Temporada:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 12), new java.awt.Color(0, 153, 0))); // NOI18N
+        catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        catLabel.setText("Categoria:");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 586, Short.MAX_VALUE)
+        llistatCat.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                llistatCattempSelected(evt);
+            }
+        });
+
+        catLabel1.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        catLabel1.setText("Categories:");
+
+        jCheckBox1.setText("Masculí");
+
+        jCheckBox2.setText("Mixt");
+
+        jCheckBox3.setText("Femení");
+
+        filtrarEquip.setBackground(new java.awt.Color(0, 153, 51));
+        filtrarEquip.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        filtrarEquip.setForeground(new java.awt.Color(255, 255, 255));
+        filtrarEquip.setText("Filtrar");
+        filtrarEquip.setToolTipText("");
+        filtrarEquip.setAlignmentX(0.5F);
+        filtrarEquip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        filtrarEquip.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                filtrarEquipafegirTemporada(evt);
+            }
+        });
+        filtrarEquip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filtrarEquipActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout llistatEqPanelLayout = new javax.swing.GroupLayout(llistatEqPanel);
+        llistatEqPanel.setLayout(llistatEqPanelLayout);
+        llistatEqPanelLayout.setHorizontalGroup(
+            llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nomLabel)
+                    .addComponent(catLabel1))
+                .addGap(18, 18, 18)
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(llistatCat, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nomEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(69, 69, 69)
+                .addComponent(catLabel)
+                .addGap(26, 26, 26)
+                .addComponent(jCheckBox1)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox3)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
+        llistatEqPanelLayout.setVerticalGroup(
+            llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nomLabel)
+                            .addComponent(nomEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(catLabel)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jCheckBox2)
+                            .addComponent(jCheckBox3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(catLabel1)
+                            .addComponent(llistatCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(219, Short.MAX_VALUE))
         );
+
+        tempError.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "Afegir nova Temporada:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 12), new java.awt.Color(0, 153, 0))); // NOI18N
+
+        newTempL1.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        newTempL1.setText("Nova Temporada:");
+
+        tempInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                controlTemp(evt);
+            }
+        });
+
+        insertTemp.setBackground(new java.awt.Color(0, 153, 51));
+        insertTemp.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        insertTemp.setForeground(new java.awt.Color(255, 255, 255));
+        insertTemp.setText("Insertar Temporada");
+        insertTemp.setToolTipText("");
+        insertTemp.setAlignmentX(0.5F);
+        insertTemp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        insertTemp.setEnabled(false);
+        insertTemp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                insertTempafegirTemporada(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Arial", 2, 10)); // NOI18N
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel3.setText("<html>Inserta únicament l'any d'inici de la nova temporada.<br> No pot ser superior al any actual+1 ni posterior a 1980.</html>");
+        jLabel3.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(newTempL1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tempInput, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(insertTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(50, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(insertTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(newTempL1)
+                            .addComponent(tempInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(1, 1, 1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        altaEquip.setBackground(new java.awt.Color(0, 153, 51));
+        altaEquip.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        altaEquip.setForeground(new java.awt.Color(255, 255, 255));
+        altaEquip.setText("Alta Equip");
+        altaEquip.setToolTipText("");
+        altaEquip.setAlignmentX(0.5F);
+        altaEquip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        altaEquip.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                afegirTemporada(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(105, 105, 105)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(llistatEqPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(105, 105, 105)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
+                        .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(104, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(16, 16, 16))))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(62, 62, 62)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(283, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(355, Short.MAX_VALUE))
+                .addGap(23, 23, 23)
+                .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38)
+                .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(63, 63, 63)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(345, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,43 +366,161 @@ public class MainPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Com Swing no permet fer modificacions a continuació fem un programa per a
+     * definir l'estat de certs objectes
+     * @param evt 
+     */
+    private void settingComponents(){
+        llistatEqPanel.setVisible(false);
+    }
     private void logOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOut
         this.dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_logOut
+    //limitem els valors que es poden afegir com a new string a 4 i només numeros
 
     private void tempSelected(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_tempSelected
-        String aux=listTemp.getSelectedItem().toString();
-        String tSel=Constants.gettSel().toString();
-        if(!aux.equals(tSel)){
-            /**
-             * si hi ha hagut un cambi de temporada fixem la nova
-             * temporada seleccionada...
-             */
-            Constants.settSel(new Temporada(aux));
-            /**
-             * ... i  calculem de nou els anys de naixement de les Categories
-             * en funció de la nova temporada seleccionada
-            */
-            Constants.setAnysCategsAmbTemp();
+        if(listTemp.getSelectedIndex()!=-1){
+            String aux=listTemp.getSelectedItem().toString();
+            String tSel=Constants.gettSel().toString();
+            if(!aux.equals(tSel)){
+                /**
+                 * si hi ha hagut un cambi de temporada fixem la nova
+                 * temporada seleccionada...
+                 */
+                Constants.settSel(new Temporada(aux));
+                /**
+                 * ... i  calculem de nou els anys de naixement de les Categories
+                 * en funció de la nova temporada seleccionada
+                */
+                Constants.setAnysCategsAmbTemp();
+            }
         }
     }//GEN-LAST:event_tempSelected
 
-    private void gestioEqlogOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gestioEqlogOut
-        // TODO add your handling code here:
-    }//GEN-LAST:event_gestioEqlogOut
+    private void afegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_afegirTemporada
+        String inputTemp=nomEquip.getText();
+        String auxNewTemp=inputTemp+"/"+(Integer.parseInt(inputTemp)+1);
+        Temporada aux= new Temporada();
+        String err=aux.setAny_temp(auxNewTemp);
+        if(err!=""){
+            tempError.setForeground(Color.RED);
+        }else{
+            try {
+                Constants.getgBD().afegirTemporada(aux);
+                Constants.getgBD().confirmarCanvis();
+                err="<html>Temporada afegida correctament!</html>";
+                tempError.setForeground(Color.GREEN);
+                Constants.setTemp(); //carregem de nou les temporades
+                loadTemporadas(); //tornem a carregar el combobox
+            } catch (GestorBDEquipException ex) {
+                err="<html>"+ex.getMessage()+"</html>";
+            }
+        }
+        tempError.setText(err);
+    }//GEN-LAST:event_afegirTemporada
+    //únicament permitim números per afegir Temporades
+    private void controlTemp(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlTemp
+        int key=evt.getKeyChar();
+        int len=tempInput.getText().length();
+        boolean enabled=false;
+        /**
+         * com la key es detecta abans de que s'afegeixi al textfield controlem
+         * la llaragaria real aqui
+         * */
+        if(key!=8 || (key>=48 && key<=57 && len!=4)){
+            len++;
+        }
+        //unicament permitim borrar i afegir numeros
+        if((key>=48 && key<=57 && len<=4) || key==8){
+            tempInput.setEditable(true);
+        }else{
+            tempInput.setEditable(false);
+        }
+        /**
+         * nomes activem el botó si el length del text es de 4 o mes
+         * per temes del control ficat per preme les tecles
+         */
+        if(len>=4){
+            enabled=true;
+        }
+        insertTemp.setEnabled(enabled);
+    }//GEN-LAST:event_controlTemp
 
-    private void gestioJuglogOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gestioJuglogOut
+    private void insertTempafegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_insertTempafegirTemporada
         // TODO add your handling code here:
-    }//GEN-LAST:event_gestioJuglogOut
+    }//GEN-LAST:event_insertTempafegirTemporada
+
+    private void filtrarEquipafegirTemporada(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarEquipafegirTemporada
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filtrarEquipafegirTemporada
+
+    private void filtrarEquipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtrarEquipActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filtrarEquipActionPerformed
+
+    private void llistatCattempSelected(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_llistatCattempSelected
+        // TODO add your handling code here:
+    }//GEN-LAST:event_llistatCattempSelected
+
+    /**
+     * validem que máxim s'afegeixin números i 4 characters
+     * Inspirat de: https://stackoverflow.com/questions/66659541/how-do-i-set-a-textfield-to-accept-numbers-and-backspace-only
+     */
+    private void tempInsertValidate(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tempInsertValidate
+        String value=nomEquip.getText();
+        int lng= value.length();
+        char kCode=evt.getKeyChar();
+        String err="";
+        //només volem que es pugi fer submit si compleix certs criteris, per defecte no esta activat
+        boolean enableSubmit=false;
+        if((kCode>='0' && kCode<='9' && lng<4) || kCode==KeyEvent.VK_BACK_SPACE){
+            nomEquip.setEditable(true);
+            /**
+            * quan afegeix el 4t character el length encara es 3, si ho es
+            * deixarem que l'usuarí pugi fer submit.
+            */
+            if(lng==3){
+                enableSubmit=true;
+            }
+        }else{
+            nomEquip.setEditable(false);
+            err=(lng==4)?"<html>La llargaria no pot ser superior a 4 digits!</html>":
+            "<html>Només es permeten números quan s'afegeix una temporada</html>";
+        }
+        altaEquip.setEnabled(enableSubmit);
+        tempError.setForeground(Color.red);
+        tempError.setText(err);
+    }//GEN-LAST:event_tempInsertValidate
+
+    private void gestioEquipsInfo(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gestioEquipsInfo
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gestioEquipsInfo
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton altaEquip;
+    private javax.swing.JLabel catLabel;
+    private javax.swing.JLabel catLabel1;
+    private javax.swing.JButton filtrarEquip;
     private javax.swing.JButton gestioEq;
     private javax.swing.JButton gestioJug;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton insertTemp;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JComboBox<String> listTemp;
+    private javax.swing.JComboBox<String> llistatCat;
+    private javax.swing.JPanel llistatEqPanel;
+    private javax.swing.JButton logOut;
+    private javax.swing.JLabel newTempL1;
+    private javax.swing.JTextField nomEquip;
+    private javax.swing.JLabel nomLabel;
+    private javax.swing.JLabel tempError;
+    private javax.swing.JTextField tempInput;
     // End of variables declaration//GEN-END:variables
 }
