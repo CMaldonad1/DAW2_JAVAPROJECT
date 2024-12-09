@@ -79,6 +79,13 @@ public class Constants {
             Logger.getLogger(Constants.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static String tipusNom(char tipus){
+        String t=(tipus=='H')?"Masculí":((tipus=='D')?"Femení":"Mixt");
+        return t;
+    }
+    public static char tipusChar(String tipus){
+        return (tipus=="Masculí")?'H':((tipus=="Femení")?'D':'M');
+    }
 
     //guardem la temporada amb la que treballem
     public static void settSel(Temporada tSel) {

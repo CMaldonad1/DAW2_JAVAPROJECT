@@ -419,7 +419,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         }
     }
     @Override
-    public void eliminarEquip(Equip eq) throws GestorBDEquipException {
+    public void eliminarEquip(int eq) throws GestorBDEquipException {
         if (delEq == null) {
             try {
                 delEq = conn.prepareStatement("DELETE FROM EQUIP WHERE ID = ?");
@@ -429,13 +429,13 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         }
         int delete;
         try {
-            delEq.setInt(1, eq.getId());
+            delEq.setInt(1, eq);
             delete= delEq.executeUpdate();
             if (delete==0) {
-                throw new GestorBDEquipException("L'equip "+ eq.getNom() + " no existeix!");
+                throw new GestorBDEquipException("L'equip que s'intenta eliminar no existeix!");
             }
         } catch (SQLException ex) {
-            throw new GestorBDEquipException("Error en eliminar l'equip "+eq.getNom(), ex);
+            throw new GestorBDEquipException("No es poden eliminar equips amb jugadors!", ex);
         }
     }
     @Override
@@ -552,7 +552,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         }
     }
     @Override
-    public void eliminarJugador(Jugador jug) throws GestorBDEquipException{
+    public void eliminarJugador(int jug) throws GestorBDEquipException{
         try {
             delJug = conn.prepareStatement("DELETE FROM JUGADOR WHERE ID = ?");
         } catch (SQLException ex) {
@@ -560,10 +560,10 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         }
         int delete;
         try {
-            delJug.setInt(1, jug.getId());
+            delJug.setInt(1, jug);
             delete= delJug.executeUpdate();
             if (delete==0) {
-                throw new GestorBDEquipException("L'equip "+ jug.getNom() + " no existeix!");
+                throw new GestorBDEquipException("El jugador no existeix!");
             }
         } catch (SQLException ex) {
             throw new GestorBDEquipException("No es posible eliminar jugadors que pertanyen a Equips.");

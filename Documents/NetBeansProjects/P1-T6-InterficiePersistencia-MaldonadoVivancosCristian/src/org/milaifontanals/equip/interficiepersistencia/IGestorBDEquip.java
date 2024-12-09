@@ -24,13 +24,13 @@ public interface IGestorBDEquip {
     List<Equip> llistatEquips(Temporada t, Map<String, String> filters) throws GestorBDEquipException;
     Equip infoEquip(int id) throws GestorBDEquipException;
     void afegirEquip(Equip eq) throws GestorBDEquipException;
-    void eliminarEquip(Equip eq) throws GestorBDEquipException;
+    void eliminarEquip(int eq) throws GestorBDEquipException;
     void modificarEquip(Equip eq) throws GestorBDEquipException;
     
     List<Jugador> llistatJugadors(Map<String, String> filters) throws GestorBDEquipException;
     Jugador infoJugador(int id) throws GestorBDEquipException;
     void afegirJugador(Jugador jug) throws GestorBDEquipException;
-    void eliminarJugador(Jugador jug) throws GestorBDEquipException;
+    void eliminarJugador(int jug) throws GestorBDEquipException;
     void modificarJugador(Jugador jug) throws GestorBDEquipException;
     
     List<Titular> llistatTitularsEquip(Equip eq) throws GestorBDEquipException;

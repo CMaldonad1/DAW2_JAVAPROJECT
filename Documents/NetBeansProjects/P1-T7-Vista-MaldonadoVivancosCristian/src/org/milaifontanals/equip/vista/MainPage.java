@@ -5,15 +5,22 @@
 package org.milaifontanals.equip.vista;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static java.util.Map.entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
@@ -26,9 +33,8 @@ import org.milaifontanals.equip.model.*;
  */
 public class MainPage extends javax.swing.JFrame {
     private Map <String, String[]> headers= Map.ofEntries(
-            entry("ge",new String[]{" ","Nom","Categoria","Tipus","Conté Jugadors"," "}),
+            entry("ge",new String[]{"","ID","Nom","Categoria","Tipus","Té Jugadors",""}),
             entry("gj",new String[]{"Nom","Cognom","Categoria","Sexe","Data Naixement","Revisió Médica",""}));
-    private DefaultTableModel tabModel;
     private TableRowSorter<DefaultTableModel> ordenar;
     private List<JCheckBox> geCB = new ArrayList<>();
     private List<JCheckBox> gjCB = new ArrayList<>();
@@ -98,8 +104,9 @@ public class MainPage extends javax.swing.JFrame {
         mixtCheck = new javax.swing.JCheckBox();
         donaCheck = new javax.swing.JCheckBox();
         filtrarEquip = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tablaInfo = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        geTable = new javax.swing.JTable();
+        errGE = new javax.swing.JLabel();
         tempError = new javax.swing.JLabel();
         afegirTempPanel = new javax.swing.JPanel();
         novaTempLabel = new javax.swing.JLabel();
@@ -163,8 +170,8 @@ public class MainPage extends javax.swing.JFrame {
         });
 
         llistatEqPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "LLISTAT D'EQUIPS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 14), new java.awt.Color(0, 153, 0))); // NOI18N
-        llistatEqPanel.setMaximumSize(new java.awt.Dimension(717, 283));
-        llistatEqPanel.setMinimumSize(new java.awt.Dimension(717, 283));
+        llistatEqPanel.setMaximumSize(new java.awt.Dimension(782, 297));
+        llistatEqPanel.setMinimumSize(new java.awt.Dimension(782, 297));
 
         nomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         nomLabel.setText("Nom:");
@@ -201,8 +208,7 @@ public class MainPage extends javax.swing.JFrame {
             }
         });
 
-        tablaInfo.setAutoCreateColumnsFromModel(false);
-        tablaInfo.setModel(new javax.swing.table.DefaultTableModel(
+        geTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -213,18 +219,24 @@ public class MainPage extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tablaInfo.setName("tEquip"); // NOI18N
-        jScrollPane2.setViewportView(tablaInfo);
+        geTable.setGridColor(new java.awt.Color(51, 153, 0));
+        geTable.setMaximumSize(new java.awt.Dimension(300, 80));
+        geTable.setMinimumSize(new java.awt.Dimension(300, 80));
+        geTable.setName("geTable"); // NOI18N
+        geTable.setShowVerticalLines(true);
+        jScrollPane1.setViewportView(geTable);
+
+        errGE.setForeground(new java.awt.Color(255, 0, 0));
+        errGE.setName("errGE"); // NOI18N
 
         javax.swing.GroupLayout llistatEqPanelLayout = new javax.swing.GroupLayout(llistatEqPanel);
         llistatEqPanel.setLayout(llistatEqPanelLayout);
         llistatEqPanelLayout.setHorizontalGroup(
             llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
                 .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
                     .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
                         .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nomLabel)
                             .addComponent(catLabel))
@@ -232,16 +244,25 @@ public class MainPage extends javax.swing.JFrame {
                         .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(69, 69, 69)
-                        .addComponent(tipusLabel)
-                        .addGap(26, 26, 26)
-                        .addComponent(homeCheck)
-                        .addGap(18, 18, 18)
-                        .addComponent(donaCheck)
-                        .addGap(18, 18, 18)
-                        .addComponent(mixtCheck)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
-                        .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                                .addGap(69, 69, 69)
+                                .addComponent(tipusLabel)
+                                .addGap(26, 26, 26)
+                                .addComponent(homeCheck)
+                                .addGap(18, 18, 18)
+                                .addComponent(donaCheck)
+                                .addGap(18, 18, 18)
+                                .addComponent(mixtCheck)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                                .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10))))
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
         );
         llistatEqPanelLayout.setVerticalGroup(
@@ -258,10 +279,11 @@ public class MainPage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(catLabel)
-                    .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tempError.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
@@ -422,7 +444,7 @@ public class MainPage extends javax.swing.JFrame {
      */
     private void settingComponents(){
         llistatEqPanel.setVisible(false);
-
+        altaEquip.setVisible(false);
     }
     private void logOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOut
         this.dispose();
@@ -524,10 +546,12 @@ public class MainPage extends javax.swing.JFrame {
         //si el panel d'equips es visible el de botó está desactivat
         gestioEq.setEnabled(!show);
         llistatEqPanel.setVisible(show);
+        altaEquip.setVisible(show);
         //el mateix per als equips pero fan servir l'inversa del show
         gestioJug.setEnabled(show);
         crearTableModel(bPressed);
     }//GEN-LAST:event_panelVisibility
+    //programa per revisar els filtres tant per equips com per jugadors
     private Map<String, String> filtresAplicats(String btn){
         Map<String, String> auxFilt= new HashMap<>();
         switch(btn){
@@ -553,6 +577,7 @@ public class MainPage extends javax.swing.JFrame {
         }
         return auxFilt;
     }
+    //programa que revisa quines opcions han sigut escollides en el Gestor D'equips en quan a tipus (sexe)
     private String comboBoxTipus(){
         String sel="";
         for(JCheckBox c : geCB){
@@ -567,42 +592,145 @@ public class MainPage extends javax.swing.JFrame {
     }
     //creem dinámicament la taula
     private void crearTableModel(String btn){
-        String[] columns=headers.get(btn);
+        int numColumns=headers.get(btn).length;
         Map<String, String> filters = new HashMap<>(filtresAplicats(btn));
-        System.out.println(filters.get("tipus"));
-        Object[][] data= new Object[][]{};
+        DefaultTableModel mt= new DefaultTableModel(new Object[0][numColumns],headers.get(btn));
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        int del=0, sel=0;
         if(btn=="ge"){
+            errGE.setText("");//ens asegurem que no queda cap error a la finestra
+            del=5;//setejem la columna que fará de botó de delete
+            geTable.setModel(mt);//setejem columnes
+            //amagem la columna ID que la farem servir per a eliminar/
+            geTable.removeColumn(geTable.getColumnModel().getColumn(1));
             try {
-                List<Equip> info =Constants.getgBD().llistatEquips(Constants.gettSel(), filters);
+                //Centrem les columnes necesaries (Categoria, tipus, te jugadors):
+                for(int i=2; i<(numColumns-1);i++){
+                    geTable.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
+                }
+                List<Equip> infoEq =Constants.getgBD().llistatEquips(Constants.gettSel(), filters);
+                for(Equip e : infoEq){
+                    Object[] info= new Object[]{
+                        "Seleccionar",
+                        e.getId(),
+                        e.getNom(),
+                        Constants.nomCategoria(e.getCat()),
+                        Constants.tipusNom(e.getTipus()),
+                        (Constants.getgBD().equipTeTitulars(e)==0)?"No":"Si",
+                        "Eliminar"
+                        };
+                    mt.addRow(info);
+                    //fem la primera columna sigui button per seleccionar
+                    ButtonColumn buttonSel = new ButtonColumn(geTable,selEq,sel);
+                    //fem la última columna sigui button per eliminar
+                    ButtonColumn buttonDel= new ButtonColumn(geTable,delEq,del);
+                }
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
+        }/*else{
+            try {
+                List<Jugador> infoJug =Constants.getgBD().llistatJugadors(filters);
+            } catch (GestorBDEquipException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }*/
+
+    }
+    private int confirmacióEliminar(String nom, String tName){
+        int resposta=JOptionPane.showConfirmDialog(null, "Estas segur que vols eliminar a "+nom+"?", "Compte!",
+			JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        String err="";
+        if(resposta==0){
+            try {
+                Constants.getgBD().confirmarCanvis();
+            } catch (GestorBDEquipException ex) {
+                err=ex.getMessage();
+                resposta=1;
+            }
+        }else{
+            try {
+                Constants.getgBD().desferCanvis();
+            } catch (GestorBDEquipException ex) {
+                 err=ex.getMessage();
+                 resposta=1;
+            }
+        }
+        if(tName=="geTable"){
+            errGE.setText(err);
         }else{
             
         }
-        //fiquem els titols
-        tabModel=new DefaultTableModel(headers.get(btn),0);
-        
-        
-        tablaInfo = new JTable(tabModel);
-        ordenar = new TableRowSorter<>(tabModel);
-        tablaInfo.setRowSorter(ordenar);
+        return resposta;
     }
-   
+    //Font: https://tips4java.wordpress.com/2009/07/12/table-button-column/
+    Action selEq= new AbstractAction(){
+        public void actionPerformed(ActionEvent e){
+            JTable table = (JTable)e.getSource(); 
+            String name= table.getName();
+            int row = Integer.valueOf( e.getActionCommand() );
+            int id= Integer.valueOf(((DefaultTableModel)table.getModel()).getValueAt(row, 1).toString());
+            //depenent de la taula mostrarem un jugador (gjTable) o un equip (geTable)
+            if(name=="geTable"){
+                System.out.println("Mostrem l'equip amb id = "+id);
+            }else{
+                
+            }
+        }
+    };
+    Action delEq= new AbstractAction(){
+        public void actionPerformed(ActionEvent e){
+            JTable table = (JTable)e.getSource(); 
+            String tName= table.getName();
+            int row = Integer.valueOf( e.getActionCommand() );
+            int id= Integer.valueOf(((DefaultTableModel)table.getModel()).getValueAt(row, 1).toString());
+            String nom= ((DefaultTableModel)table.getModel()).getValueAt(row, 2).toString();
+            Boolean err=false;
+            //depenent de la taula eliminarem un jugador (gjTable) o un equip (geTable)
+            if(tName=="geTable"){
+                try {
+                    Constants.getgBD().eliminarEquip(id);
+                } catch (GestorBDEquipException ex) {
+                    errGE.setText(ex.getMessage());
+                    err=true;
+                }
+            }else{
+                try {
+                    Constants.getgBD().eliminarJugador(id);
+                } catch (GestorBDEquipException ex) {
+                    Logger.getLogger(MainPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            //si no hi ha hagut capp error en intentar eliminar el jugador/equip
+            if(!err){
+                //demanem confirmació abans d'eliminar, si tot ha anat bé retorna 0
+                if(confirmacióEliminar(nom, tName)==0 && !err){
+                    //si confirma, després de fer el delete a la BBDD, ens carregem la row.
+                    ((DefaultTableModel)table.getModel()).removeRow(row);
+                }
+            }
+
+        }
+    };
+    //font: https://www.youtube.com/watch?v=3LiSHPqbuic
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel afegirTempPanel;
     private javax.swing.JButton altaEquip;
     private javax.swing.JLabel catLabel;
     private javax.swing.JComboBox<String> categoria;
     private javax.swing.JCheckBox donaCheck;
+    private javax.swing.JLabel errGE;
     private javax.swing.JButton filtrarEquip;
+    private javax.swing.JTable geTable;
     private javax.swing.JButton gestioEq;
     private javax.swing.JButton gestioJug;
     private javax.swing.JCheckBox homeCheck;
     private javax.swing.JLabel infoInsertTemp;
     private javax.swing.JButton insertTemp;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox<String> listTemp;
     private javax.swing.JPanel llistatEqPanel;
     private javax.swing.JButton logOut;
@@ -610,7 +738,6 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JTextField nom;
     private javax.swing.JLabel nomLabel;
     private javax.swing.JLabel novaTempLabel;
-    private javax.swing.JTable tablaInfo;
     private javax.swing.JLabel tempError;
     private javax.swing.JTextField tempInput;
     private javax.swing.JLabel temporadaLabel;
