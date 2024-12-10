@@ -33,9 +33,7 @@ public class VistaEquip extends javax.swing.JFrame {
     
     public VistaEquip(int idEq, MainPage view) {
         //si s'ha pasat un id == -1 vol dir que esta creant un nou equip
-        if(idEq==-1){
-            existeix=false;
-        }
+        existeix=(idEq==-1)?false:true;
         mp=view;
         //si no es un alta guardem recuperem la informació de l'equip
         if(existeix){
@@ -86,9 +84,8 @@ public class VistaEquip extends javax.swing.JFrame {
         //si es una modificació d'un equip o l'equiup s'ha donat d'alta fixem la categoria
         if(existeix){
             categoria.getModel().setSelectedItem(Constants.nomCategoria(eqSel.getCat()));
+            conteJugadors(); //verifiquem si conté jugadors per deixar-li editar certs camps
         }
-        //verifiquem si conté jugadors per deixar-li editar certs camps
-        conteJugadors();
     }
     /**
      * This method is called from within the constructor to initialize the form.

@@ -503,7 +503,7 @@ public class MainPage extends javax.swing.JFrame {
 
     private void altaEquip(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_altaEquip
         this.setVisible(false);
-        new VistaEquip(-1, this).setVisible(true);
+        carregarVistaEquip(-1);
     }//GEN-LAST:event_altaEquip
     //únicament permitim números per afegir Temporades
     private void controlTemp(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlTemp
