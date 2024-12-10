@@ -3,14 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package org.milaifontanals.equip.vista;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
-import org.milaifontanals.equip.interficiepersistencia.IGestorBDEquip;
-import org.milaifontanals.equip.jdbc.GestorDBEquipJdbc;
-
      
 /**
  *

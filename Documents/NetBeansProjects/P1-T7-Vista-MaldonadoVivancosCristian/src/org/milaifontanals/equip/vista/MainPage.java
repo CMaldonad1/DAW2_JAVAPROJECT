@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -107,6 +108,7 @@ public class MainPage extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         geTable = new javax.swing.JTable();
         errGE = new javax.swing.JLabel();
+        treureFiltres = new javax.swing.JButton();
         tempError = new javax.swing.JLabel();
         afegirTempPanel = new javax.swing.JPanel();
         novaTempLabel = new javax.swing.JLabel();
@@ -229,14 +231,29 @@ public class MainPage extends javax.swing.JFrame {
         errGE.setForeground(new java.awt.Color(255, 0, 0));
         errGE.setName("errGE"); // NOI18N
 
+        treureFiltres.setBackground(new java.awt.Color(0, 153, 51));
+        treureFiltres.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        treureFiltres.setForeground(new java.awt.Color(255, 255, 255));
+        treureFiltres.setText("Treure Filtres");
+        treureFiltres.setToolTipText("");
+        treureFiltres.setAlignmentX(0.5F);
+        treureFiltres.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        treureFiltres.setName("treureFiltres"); // NOI18N
+        treureFiltres.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                treureFiltres(evt);
+            }
+        });
+
         javax.swing.GroupLayout llistatEqPanelLayout = new javax.swing.GroupLayout(llistatEqPanel);
         llistatEqPanel.setLayout(llistatEqPanelLayout);
         llistatEqPanelLayout.setHorizontalGroup(
             llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
                 .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                        .addGap(23, 23, 23)
                         .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nomLabel)
                             .addComponent(catLabel))
@@ -244,25 +261,21 @@ public class MainPage extends javax.swing.JFrame {
                         .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(69, 69, 69)
                         .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                                .addGap(69, 69, 69)
                                 .addComponent(tipusLabel)
                                 .addGap(26, 26, 26)
                                 .addComponent(homeCheck)
                                 .addGap(18, 18, 18)
                                 .addComponent(donaCheck)
                                 .addGap(18, 18, 18)
-                                .addComponent(mixtCheck)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
-                                .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10))))
-                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jScrollPane1)))
+                                .addComponent(mixtCheck))
+                            .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(filtrarEquip, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(treureFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         llistatEqPanelLayout.setVerticalGroup(
@@ -277,14 +290,22 @@ public class MainPage extends javax.swing.JFrame {
                     .addComponent(donaCheck)
                     .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(catLabel)
-                    .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(catLabel)
+                                .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(46, 46, 46))
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addComponent(treureFiltres, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
+
+        treureFiltres.getAccessibleContext().setAccessibleName("desfiltrar");
 
         tempError.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
 
@@ -371,18 +392,15 @@ public class MainPage extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(llistatEqPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(105, 105, 105)
-                        .addComponent(temporadaLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
-                        .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(105, 105, 105)
+                .addComponent(temporadaLabel)
+                .addGap(18, 18, 18)
+                .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
+                .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -390,6 +408,10 @@ public class MainPage extends javax.swing.JFrame {
                     .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16))
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(llistatEqPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(62, 62, 62)
@@ -408,11 +430,11 @@ public class MainPage extends javax.swing.JFrame {
                     .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(63, 63, 63)
@@ -467,6 +489,17 @@ public class MainPage extends javax.swing.JFrame {
                  * en funció de la nova temporada seleccionada
                 */
                 Constants.setAnysCategsAmbTemp();
+                int vista=(llistatEqPanel.isVisible()?1:0);
+                String vistaNom="";
+                //1 gestor Equip, 2 gestor Jugador, 0 cap gestor
+                if(vista==1){
+                    vistaNom="ge";
+                }else if(vista==2){
+                    vistaNom="gj";
+                }
+                if(vistaNom.length()!=0){
+                    crearTableModel(vistaNom);
+                }
             }
         }
     }//GEN-LAST:event_tempSelected
@@ -526,13 +559,7 @@ public class MainPage extends javax.swing.JFrame {
     }//GEN-LAST:event_afegirTemporada
 
     private void filtrarEquip(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarEquip
-        String mode="";
-        if(!gestioEq.isEnabled()){
-            mode=gestioEq.getName();
-        }else{
-            mode=gestioJug.getName();
-        }
-        crearTableModel(mode);
+        crearTableModel(modeActual());
     }//GEN-LAST:event_filtrarEquip
 
     //controlem la visibililtat dels panels de Jugadors i Equips
@@ -551,6 +578,25 @@ public class MainPage extends javax.swing.JFrame {
         gestioJug.setEnabled(show);
         crearTableModel(bPressed);
     }//GEN-LAST:event_panelVisibility
+
+    //programa per a sapiguern en quin mode estem
+    private String modeActual(){
+        String mode="";
+        if(!gestioEq.isEnabled()){
+            mode=gestioEq.getName();
+        }else{
+            mode=gestioJug.getName();
+        }
+        return mode;
+    }
+    private void treureFiltres(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treureFiltres
+        nom.setText("");
+        for(JCheckBox c : geCB){
+            c.setSelected(false);
+        }
+        categoria.setSelectedIndex(0);
+        crearTableModel(modeActual());
+    }//GEN-LAST:event_treureFiltres
     //programa per revisar els filtres tant per equips com per jugadors
     private Map<String, String> filtresAplicats(String btn){
         Map<String, String> auxFilt= new HashMap<>();
@@ -597,6 +643,7 @@ public class MainPage extends javax.swing.JFrame {
         DefaultTableModel mt= new DefaultTableModel(new Object[0][numColumns],headers.get(btn));
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        JScrollPane scrollPane;
         int del=0, sel=0;
         if(btn=="ge"){
             errGE.setText("");//ens asegurem que no queda cap error a la finestra
@@ -621,11 +668,8 @@ public class MainPage extends javax.swing.JFrame {
                         "Eliminar"
                         };
                     mt.addRow(info);
-                    //fem la primera columna sigui button per seleccionar
-                    ButtonColumn buttonSel = new ButtonColumn(geTable,selEq,sel);
-                    //fem la última columna sigui button per eliminar
-                    ButtonColumn buttonDel= new ButtonColumn(geTable,delEq,del);
                 }
+                taulaConfiguration(geTable,sel,del);
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -636,6 +680,16 @@ public class MainPage extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
         }*/
+
+    }
+    private void taulaConfiguration(JTable t, int sel, int del){
+        t.setAutoCreateRowSorter(true);
+        if(t.getName()=="geTable"){
+            //fem la primera columna sigui button per seleccionar
+            ButtonColumn buttonSel = new ButtonColumn(t,selEq,sel);
+            //fem la última columna sigui button per eliminar
+            ButtonColumn buttonDel= new ButtonColumn(t,delEq,del);
+        }
 
     }
     private int confirmacióEliminar(String nom, String tName){
@@ -713,7 +767,6 @@ public class MainPage extends javax.swing.JFrame {
 
         }
     };
-    //font: https://www.youtube.com/watch?v=3LiSHPqbuic
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel afegirTempPanel;
@@ -742,5 +795,6 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JTextField tempInput;
     private javax.swing.JLabel temporadaLabel;
     private javax.swing.JLabel tipusLabel;
+    private javax.swing.JButton treureFiltres;
     // End of variables declaration//GEN-END:variables
 }
