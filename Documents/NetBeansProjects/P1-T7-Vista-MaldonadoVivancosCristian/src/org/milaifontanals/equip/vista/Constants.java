@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
 import org.milaifontanals.equip.interficiepersistencia.IGestorBDEquip;
 import org.milaifontanals.equip.model.Categoria;

@@ -23,9 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
-
 import org.milaifontanals.equip.model.*;
 
 /**
@@ -36,7 +34,6 @@ public class MainPage extends javax.swing.JFrame {
     private Map <String, String[]> headers= Map.ofEntries(
             entry("ge",new String[]{"","ID","Nom","Categoria","Tipus","Té Jugadors",""}),
             entry("gj",new String[]{"Nom","Cognom","Categoria","Sexe","Data Naixement","Revisió Médica",""}));
-    private TableRowSorter<DefaultTableModel> ordenar;
     private List<JCheckBox> geCB = new ArrayList<>();
     private List<JCheckBox> gjCB = new ArrayList<>();
     
@@ -505,7 +502,8 @@ public class MainPage extends javax.swing.JFrame {
     }//GEN-LAST:event_tempSelected
 
     private void altaEquip(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_altaEquip
-
+        this.setVisible(false);
+        new VistaEquip(-1, this).setVisible(true);
     }//GEN-LAST:event_altaEquip
     //únicament permitim números per afegir Temporades
     private void controlTemp(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlTemp
@@ -718,6 +716,9 @@ public class MainPage extends javax.swing.JFrame {
         }
         return resposta;
     }
+    private void carregarVistaEquip(int id){
+        new VistaEquip(id, this).setVisible(true);
+    }
     //Font: https://tips4java.wordpress.com/2009/07/12/table-button-column/
     Action selEq= new AbstractAction(){
         public void actionPerformed(ActionEvent e){
@@ -727,7 +728,7 @@ public class MainPage extends javax.swing.JFrame {
             int id= Integer.valueOf(((DefaultTableModel)table.getModel()).getValueAt(row, 1).toString());
             //depenent de la taula mostrarem un jugador (gjTable) o un equip (geTable)
             if(name=="geTable"){
-                System.out.println("Mostrem l'equip amb id = "+id);
+                carregarVistaEquip(id);
             }else{
                 
             }
