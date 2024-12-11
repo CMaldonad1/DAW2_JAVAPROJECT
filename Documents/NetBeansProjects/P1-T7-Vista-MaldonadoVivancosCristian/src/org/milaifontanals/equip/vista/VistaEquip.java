@@ -14,8 +14,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
 
 import org.milaifontanals.equip.model.*;
@@ -52,18 +55,23 @@ public class VistaEquip extends javax.swing.JFrame {
         rbList.add(rbMasc);
         rbList.add(rbMixt);
     }
-    public void activarBotonsiCerca(boolean activar){
+    public void activarBotonsiCerca(){
         //únicament estarán abilitats aquest botons si l'equip es nou
-        eliminarEquip.setVisible(activar);
-        guardarCanvis.setEnabled(activar);
-        filtrarJug.setEnabled(activar);
-        idLegal.setEnabled(activar);
-        nomJug.setEnabled(activar);
+        eliminarEquip.setVisible(existeix);
+        guardarCanvis.setEnabled(existeix);
+        filtrarJug.setEnabled(existeix);
+        idLegal.setEnabled(existeix);
+        nomJug.setEnabled(existeix);
     }
-    //carregem l'info al comboBox
+    //preparem l'informació de la finestra
     public void prepararFinestra(){
+        //titol per default si es una alta nova
         String titol = "Alta Equip";
-        activarBotonsiCerca(existeix);
+        if(existeix){
+            titol="Edició Equip - "+eqSel.getNom();
+        }
+        titolLabel.setText(titol); //fiquel el titol
+        activarBotonsiCerca();
         buttonGroup.add(rbMixt);
         buttonGroup.add(rbMasc);
         buttonGroup.add(rbFem);
@@ -71,6 +79,7 @@ public class VistaEquip extends javax.swing.JFrame {
         listTemp.setEnabled(false);
         comboboxCategoria();//carregem el combobox de categoria
     }
+        //carregem l'info al comboBox
     public void comboboxCategoria(){
         //si el combobox no esta carregat el carregem
         if(categoria.getItemCount()==0){
@@ -122,7 +131,7 @@ public class VistaEquip extends javax.swing.JFrame {
         nomJugLabel = new javax.swing.JLabel();
         nomJug = new javax.swing.JTextField();
         eliminarEquip = new javax.swing.JButton();
-        title = new javax.swing.JLabel();
+        titolLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -342,10 +351,10 @@ public class VistaEquip extends javax.swing.JFrame {
             }
         });
 
-        title.setFont(new java.awt.Font("Bauhaus 93", 0, 36)); // NOI18N
-        title.setForeground(new java.awt.Color(0, 153, 0));
-        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        title.setText("jLabel1");
+        titolLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 24)); // NOI18N
+        titolLabel.setForeground(new java.awt.Color(0, 153, 0));
+        titolLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        titolLabel.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -365,7 +374,7 @@ public class VistaEquip extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(eliminarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(63, 63, 63)
-                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(infoEquip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -384,7 +393,7 @@ public class VistaEquip extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(eliminarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(titolLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infoEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
@@ -489,28 +498,36 @@ public class VistaEquip extends javax.swing.JFrame {
             jugTable.removeColumn(jugTable.getColumnModel().getColumn(0));
             try {
                 //Centrem les columnes necesaries (Categoria, tipus, te jugadors):
-                for(int i=3; i<(numColumns);i++){
-                    if(i<5 && i>6){
-                        jugTable.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
-                    }
+                for(int i=3; i<(numColumns-1);i++){
+                    jugTable.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
                 }
                 List<Equip> infoEq =Constants.getgBD().llistatEquips(Constants.gettSel(), filters);
+                //infoEq.addAll(infoEq);
                 for(Equip e : infoEq){
                     Object[] info= new Object[]{
-                        "Seleccionar",
                         e.getId(),
                         e.getNom(),
                         Constants.nomCategoria(e.getCat()),
                         Constants.tipusNom(e.getTipus()),
                         (Constants.getgBD().equipTeTitulars(e)==0)?"No":"Si",
-                        "Eliminar"
+                        false,
+                        true
                         };
                     mt.addRow(info);
                 }
-                jugTable.setAutoCreateRowSorter(true);
+                checkboxColumn();
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+    }
+    //definim les columnes que serán checkbox
+    private void checkboxColumn(){
+        jugTable.setAutoCreateRowSorter(true);
+        for(int i=4;i<6;i++){
+            TableColumn tc=jugTable.getColumnModel().getColumn(i);
+            tc.setCellEditor(jugTable.getDefaultEditor(Boolean.class));
+            tc.setCellRenderer(jugTable.getDefaultRenderer(Boolean.class));
         }
     }
     private void confirmacióEliminar(){
@@ -534,6 +551,7 @@ public class VistaEquip extends javax.swing.JFrame {
         }
         errGE.setText(err);
     }
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -562,7 +580,7 @@ public class VistaEquip extends javax.swing.JFrame {
     private javax.swing.JLabel tempError;
     private javax.swing.JLabel temporadaLabel;
     private javax.swing.JLabel tipusLabel;
-    private javax.swing.JLabel title;
+    private javax.swing.JLabel titolLabel;
     private javax.swing.JButton tornar;
     // End of variables declaration//GEN-END:variables
 }
