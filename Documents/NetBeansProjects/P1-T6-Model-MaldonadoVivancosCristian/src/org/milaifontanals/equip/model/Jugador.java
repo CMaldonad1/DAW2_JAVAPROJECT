@@ -26,7 +26,8 @@ public class Jugador {
     private Calendar any_fi_revisio_medica;
     private String iban;
     private String foto;
-//Aqui tením totes les REGEX per a verificar dades
+    
+    //Aqui tením totes les REGEX per a verificar dades
     private String ptrnIban ="^\\w{2,}(\\d{24})$" ; /*El compte ha de ser Espanyol per fer l'inscripció*/
     private String ptrnNomCog="^\\w{2,}(\\s{1}\\w{2,}){0,1}$"; /*Patern per al nom i cognom*/
     private String ptrnIdLegal="^([XYZ]\\d{7,8}[A-Z]|(\\d{8})([A-Z]))$"; /*Patern per al ID legal on contemplo DNI i NIE*/

@@ -136,6 +136,7 @@ public class MainPage extends javax.swing.JFrame {
             }
         });
 
+        listTemp.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 1, true));
         listTemp.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 tempSelected(evt);

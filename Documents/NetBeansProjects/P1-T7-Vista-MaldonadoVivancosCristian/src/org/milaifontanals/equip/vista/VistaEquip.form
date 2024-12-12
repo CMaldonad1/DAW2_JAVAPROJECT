@@ -93,7 +93,7 @@
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="eliminarEquip" min="-2" pref="25" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="titolLabel" pref="54" max="32767" attributes="0"/>
+                      <Component id="titolLabel" pref="50" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="infoEquip" min="-2" max="-2" attributes="0"/>
@@ -141,6 +141,13 @@
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>
+            </Property>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                <LineBorder roundedCorners="true">
+                  <Color PropertyName="color" blue="0" green="99" red="33" type="rgb"/>
+                </LineBorder>
+              </Border>
             </Property>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[72, 22]"/>
@@ -243,14 +250,16 @@
                                   <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="idLegalLable" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                      <Component id="idLegal" min="-2" pref="111" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="idLegal" min="-2" pref="153" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                                       <Component id="nomJugLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="nomJug" min="-2" pref="163" max="-2" attributes="0"/>
-                                      <EmptySpace max="32767" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="nomJug" min="-2" pref="109" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
                                       <Component id="filtrarJug" min="-2" pref="91" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="guardarTitulars" min="-2" pref="101" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
@@ -264,12 +273,12 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="nomLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="nom" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="tipusLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="guardarCanvis" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                           <Component id="rbMasc" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="rbFem" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="rbMixt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="nom" alignment="0" pref="25" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -279,19 +288,16 @@
                           </Group>
                           <Component id="errGE" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="10" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="tempError" min="-2" pref="19" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="filtrarJug" alignment="1" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                              <Component id="nomJug" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="nomJugLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                              <Component id="idLegal" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="idLegalLable" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="idLegal" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="idLegalLable" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="nomJugLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="nomJug" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="filtrarJug" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                          <Component id="guardarTitulars" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jScrollPane1" min="-2" pref="157" max="-2" attributes="0"/>
@@ -311,8 +317,16 @@
             </Component>
             <Component class="javax.swing.JTextField" name="nom">
               <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder/>
+                  </Border>
+                </Property>
                 <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="controlNom"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="tipusLabel">
               <Properties>
@@ -327,8 +341,19 @@
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="0"/>
                 </Property>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder/>
+                  </Border>
+                </Property>
+                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[72, 22]"/>
+                </Property>
                 <Property name="name" type="java.lang.String" value="cat" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="selCategoria"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -448,18 +473,27 @@
                 <Property name="text" type="java.lang.String" value="Mascul&#xed;"/>
                 <Property name="name" type="java.lang.String" value="H" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="seleccioItem"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="rbFem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Femen&#xed;"/>
                 <Property name="name" type="java.lang.String" value="F" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="seleccioItem"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="rbMixt">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Mixt"/>
                 <Property name="name" type="java.lang.String" value="M" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="seleccioItem"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="idLegalLable">
               <Properties>
@@ -486,6 +520,31 @@
               <Properties>
                 <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="guardarTitulars">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="99" red="0" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Bauhaus 93" size="12" style="0"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Guardar Titulars"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
+                <Property name="alignmentX" type="float" value="0.5"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                    <BevelBorder/>
+                  </Border>
+                </Property>
+                <Property name="name" type="java.lang.String" value="filtrarJug" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="guardarTitulars"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

@@ -4,18 +4,18 @@
  */
 package org.milaifontanals.equip.vista;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JCheckBox;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -45,6 +45,8 @@ public class VistaEquip extends javax.swing.JFrame {
             } catch (GestorBDEquipException ex) {
                 errGE.setText(ex.getMessage());
             }
+        }else{
+            eqSel=new Equip();
         }
         initComponents();
         prepararFinestra();
@@ -62,6 +64,7 @@ public class VistaEquip extends javax.swing.JFrame {
         filtrarJug.setEnabled(existeix);
         idLegal.setEnabled(existeix);
         nomJug.setEnabled(existeix);
+        guardarTitulars.setEnabled(existeix);
     }
     //preparem l'informació de la finestra
     public void prepararFinestra(){
@@ -85,7 +88,6 @@ public class VistaEquip extends javax.swing.JFrame {
         if(categoria.getItemCount()==0){
             List<Categoria> cat=Constants.getCategs();
             //carregem el combobox
-            categoria.addItem("--Selecciona Categoria--");
             for(Categoria c: cat){
                 categoria.addItem(c.getNom());
             }   
@@ -94,6 +96,8 @@ public class VistaEquip extends javax.swing.JFrame {
         if(existeix){
             categoria.getModel().setSelectedItem(Constants.nomCategoria(eqSel.getCat()));
             conteJugadors(); //verifiquem si conté jugadors per deixar-li editar certs camps
+        }else{
+            eqSel.setCat(Constants.idCategoria(categoria.getModel().getElementAt(0)));
         }
     }
     /**
@@ -130,6 +134,7 @@ public class VistaEquip extends javax.swing.JFrame {
         idLegal = new javax.swing.JTextField();
         nomJugLabel = new javax.swing.JLabel();
         nomJug = new javax.swing.JTextField();
+        guardarTitulars = new javax.swing.JButton();
         eliminarEquip = new javax.swing.JButton();
         titolLabel = new javax.swing.JLabel();
 
@@ -155,6 +160,7 @@ public class VistaEquip extends javax.swing.JFrame {
             }
         });
 
+        listTemp.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(51, 153, 0), 1, true));
         listTemp.setMaximumSize(new java.awt.Dimension(72, 22));
         listTemp.setOpaque(true);
 
@@ -178,12 +184,25 @@ public class VistaEquip extends javax.swing.JFrame {
         nomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         nomLabel.setText("Nom:");
 
+        nom.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         nom.setName("nom"); // NOI18N
+        nom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                controlNom(evt);
+            }
+        });
 
         tipusLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         tipusLabel.setText("Tipus:");
 
+        categoria.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        categoria.setMaximumSize(new java.awt.Dimension(72, 22));
         categoria.setName("cat"); // NOI18N
+        categoria.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                selCategoria(evt);
+            }
+        });
 
         catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         catLabel.setText("Categories:");
@@ -240,12 +259,27 @@ public class VistaEquip extends javax.swing.JFrame {
 
         rbMasc.setText("Masculí");
         rbMasc.setName("H"); // NOI18N
+        rbMasc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                seleccioItem(evt);
+            }
+        });
 
         rbFem.setText("Femení");
         rbFem.setName("F"); // NOI18N
+        rbFem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                seleccioItem(evt);
+            }
+        });
 
         rbMixt.setText("Mixt");
         rbMixt.setName("M"); // NOI18N
+        rbMixt.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                seleccioItem(evt);
+            }
+        });
 
         idLegalLable.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         idLegalLable.setText("NIE/NIF:");
@@ -256,6 +290,20 @@ public class VistaEquip extends javax.swing.JFrame {
         nomJugLabel.setText("Nom:");
 
         nomJug.setName("nom"); // NOI18N
+
+        guardarTitulars.setBackground(new java.awt.Color(0, 153, 51));
+        guardarTitulars.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        guardarTitulars.setForeground(new java.awt.Color(255, 255, 255));
+        guardarTitulars.setText("Guardar Titulars");
+        guardarTitulars.setToolTipText("");
+        guardarTitulars.setAlignmentX(0.5F);
+        guardarTitulars.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        guardarTitulars.setName("filtrarJug"); // NOI18N
+        guardarTitulars.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                guardarTitulars(evt);
+            }
+        });
 
         javax.swing.GroupLayout infoEquipLayout = new javax.swing.GroupLayout(infoEquip);
         infoEquip.setLayout(infoEquipLayout);
@@ -293,14 +341,16 @@ public class VistaEquip extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, infoEquipLayout.createSequentialGroup()
                                 .addComponent(idLegalLable)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(60, 60, 60)
-                                .addComponent(nomJugLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(nomJugLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)
+                                .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(23, 23, 23))))
         );
         infoEquipLayout.setVerticalGroup(
@@ -308,29 +358,28 @@ public class VistaEquip extends javax.swing.JFrame {
             .addGroup(infoEquipLayout.createSequentialGroup()
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nomLabel)
-                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tipusLabel)
                     .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rbMasc)
                     .addComponent(rbFem)
-                    .addComponent(rbMixt))
+                    .addComponent(rbMixt)
+                    .addComponent(nom, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(catLabel)
                         .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
                 .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(filtrarJug, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(nomJugLabel))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(idLegalLable)))
+                .addGap(13, 13, 13)
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(idLegalLable)
+                    .addComponent(nomJugLabel)
+                    .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
@@ -393,7 +442,7 @@ public class VistaEquip extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(eliminarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(titolLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
+                    .addComponent(titolLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infoEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
@@ -461,7 +510,7 @@ public class VistaEquip extends javax.swing.JFrame {
     }//GEN-LAST:event_filtrarJug
 
     private void guardarCanvis(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarCanvis
-
+        
     }//GEN-LAST:event_guardarCanvis
 
     //tornem al menú principal
@@ -469,6 +518,34 @@ public class VistaEquip extends javax.swing.JFrame {
         this.dispose();
         mp.setVisible(true);
     }//GEN-LAST:event_tornar
+    private void activarGuardar(){
+        boolean activarGuardar=false;
+        System.out.println(eqSel.getTipus()+" "+eqSel.getNom()+" "+eqSel.getCat());
+        if(eqSel.getTipus()!=' ' && eqSel.getNom()!=null && errGE.getText().isEmpty()){
+            activarGuardar=true;
+        }
+        guardarCanvis.setEnabled(activarGuardar);
+    }
+    private void seleccioItem(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_seleccioItem
+        String tipus=evt.getComponent().getName();
+        eqSel.setTipus(tipus.charAt(0));
+        activarGuardar();
+    }//GEN-LAST:event_seleccioItem
+
+    private void guardarTitulars(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarTitulars
+        // TODO add your handling code here:
+    }//GEN-LAST:event_guardarTitulars
+
+    private void controlNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlNom
+        String err=eqSel.setNom(nom.getText());
+        errGE.setText(err);
+        activarGuardar();
+    }//GEN-LAST:event_controlNom
+
+    private void selCategoria(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_selCategoria
+       eqSel.setCat(Constants.idCategoria(categoria.getSelectedItem().toString()));
+       activarGuardar();
+    }//GEN-LAST:event_selCategoria
 
     //programa per revisar els filtres tant per equips com per jugadors
     private Map<String, String> filtresAplicats(){
@@ -491,9 +568,9 @@ public class VistaEquip extends javax.swing.JFrame {
         DefaultTableModel mt= new DefaultTableModel(new Object[0][tableTitles.length],tableTitles);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        errGE.setText("");//ens asegurem que no queda cap error a la finestra
+        jugTable.setModel(mt);//setejem columnes
         if(existeix){
-            errGE.setText("");//ens asegurem que no queda cap error a la finestra
-            jugTable.setModel(mt);//setejem columnes
             //amagem la columna ID que la farem servir per a eliminar/
             jugTable.removeColumn(jugTable.getColumnModel().getColumn(0));
             try {
@@ -516,6 +593,7 @@ public class VistaEquip extends javax.swing.JFrame {
                     mt.addRow(info);
                 }
                 checkboxColumn();
+                TableCellListener tcl = new TableCellListener(jugTable, controlCheckbox);
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -551,7 +629,35 @@ public class VistaEquip extends javax.swing.JFrame {
         }
         errGE.setText(err);
     }
-
+    //source: https://tips4java.wordpress.com/2009/06/07/table-cell-listener/
+    Action controlCheckbox= new AbstractAction(){
+        public void actionPerformed(ActionEvent e){
+            //per veure qui ha fet el canvi
+            TableCellListener tcl = (TableCellListener)e.getSource();
+            //column que l'ha cridat
+            int col=tcl.getColumn();
+            //només importa les columnes del checkbox, sino no farem res.
+            if(col>=5 && col<=6){
+                int col_a_modificar=(col==5)?6:5; //depenent de la columna modificarem l'altre
+                //row que l'ha cridat i mirarem en quin estat es troba.
+                int row=tcl.getRow();
+                boolean val=(Boolean)tcl.getNewValue();
+                //retornem la taula per a poder editar-la
+                JTable table = tcl.getTable(); 
+                //si marca que no pertany a l'equip es desactiva l'opció de titular
+                if(col==5 && !val){
+                     ((DefaultTableModel)table.getModel()).setValueAt(val, row, col_a_modificar);
+                }
+                //si marca que es titular i está desmarcat com que pertany a l'equip, el fa de l'equip
+                if(col==6 && val){
+                    Boolean esTitular= (Boolean)((DefaultTableModel)table.getModel()).getValueAt(row, col_a_modificar);
+                    if(!esTitular){
+                        ((DefaultTableModel)table.getModel()).setValueAt(val, row, col_a_modificar);
+                    }
+                }
+            }
+        }
+    };
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -562,6 +668,7 @@ public class VistaEquip extends javax.swing.JFrame {
     private javax.swing.JLabel errGE;
     private javax.swing.JButton filtrarJug;
     private javax.swing.JButton guardarCanvis;
+    private javax.swing.JButton guardarTitulars;
     private javax.swing.JTextField idLegal;
     private javax.swing.JLabel idLegalLable;
     private javax.swing.JPanel infoEquip;

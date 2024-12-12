@@ -52,8 +52,14 @@ public class Equip {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public String setNom(String nom) {
+        String err="";
+        if(!nom.isBlank() && nom.length()>1 && nom.length()<51){
+            this.nom = nom;
+        }else{
+            err="El nom ha de tenir mínim dos caracters i máxim 50";
+        }
+        return err;
     }
 
     public Temporada getTemp() {

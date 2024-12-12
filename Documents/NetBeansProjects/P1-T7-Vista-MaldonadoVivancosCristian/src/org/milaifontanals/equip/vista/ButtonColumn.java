@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package org.milaifontanals.equip.vista;
-
+//Code source: https://github.com/tips4java/tips4java/blob/main/source/ButtonColumn.java
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -23,8 +23,6 @@ import javax.swing.table.*;
  *  the model row number of the button that was clicked.
  *
  */
-
-//Code source: https://github.com/tips4java/tips4java/blob/main/source/ButtonColumn.java
 public class ButtonColumn extends AbstractCellEditor
 	implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener
 {
