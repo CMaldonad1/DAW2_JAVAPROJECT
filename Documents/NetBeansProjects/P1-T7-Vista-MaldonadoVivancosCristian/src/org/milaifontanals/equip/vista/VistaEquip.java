@@ -4,14 +4,15 @@
  */
 package org.milaifontanals.equip.vista;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
@@ -31,6 +32,7 @@ public class VistaEquip extends javax.swing.JFrame {
     private String[] tableTitles= new String[]{"ID","Nom","Cognom","Categoria","Sexe","Assignar","Titular","Altres Equips?"};
     private List<JRadioButton> rbList = new ArrayList<>();
     private Equip eqSel;
+    private List<Titular> titulars;
     private boolean existeix;
     private MainPage mp;
     
@@ -42,13 +44,16 @@ public class VistaEquip extends javax.swing.JFrame {
         if(existeix){
             try {
                 eqSel=Constants.getgBD().infoEquip(idEq);
+                titulars=Constants.getgBD().llistatTitularsEquip(eqSel);
             } catch (GestorBDEquipException ex) {
                 errGE.setText(ex.getMessage());
             }
         }else{
             eqSel=new Equip();
+            eqSel.setTemp(Constants.gettSel());
         }
         initComponents();
+        carregarLlistatRb();
         prepararFinestra();
         crearTableModel();
     }
@@ -56,6 +61,7 @@ public class VistaEquip extends javax.swing.JFrame {
         rbList.add(rbFem);
         rbList.add(rbMasc);
         rbList.add(rbMixt);
+
     }
     public void activarBotonsiCerca(){
         //únicament estarán abilitats aquest botons si l'equip es nou
@@ -71,7 +77,9 @@ public class VistaEquip extends javax.swing.JFrame {
         //titol per default si es una alta nova
         String titol = "Alta Equip";
         if(existeix){
-            titol="Edició Equip - "+eqSel.getNom();
+            String nomEq=eqSel.getNom();
+            titol="Edició Equip - "+nomEq;
+            nom.setText(nomEq);
         }
         titolLabel.setText(titol); //fiquel el titol
         activarBotonsiCerca();
@@ -94,11 +102,26 @@ public class VistaEquip extends javax.swing.JFrame {
         }
         //si es una modificació d'un equip o l'equiup s'ha donat d'alta fixem la categoria
         if(existeix){
-            categoria.getModel().setSelectedItem(Constants.nomCategoria(eqSel.getCat()));
+            categoria.setSelectedItem(Constants.nomCategoria(eqSel.getCat()));
+            char tipus=eqSel.getTipus();
+            //seleccionem la categoria
+            int i=0;
+            while(rbList.get(i).getName().charAt(0)!=tipus && i!=rbList.size()){
+                i++;
+            }
+            rbList.get(i).setSelected(existeix);
             conteJugadors(); //verifiquem si conté jugadors per deixar-li editar certs camps
         }else{
             eqSel.setCat(Constants.idCategoria(categoria.getModel().getElementAt(0)));
+            //per defecte masculi si es un equip nou
+            rbMasc.setSelected(true);
+            eqSel.setTipus(rbMasc.getName().charAt(0));
         }
+        categoria.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                selCategoria(evt);
+            }
+        });
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -135,6 +158,7 @@ public class VistaEquip extends javax.swing.JFrame {
         nomJugLabel = new javax.swing.JLabel();
         nomJug = new javax.swing.JTextField();
         guardarTitulars = new javax.swing.JButton();
+        guardarTitulars1 = new javax.swing.JButton();
         eliminarEquip = new javax.swing.JButton();
         titolLabel = new javax.swing.JLabel();
 
@@ -198,11 +222,6 @@ public class VistaEquip extends javax.swing.JFrame {
         categoria.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         categoria.setMaximumSize(new java.awt.Dimension(72, 22));
         categoria.setName("cat"); // NOI18N
-        categoria.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                selCategoria(evt);
-            }
-        });
 
         catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         catLabel.setText("Categories:");
@@ -266,7 +285,7 @@ public class VistaEquip extends javax.swing.JFrame {
         });
 
         rbFem.setText("Femení");
-        rbFem.setName("F"); // NOI18N
+        rbFem.setName("D"); // NOI18N
         rbFem.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 seleccioItem(evt);
@@ -302,6 +321,21 @@ public class VistaEquip extends javax.swing.JFrame {
         guardarTitulars.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 guardarTitulars(evt);
+            }
+        });
+
+        guardarTitulars1.setBackground(new java.awt.Color(0, 153, 51));
+        guardarTitulars1.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        guardarTitulars1.setForeground(new java.awt.Color(255, 255, 255));
+        guardarTitulars1.setText("Treure tots de l'equip");
+        guardarTitulars1.setToolTipText("");
+        guardarTitulars1.setActionCommand("");
+        guardarTitulars1.setAlignmentX(0.5F);
+        guardarTitulars1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        guardarTitulars1.setName("filtrarJug"); // NOI18N
+        guardarTitulars1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                desmarcarTitulars(evt);
             }
         });
 
@@ -347,23 +381,27 @@ public class VistaEquip extends javax.swing.JFrame {
                                 .addComponent(nomJugLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(50, 50, 50)
+                                .addGap(29, 29, 29)
                                 .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(infoEquipLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(guardarTitulars1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(23, 23, 23))))
         );
         infoEquipLayout.setVerticalGroup(
             infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(infoEquipLayout.createSequentialGroup()
-                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nomLabel)
-                    .addComponent(tipusLabel)
-                    .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rbMasc)
-                    .addComponent(rbFem)
-                    .addComponent(rbMixt)
-                    .addComponent(nom, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nom, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(nomLabel)
+                        .addComponent(tipusLabel)
+                        .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(rbMasc)
+                        .addComponent(rbFem)
+                        .addComponent(rbMixt)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -381,8 +419,10 @@ public class VistaEquip extends javax.swing.JFrame {
                     .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(guardarTitulars1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7))
         );
 
         filtrarJug.getAccessibleContext().setAccessibleName("desfiltrar");
@@ -442,7 +482,7 @@ public class VistaEquip extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(eliminarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(titolLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
+                    .addComponent(titolLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infoEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
@@ -479,6 +519,9 @@ public class VistaEquip extends javax.swing.JFrame {
         if(conteJugadors==0){
             activar=true;
         }
+        activarCatTipus(activar);
+    }
+    private void activarCatTipus(boolean activar){
         categoria.setEnabled(activar);
         for(JRadioButton rb:rbList){
             rb.setEnabled(activar);
@@ -510,9 +553,39 @@ public class VistaEquip extends javax.swing.JFrame {
     }//GEN-LAST:event_filtrarJug
 
     private void guardarCanvis(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarCanvis
+        String err="";
+        if(Optional.ofNullable(eqSel.getId()).orElse(0) == 0){
+            try {
+                Constants.getgBD().afegirEquip(eqSel);
+            } catch (GestorBDEquipException ex) {
+                err=ex.getMessage();
+            }
+        }else{
+            try {
+                Constants.getgBD().modificarEquip(eqSel);
+            } catch (GestorBDEquipException ex) {
+                err=ex.getMessage();
+            }
+        }
+        confirmarCanvis(err);
         
     }//GEN-LAST:event_guardarCanvis
-
+    private void confirmarCanvis(String err){
+        if(err.isBlank()){
+            errGE.setText(err);
+            try {
+                Constants.getgBD().desferCanvis();
+            } catch (GestorBDEquipException ex) {
+                errGE.setText(ex.getMessage());
+            }
+        }else{
+            try {
+                Constants.getgBD().confirmarCanvis();
+            } catch (GestorBDEquipException ex) {
+                errGE.setText(ex.getMessage());
+            }
+        }
+    }
     //tornem al menú principal
     private void tornar(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tornar
         this.dispose();
@@ -520,8 +593,7 @@ public class VistaEquip extends javax.swing.JFrame {
     }//GEN-LAST:event_tornar
     private void activarGuardar(){
         boolean activarGuardar=false;
-        System.out.println(eqSel.getTipus()+" "+eqSel.getNom()+" "+eqSel.getCat());
-        if(eqSel.getTipus()!=' ' && eqSel.getNom()!=null && errGE.getText().isEmpty()){
+        if(eqSel.getNom()!=null && errGE.getText().isEmpty()){
             activarGuardar=true;
         }
         guardarCanvis.setEnabled(activarGuardar);
@@ -532,20 +604,74 @@ public class VistaEquip extends javax.swing.JFrame {
         activarGuardar();
     }//GEN-LAST:event_seleccioItem
 
-    private void guardarTitulars(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarTitulars
-        // TODO add your handling code here:
-    }//GEN-LAST:event_guardarTitulars
-
     private void controlNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlNom
         String err=eqSel.setNom(nom.getText());
         errGE.setText(err);
         activarGuardar();
     }//GEN-LAST:event_controlNom
-
-    private void selCategoria(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_selCategoria
+    private void selCategoria(java.awt.event.ItemEvent evt) {                              
        eqSel.setCat(Constants.idCategoria(categoria.getSelectedItem().toString()));
        activarGuardar();
-    }//GEN-LAST:event_selCategoria
+    }                   //programa per guardar titulars
+    private void guardarTitulars(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarTitulars
+        String err="";
+        //iterem per la taula per veure l'estat dels jugadors
+        for(int i=0;i<jugTable.getRowCount();i++){
+            //recuperem l'ID del jugador
+            int idJug=Integer.valueOf(((DefaultTableModel)jugTable.getModel()).getValueAt(i,0).toString());
+            //verifiquem si era, o no, previament titular
+            int j=0;
+            while(titulars.get(j).getJugador()!=idJug && titulars.size()<j){
+                j++;
+            }
+            //mirarem l'estat en la taula, si s'ha seleccionat com que pertany o no a l'equip
+            boolean pertany=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,5);
+            boolean esTitular=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,6);
+            Titular titAux=new Titular(eqSel.getId(),idJug, esTitular); //titular aux per facilitar el treball de INSERT, UPDATE, DELETE
+                try {
+                    if(titulars.get(j).getJugador()==idJug){
+                        /**
+                        * si era de l'equip farem que es fagi update o delte segons 
+                        * si segueix marcat que partanya l'equip, si no ho era farem insert
+                        */
+                        if(pertany){
+                            Constants.getgBD().modificarTitular(titAux);
+                        }else{
+                            Constants.getgBD().eliminarTitular(titAux);
+                        }
+                    }else if(pertany){
+                        Constants.getgBD().afegirTitular(titAux);
+                    }
+                } catch (GestorBDEquipException ex) {
+                    err=ex.getMessage();
+                }
+
+        }
+        errGE.setText(err);
+        //confirmem canvis
+        confirmarCanvis(err);
+        //mirarem si continua amb titulars
+        verificarCanvisTituars(jugTable);
+    }//GEN-LAST:event_guardarTitulars
+
+    private void desmarcarTitulars(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_desmarcarTitulars
+        //iterem per la taula per treure o afegir tots com titulars
+        Boolean activar=false;
+        JButton boto=(JButton)evt.getSource();
+        String oldtextButton=boto.getText();
+        String newtextButton="Fer tots de l'equip";
+        if(oldtextButton.equals(newtextButton)){
+            newtextButton="Treure tots de l'equip";
+            activar=true;
+        }
+        for(int i=0;i<jugTable.getRowCount();i++){
+            ((DefaultTableModel)jugTable.getModel()).setValueAt(activar, i, 5);
+            if(!activar){
+                ((DefaultTableModel)jugTable.getModel()).setValueAt(false, i, 6);
+            }
+        }
+        boto.setText(newtextButton);
+    }//GEN-LAST:event_desmarcarTitulars
 
     //programa per revisar els filtres tant per equips com per jugadors
     private Map<String, String> filtresAplicats(){
@@ -578,17 +704,35 @@ public class VistaEquip extends javax.swing.JFrame {
                 for(int i=3; i<(numColumns-1);i++){
                     jugTable.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
                 }
-                List<Equip> infoEq =Constants.getgBD().llistatEquips(Constants.gettSel(), filters);
-                //infoEq.addAll(infoEq);
-                for(Equip e : infoEq){
+                //carregemm els titulars
+                List<Jugador> infoTitulars =Constants.getgBD().llistatJugadorsTitulars(eqSel);
+                for(Jugador j : infoTitulars){
+                    int id=j.getId();
                     Object[] info= new Object[]{
-                        e.getId(),
-                        e.getNom(),
-                        Constants.nomCategoria(e.getCat()),
-                        Constants.tipusNom(e.getTipus()),
-                        (Constants.getgBD().equipTeTitulars(e)==0)?"No":"Si",
-                        false,
-                        true
+                        id,
+                        j.getNom(),
+                        j.getCognom(),
+                        Constants.jugCategoria(j.getData_naix()),
+                        Constants.tipusNom(j.getSexe()),
+                        true,//automaticament true perque son el llistat de titulars
+                        esTitularEquip(id),
+                        (Constants.getgBD().jugadorParticipaEnAltresEquips(eqSel.getId(), id))?"Si":"No"
+                        };
+                    mt.addRow(info);
+                }
+                //carregem els possibles jugadors
+                List<Jugador> posiblesJugadors =Constants.getgBD().llistatPossiblesJugadors(Constants.objecteCategoria(eqSel.getCat()), eqSel);
+                for(Jugador j : posiblesJugadors){
+                    int id=j.getId();
+                    Object[] info= new Object[]{
+                        id,
+                        j.getNom(),
+                        j.getCognom(),
+                        Constants.jugCategoria(j.getData_naix()),
+                        Constants.tipusNom(j.getSexe()),
+                        false,//automaticament false perque NO son el llistat de titulars
+                        false,//com son possibles jugadors per defecte no poden ser titulars
+                        (Constants.getgBD().jugadorParticipaEnAltresEquips(eqSel.getId(), id))?"Si":"No"
                         };
                     mt.addRow(info);
                 }
@@ -598,6 +742,17 @@ public class VistaEquip extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
         }
+    }
+    private boolean esTitularEquip(int idJug){
+        boolean hoEs=false;
+        int i=0;
+        do{
+            if(titulars.get(i).getJugador()==idJug){
+                hoEs=titulars.get(i).isTitular();
+            }
+            i++;
+        }while(titulars.size()!=i && !hoEs);
+        return hoEs;
     }
     //definim les columnes que serán checkbox
     private void checkboxColumn(){
@@ -657,8 +812,23 @@ public class VistaEquip extends javax.swing.JFrame {
                 }
             }
         }
-    };
+        /**
+         * verifiquem si ha fet a algun jugador de l'equip per desactivar l'opció de cambiar la
+         * categoria i el tipus d'equip per a no generar inconsistencies.
+         */
 
+    };
+    public void verificarCanvisTituars(JTable tab){
+        boolean activar=false;
+        int i=0;
+        //verifiquem que al menys un jugador está com a titular
+        do{
+            activar=(Boolean)tab.getValueAt(i, 4);
+            i++;
+        }while(!activar && i!=tab.getRowCount());
+        //si hi ha un titular desactivem els botons de canvi de Cat i Tipus
+        activarCatTipus(!activar);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup;
@@ -669,6 +839,7 @@ public class VistaEquip extends javax.swing.JFrame {
     private javax.swing.JButton filtrarJug;
     private javax.swing.JButton guardarCanvis;
     private javax.swing.JButton guardarTitulars;
+    private javax.swing.JButton guardarTitulars1;
     private javax.swing.JTextField idLegal;
     private javax.swing.JLabel idLegalLable;
     private javax.swing.JPanel infoEquip;

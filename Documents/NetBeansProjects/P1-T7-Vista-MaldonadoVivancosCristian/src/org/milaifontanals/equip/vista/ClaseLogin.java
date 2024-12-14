@@ -5,7 +5,6 @@
 package org.milaifontanals.equip.vista;
 
 import javax.swing.JOptionPane;
-import org.milaifontanals.equip.interficiepersistencia.IGestorBDEquip;
 import org.milaifontanals.equip.model.Temporada;
 
 /**
@@ -17,9 +16,8 @@ public class ClaseLogin {
     //private static IGestorBDEquip gBD = null;
     
     public static void main(String[] args) {
-        System.out.println(args.length);
-        //setPersistencia(args);
-        nomClassePersistencia="org.milaifontanals.equip.jdbc.GestorDBEquipJdbc";
+        setPersistencia(args);
+        //nomClassePersistencia="org.milaifontanals.equip.jdbc.GestorDBEquipJdbc";
         //Fem la conexió amb la base de dades amb la clase Singleton anomenada Constants
         Constants.setgBD(nomClassePersistencia);
         /**

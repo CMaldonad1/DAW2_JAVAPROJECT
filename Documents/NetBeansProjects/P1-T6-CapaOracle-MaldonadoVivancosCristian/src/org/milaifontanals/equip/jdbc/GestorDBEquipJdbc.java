@@ -52,6 +52,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
     private PreparedStatement delTit;
     private PreparedStatement modTit;
     private PreparedStatement equipAmbTitulars;
+    private PreparedStatement jugTitularAltresEquips;
     
     public GestorDBEquipJdbc() throws GestorBDEquipException{
         String nomFitxer="equipXML.xml";
@@ -200,7 +201,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         String query="SELECT * FROM JUGADOR "
                     + "WHERE ID NOT IN (SELECT JUGADOR FROM "
                     + "TITULARS WHERE EQUIP=?) "
-                    + "AND DATA_NAIX <=? ";
+                    + "AND DATA_NAIX >=? ";
         if(sexe!='M'){
             query+="AND SEXE = ? ";
         }
@@ -403,17 +404,27 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
     public void afegirEquip(Equip eq) throws GestorBDEquipException {
         if (insertEq == null) {
             try {
-                insertEq = conn.prepareStatement("INSERT INTO EQUIP (NOM, TEMP, TIPUS, CAT) VALUES (?,?,?,?)");
+                insertEq = conn.prepareStatement("INSERT INTO EQUIP (NOM, TEMP, TIPUS, CAT) VALUES (?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
             } catch (SQLException ex) {
                 throw new GestorBDEquipException("Error en preparar sentència insertTemp", ex);
             }
         }
+        int id=0;
         try {
             insertEq.setString(1, eq.getNom());
             insertEq.setString(2, eq.tempToString());
             insertEq.setString(3, String.valueOf(eq.getTipus()));
             insertEq.setInt(4, eq.getCat());
-            insertEq.executeUpdate();
+            int affectedRows=insertEq.executeUpdate();
+            System.out.println(affectedRows);
+            try (ResultSet generatedKeys = insertEq.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    System.out.println(generatedKeys.getLong(1));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
         } catch (SQLException ex) {
             throw new GestorBDEquipException("Error en intentar inserir l'equip " + eq.getNom(), ex);
         }
@@ -608,16 +619,18 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         if (llistJugTit == null) {
             try {
                 llistJugTit = conn.prepareStatement("SELECT * FROM TITULARS "
-                                            + "WHERE EQUIP=?");
+                                                    + "WHERE EQUIP=? "
+                                                    + "ORDER BY JUGADOR ASC");
             } catch (SQLException ex) {
                 throw new GestorBDEquipException("Error en preparar sentència llistTit", ex);
             }
         }
         try {
-            llistTit.setInt(1, eq.getId());
-            ResultSet rs= llistTit.executeQuery();
+            llistJugTit.setInt(1, eq.getId());
+            ResultSet rs= llistJugTit.executeQuery();
             while (rs.next()) {
-                titulars.add(new Titular(rs.getInt("equip"),rs.getInt("jugador"),rs.getBoolean("titular")));
+                Boolean esTitular=(rs.getInt("titular")==1)?true:false;
+                titulars.add(new Titular(rs.getInt("equip"),rs.getInt("jugador"),esTitular));
             }
             rs.close();
         } catch (SQLException ex) {
@@ -653,15 +666,14 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
     @Override
     public List<Jugador> llistatPossiblesJugadors(Categoria cat, Equip eq) throws GestorBDEquipException {
         List<Jugador> jugadors = new ArrayList<>();
-        String dLimit=(Integer.parseInt(eq.getTemp().toString().substring(0,4))-cat.getEdat_Min())+"-12-31";
+        String dLimit=(Integer.parseInt(eq.getTemp().toString().substring(0,4))-cat.getEdat_Max())+"-12-31";
 
-        if (llistJugPos == null) {
-            try {
-                llistJugPos = conn.prepareStatement(queryPossiblesJugadors(eq.getTipus()));
-            } catch (SQLException ex) {
-                throw new GestorBDEquipException("Error en preparar sentència llistJugPos", ex);
-            }
+        try {
+            llistJugPos = conn.prepareStatement(queryPossiblesJugadors(eq.getTipus()));
+        } catch (SQLException ex) {
+            throw new GestorBDEquipException("Error en preparar sentència llistJugPos", ex);
         }
+
         try {
             String sex=String.valueOf(eq.getTipus());
             
@@ -764,5 +776,32 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
             throw new GestorBDEquipException("Error al intentar verificar si l'equip "+eq.getNom()+" te jugadors.", ex);
         }
         return total;
+    }
+    @Override
+    public Boolean jugadorParticipaEnAltresEquips(int eqID, int jugID) throws GestorBDEquipException {
+        if (jugTitularAltresEquips == null) {
+            try {
+                jugTitularAltresEquips = conn.prepareStatement("SELECT COUNT(*) AS \"TOTAL\" FROM "
+                                                        + "TITULARS WHERE EQUIP!=? AND JUGADOR=? AND TITULAR=1");
+            } catch (SQLException ex) {
+                throw new GestorBDEquipException("Error en preparar sentència equipAmbTitulars", ex);
+            }
+        }
+        boolean si=false;
+        int total=0;
+        try {
+            jugTitularAltresEquips.setInt(1, eqID);
+            jugTitularAltresEquips.setInt(2, jugID);
+            ResultSet rs = jugTitularAltresEquips.executeQuery();
+            if (rs.next()) {
+                total=rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            throw new GestorBDEquipException("Error al intentar verificar si el jugador es titular en altres equips", ex);
+        }
+        if(total!=0){
+            si=true;
+        }
+        return si;
     }
 }

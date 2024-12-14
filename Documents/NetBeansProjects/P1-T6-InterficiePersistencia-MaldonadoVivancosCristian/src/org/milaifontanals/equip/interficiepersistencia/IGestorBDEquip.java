@@ -41,5 +41,6 @@ public interface IGestorBDEquip {
     void modificarTitular(Titular tit) throws GestorBDEquipException;
     
     int equipTeTitulars(Equip eq) throws GestorBDEquipException;
+    Boolean jugadorParticipaEnAltresEquips(int eqID, int jugID) throws GestorBDEquipException;
     
 }

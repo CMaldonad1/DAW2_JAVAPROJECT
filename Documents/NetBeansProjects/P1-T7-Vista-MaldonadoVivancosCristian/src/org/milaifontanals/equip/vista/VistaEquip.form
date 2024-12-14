@@ -93,7 +93,7 @@
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="eliminarEquip" min="-2" pref="25" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="titolLabel" pref="50" max="32767" attributes="0"/>
+                      <Component id="titolLabel" pref="52" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="infoEquip" min="-2" max="-2" attributes="0"/>
@@ -256,10 +256,14 @@
                                       <Component id="nomJugLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="nomJug" min="-2" pref="109" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                                       <Component id="filtrarJug" min="-2" pref="91" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
                                       <Component id="guardarTitulars" min="-2" pref="101" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <Component id="guardarTitulars1" min="-2" pref="185" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
@@ -271,14 +275,16 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="nomLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="tipusLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="guardarCanvis" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Component id="rbMasc" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="rbFem" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="rbMixt" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="nom" alignment="0" pref="25" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="nomLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="tipusLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="guardarCanvis" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                              <Component id="rbMasc" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="rbFem" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="rbMixt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -300,8 +306,10 @@
                           <Component id="guardarTitulars" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" min="-2" pref="157" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" min="-2" pref="145" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="guardarTitulars1" min="-2" pref="25" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -351,9 +359,6 @@
                 </Property>
                 <Property name="name" type="java.lang.String" value="cat" noResource="true"/>
               </Properties>
-              <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="selCategoria"/>
-              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -480,7 +485,7 @@
             <Component class="javax.swing.JRadioButton" name="rbFem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Femen&#xed;"/>
-                <Property name="name" type="java.lang.String" value="F" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="D" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="seleccioItem"/>
@@ -544,6 +549,32 @@
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="guardarTitulars"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="guardarTitulars1">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="99" red="0" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Bauhaus 93" size="12" style="0"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Treure tots de l&apos;equip"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
+                <Property name="actionCommand" type="java.lang.String" value=""/>
+                <Property name="alignmentX" type="float" value="0.5"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                    <BevelBorder/>
+                  </Border>
+                </Property>
+                <Property name="name" type="java.lang.String" value="filtrarJug" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="desmarcarTitulars"/>
               </Events>
             </Component>
           </SubComponents>

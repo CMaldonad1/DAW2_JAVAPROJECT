@@ -718,6 +718,7 @@ public class MainPage extends javax.swing.JFrame {
         return resposta;
     }
     private void carregarVistaEquip(int id){
+        this.setVisible(false);
         new VistaEquip(id, this).setVisible(true);
     }
     //Font: https://tips4java.wordpress.com/2009/07/12/table-button-column/
