@@ -181,24 +181,25 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
          * la sentencía SQL depenent d'aquests.
          */
         if(!filters.isEmpty()){
-            query+=" AND ";
             String[] keys=filters.keySet().toArray(new String[filters.size()]);
             for(int i=0;i<filters.size();i++){
-                if(keys[i]!="tipus"){
-                    query+=keys[i]+" = "+filters.get(keys[i]);
-                }else{
-                    query+=keys[i]+" in ("+filters.get(keys[i])+")";
-                }
-
-                if(i!=(filters.size()-1)){
-                    query+=" AND ";
+                switch(keys[i]){
+                    case "tipus":
+                        query+=" AND "+keys[i]+" in ("+filters.get(keys[i])+")";
+                        break;
+                    case "nom":
+                        query+=" AND UPPER("+keys[i]+") LIKE "+filters.get(keys[i]);
+                        break;
+                    default:
+                         query+=" AND "+keys[i]+" = "+filters.get(keys[i]);
+                        break;
                 }
             }
         }
         query+=" ORDER BY NOM";
         return query;
     }
-    private static String queryPossiblesJugadors(char sexe){
+    private static String queryPossiblesJugadors(char sexe, Map<String, String> filters){
         String query="SELECT * FROM JUGADOR "
                     + "WHERE ID NOT IN (SELECT JUGADOR FROM "
                     + "TITULARS WHERE EQUIP=?) "
@@ -206,7 +207,26 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         if(sexe!='M'){
             query+="AND SEXE = ? ";
         }
-        query+="ORDER BY NOM";
+        if(!filters.isEmpty()){
+            String[] keys=filters.keySet().toArray(new String[filters.size()]);
+            for(int i=0;i<filters.size();i++){
+                query+=" AND UPPER("+keys[i]+") LIKE "+filters.get(keys[i]);
+            }
+        }
+        query+=" ORDER BY NOM";
+        return query;
+    }    
+    private static String queryJugadorsTitulars(Map<String, String> filters){
+        String query="SELECT * FROM JUGADOR "
+                    + "WHERE ID IN (SELECT JUGADOR FROM "
+                    + "TITULARS WHERE EQUIP=?) ";
+        if(!filters.isEmpty()){
+            String[] keys=filters.keySet().toArray(new String[filters.size()]);
+            for(int i=0;i<filters.size();i++){
+                query+="AND UPPER("+keys[i]+") LIKE "+filters.get(keys[i]);
+            }
+        }
+        query+=" ORDER BY NOM";
         return query;
     }
     private static String queryUpdateEquip(int i){
@@ -657,17 +677,12 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         return titulars;
     }
     @Override
-    public List<Jugador> llistatJugadorsTitulars(Equip eq) throws GestorBDEquipException {
+    public List<Jugador> llistatJugadorsTitulars(Equip eq, Map<String, String> filters) throws GestorBDEquipException {
         List<Jugador> jugadors = new ArrayList<>();
-        if (llistTit == null) {
-            try {
-                llistTit = conn.prepareStatement("SELECT * FROM JUGADOR "
-                                                + "WHERE ID IN (SELECT JUGADOR FROM "
-                                                + "TITULARS WHERE EQUIP=?) "
-                                                + "ORDER BY NOM");
-            } catch (SQLException ex) {
-                throw new GestorBDEquipException("Error en preparar sentència llistTit", ex);
-            }
+        try {
+            llistTit = conn.prepareStatement(queryJugadorsTitulars(filters));
+        } catch (SQLException ex) {
+            throw new GestorBDEquipException("Error en preparar sentència llistTit", ex);
         }
         try {
             llistTit.setInt(1, eq.getId());
@@ -682,12 +697,12 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         return jugadors;
     }
     @Override
-    public List<Jugador> llistatPossiblesJugadors(Categoria cat, Equip eq) throws GestorBDEquipException {
+    public List<Jugador> llistatPossiblesJugadors(Categoria cat, Equip eq, Map<String, String> filters) throws GestorBDEquipException {
         List<Jugador> jugadors = new ArrayList<>();
         String dLimit=(Integer.parseInt(eq.getTemp().toString().substring(0,4))-cat.getEdat_Max())+"-01-01";
 
         try {
-            llistJugPos = conn.prepareStatement(queryPossiblesJugadors(eq.getTipus()));
+            llistJugPos = conn.prepareStatement(queryPossiblesJugadors(eq.getTipus(), filters));
         } catch (SQLException ex) {
             throw new GestorBDEquipException("Error en preparar sentència llistJugPos", ex);
         }

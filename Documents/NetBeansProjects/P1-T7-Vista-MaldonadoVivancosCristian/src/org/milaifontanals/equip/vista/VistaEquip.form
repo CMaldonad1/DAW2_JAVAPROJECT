@@ -494,7 +494,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="idLegal">
               <Properties>
-                <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="ID_LEGAL" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="nomJugLabel">
@@ -507,7 +507,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="nomJug">
               <Properties>
-                <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="NOM" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="guardarTitulars">

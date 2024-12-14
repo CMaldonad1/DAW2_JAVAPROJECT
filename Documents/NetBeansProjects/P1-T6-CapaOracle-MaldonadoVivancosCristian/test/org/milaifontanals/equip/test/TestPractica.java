@@ -121,25 +121,5 @@ public class TestPractica {
         
         return cat;
     }
-    public static List<Jugador> infoPossiblesFitxatges(Categoria catE1, Equip e1){
-        List<Jugador> possJug=new ArrayList<>();
-        try{
-            possJug=eDB.llistatPossiblesJugadors(catE1, e1);
-        }catch(GestorBDEquipException ex){
-            System.out.println("no es pot recuperar els titulars de l'equip "+e1.getNom());
-            System.out.println(ex.getMessage());
-        }
-        if(possJug.isEmpty()){
-            System.out.println("No hi ha jugadors disponibles per l'equip "+e1.getNom());
-        }else{
-            System.out.println("Possibles jugadors per l'equip "+e1.getNom());
-            for(Jugador j: possJug){
-                String info="Id: "+j.getId()+" - Nom: "+j.getNom()+" - Data naix: "+eDB.convertDate(j.getData_naix())+" - Sexe: "+j.getSexe();
-                System.out.println(info);
-            }
-        }
-        System.out.println("_________");
-        
-        return possJug;
-    }
+
 }

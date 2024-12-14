@@ -31,7 +31,7 @@ import org.milaifontanals.equip.model.*;
  * @author MAVI
  */
 public class VistaEquip extends javax.swing.JFrame {
-    private String[] tableTitles= new String[]{"ID","Nom","Cognom","Categoria","Sexe","Assignar","Titular","Titular altres Equips?"};
+    private String[] tableTitles= new String[]{"ID","Nom","Cognom","DNI/NIE","Categoria","Sexe","Assignar","Titular","Titular altres Equips?"};
     private List<JRadioButton> rbList = new ArrayList<>();
     private Equip eqSel;
     private Equip eqAux=new Equip(); //equip auxiliar per fer tracking dels canvis
@@ -315,12 +315,12 @@ public class VistaEquip extends javax.swing.JFrame {
         idLegalLable.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         idLegalLable.setText("NIE/NIF:");
 
-        idLegal.setName("nom"); // NOI18N
+        idLegal.setName("ID_LEGAL"); // NOI18N
 
         nomJugLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         nomJugLabel.setText("Nom:");
 
-        nomJug.setName("nom"); // NOI18N
+        nomJug.setName("NOM"); // NOI18N
 
         guardarTitulars.setBackground(new java.awt.Color(0, 153, 51));
         guardarTitulars.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
@@ -645,9 +645,9 @@ public class VistaEquip extends javax.swing.JFrame {
             //recuperem l'ID del jugador
             int idJug=Integer.valueOf(((DefaultTableModel)jugTable.getModel()).getValueAt(i,0).toString());
             //mirarem l'estat en la taula, si s'ha seleccionat com que pertany o no a l'equip
-            boolean pertany=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,5);
+            boolean pertany=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,6);
             //mirarem l'estat en la taula, si s'ha seleccionat a titular de l'equip.
-            boolean esTitular=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,6);
+            boolean esTitular=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,7);
             Titular titAux=new Titular(eqSel.getId(),idJug, esTitular); //titular aux per facilitar el treball de INSERT, UPDATE, DELETE
             int j=0;
             boolean trobat=false;
@@ -695,24 +695,24 @@ public class VistaEquip extends javax.swing.JFrame {
             activar=true;
         }
         for(int i=0;i<jugTable.getRowCount();i++){
-            ((DefaultTableModel)jugTable.getModel()).setValueAt(activar, i, 5);
+            ((DefaultTableModel)jugTable.getModel()).setValueAt(activar, i, 6);
             if(!activar){
-                ((DefaultTableModel)jugTable.getModel()).setValueAt(false, i, 6);
+                ((DefaultTableModel)jugTable.getModel()).setValueAt(false, i, 7);
             }
         }
         boto.setText(newtextButton);
     }//GEN-LAST:event_desmarcarTitulars
 
-    //programa per revisar els filtres tant per equips com per jugadors
+    //programa per revisar els filtres per buscar jugadors
     private Map<String, String> filtresAplicats(){
         Map<String, String> auxFilt= new HashMap<>();
         String n=nomJug.getText();
         if(!n.isEmpty()){
-            auxFilt.put(nomJug.getName(), "'"+n+"'");
+            auxFilt.put(nomJug.getName(), "'%"+n.toUpperCase()+"%'");
         }
         String idLeg=idLegal.getText();
-        if(!n.isEmpty()){
-            auxFilt.put(idLegal.getName(), "'"+idLeg+"'");
+        if(!idLeg.isEmpty()){
+            auxFilt.put(idLegal.getName(), "'%"+idLeg.toUpperCase()+"%'");
         }
         return auxFilt;
     }
@@ -720,10 +720,10 @@ public class VistaEquip extends javax.swing.JFrame {
     //creem dinámicament la taula
     private void crearTableModel(){
         int numColumns=tableTitles.length;
-        Map<String, String> filters = new HashMap<>(filtresAplicats());
         DefaultTableModel mt= new DefaultTableModel(new Object[0][tableTitles.length],tableTitles);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        Map<String, String> filtres= filtresAplicats();
         errGE.setText("");//ens asegurem que no queda cap error a la finestra
         jugTable.setModel(mt);//setejem columnes
         if(existeix){
@@ -735,13 +735,14 @@ public class VistaEquip extends javax.swing.JFrame {
                     jugTable.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
                 }
                 //carregemm els titulars
-                List<Jugador> infoTitulars =Constants.getgBD().llistatJugadorsTitulars(eqSel);
+                List<Jugador> infoTitulars =Constants.getgBD().llistatJugadorsTitulars(eqSel, filtres);
                 for(Jugador j : infoTitulars){
                     int id=j.getId();
                     Object[] info= new Object[]{
                         id,
                         j.getNom(),
                         j.getCognom(),
+                        j.getId_legal(),
                         Constants.jugCategoria(j.getData_naix()),
                         Constants.tipusNom(j.getSexe()),
                         true,//automaticament true perque son el llistat de titulars
@@ -751,13 +752,14 @@ public class VistaEquip extends javax.swing.JFrame {
                     mt.addRow(info);
                 }
                 //carregem els possibles jugadors
-                List<Jugador> posiblesJugadors =Constants.getgBD().llistatPossiblesJugadors(Constants.objecteCategoria(eqSel.getCat()), eqSel);
+                List<Jugador> posiblesJugadors =Constants.getgBD().llistatPossiblesJugadors(Constants.objecteCategoria(eqSel.getCat()), eqSel, filtres);
                 for(Jugador j : posiblesJugadors){
                     int id=j.getId();
                     Object[] info= new Object[]{
                         id,
                         j.getNom(),
                         j.getCognom(),
+                        j.getId_legal(),
                         Constants.jugCategoria(j.getData_naix()),
                         Constants.tipusNom(j.getSexe()),
                         false,//automaticament false perque NO son el llistat de titulars
@@ -787,7 +789,7 @@ public class VistaEquip extends javax.swing.JFrame {
     //definim les columnes que serán checkbox
     private void checkboxColumn(){
         jugTable.setAutoCreateRowSorter(true);
-        for(int i=4;i<6;i++){
+        for(int i=5;i<7;i++){
             TableColumn tc=jugTable.getColumnModel().getColumn(i);
             tc.setCellEditor(jugTable.getDefaultEditor(Boolean.class));
             tc.setCellRenderer(jugTable.getDefaultRenderer(Boolean.class));
@@ -823,19 +825,19 @@ public class VistaEquip extends javax.swing.JFrame {
             //column que l'ha cridat
             int col=tcl.getColumn();
             //només importa les columnes del checkbox, sino no farem res.
-            if(col>=5 && col<=6){
-                int col_a_modificar=(col==5)?6:5; //depenent de la columna modificarem l'altre
+            if(col>=6 && col<=7){
+                int col_a_modificar=(col==6)?7:6; //depenent de la columna modificarem l'altre
                 //row que l'ha cridat i mirarem en quin estat es troba.
                 int row=tcl.getRow();
                 boolean val=(Boolean)tcl.getNewValue();
                 //retornem la taula per a poder editar-la
                 JTable table = tcl.getTable(); 
                 //si marca que no pertany a l'equip es desactiva l'opció de titular
-                if(col==5 && !val){
+                if(col==6 && !val){
                      ((DefaultTableModel)table.getModel()).setValueAt(val, row, col_a_modificar);
                 }
                 //si marca que es titular i está desmarcat com que pertany a l'equip, el fa de l'equip
-                if(col==6 && val){
+                if(col==7 && val){
                     Boolean esTitular= (Boolean)((DefaultTableModel)table.getModel()).getValueAt(row, col_a_modificar);
                     if(!esTitular){
                         ((DefaultTableModel)table.getModel()).setValueAt(val, row, col_a_modificar);
@@ -854,7 +856,7 @@ public class VistaEquip extends javax.swing.JFrame {
         int i=0;
         //verifiquem que al menys un jugador está com a titular
         do{
-            activar=(Boolean)tab.getValueAt(i, 4);
+            activar=(Boolean)tab.getValueAt(i, 5);
             i++;
         }while(!activar && i!=tab.getRowCount());
         //si hi ha un titular desactivem els botons de canvi de Cat i Tipus

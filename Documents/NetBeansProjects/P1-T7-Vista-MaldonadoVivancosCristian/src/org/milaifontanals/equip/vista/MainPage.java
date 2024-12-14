@@ -618,7 +618,7 @@ public class MainPage extends javax.swing.JFrame {
                 //verifiquem si han afegit un nom
                 String n=nom.getText();
                 if(!n.isEmpty()){
-                    auxFilt.put(nom.getName(), "'"+n+"'");
+                    auxFilt.put(nom.getName(), "'%"+n.toUpperCase()+"%'");
                 }
                 //si han seleccionat una categoria
                 if(categoria.getSelectedIndex()>0){

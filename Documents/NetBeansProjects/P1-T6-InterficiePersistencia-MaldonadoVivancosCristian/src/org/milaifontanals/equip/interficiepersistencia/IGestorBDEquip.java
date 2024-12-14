@@ -35,8 +35,8 @@ public interface IGestorBDEquip {
     void modificarJugador(Jugador jug) throws GestorBDEquipException;
     
     List<Titular> llistatTitularsEquip(Equip eq) throws GestorBDEquipException;
-    List<Jugador> llistatJugadorsTitulars(Equip eq) throws GestorBDEquipException;
-    List<Jugador> llistatPossiblesJugadors(Categoria cat, Equip eq) throws GestorBDEquipException;
+    List<Jugador> llistatJugadorsTitulars(Equip eq, Map<String, String> filters) throws GestorBDEquipException;
+    List<Jugador> llistatPossiblesJugadors(Categoria cat, Equip eq, Map<String, String> filters) throws GestorBDEquipException;
     void afegirTitular(Titular tit) throws GestorBDEquipException;
     void eliminarTitular(Titular tit) throws GestorBDEquipException;
     void modificarTitular(Titular tit) throws GestorBDEquipException;
