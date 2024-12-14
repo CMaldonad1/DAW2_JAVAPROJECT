@@ -6,6 +6,9 @@ package org.milaifontanals.equip.vista;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +47,17 @@ public class MainPage extends javax.swing.JFrame {
         loadCategories();
         gestorEqListCheckBox();
         gestorJugListCheckBox();
+        //FONT: https://stackoverflow.com/questions/22713093/how-to-listen-for-visible-property-of-window-in-swing-awt
+        this.addComponentListener(new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e) {
+                String tableToUpdate="gj";
+                if(!gestioEq.isEnabled()){
+                    tableToUpdate="ge";
+                };
+                crearTableModel(tableToUpdate);
+            }
+        });
     }
     //fem un llistat dels comboboxs relacionats amb gestio d'equips per iterar-los
     public void gestorEqListCheckBox(){
@@ -470,8 +484,8 @@ public class MainPage extends javax.swing.JFrame {
         this.dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_logOut
-    //limitem els valors que es poden afegir com a new string a 4 i només numeros
 
+    //limitem els valors que es poden afegir com a new string a 4 i només numeros
     private void tempSelected(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_tempSelected
         if(listTemp.getSelectedIndex()!=-1){
             String aux=listTemp.getSelectedItem().toString();

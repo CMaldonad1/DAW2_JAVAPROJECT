@@ -41,6 +41,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
     private PreparedStatement updJug; 
     
     private PreparedStatement insertEq;
+    private PreparedStatement idEq;
     private PreparedStatement infoEq;
     private PreparedStatement delEq;
     private PreparedStatement updEq; 
@@ -401,30 +402,47 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         return eq;
     }
     @Override
+    public int idEquip(Equip eq) throws GestorBDEquipException{
+        int id=0;
+        if (idEq == null) {
+            try {
+                idEq = conn.prepareStatement("SELECT ID FROM EQUIP WHERE NOM=? "
+                                            + "AND TEMP=? AND TIPUS=? AND CAT=?");
+            } catch (SQLException ex) {
+                throw new GestorBDEquipException("Error en preparar sentència delEq", ex);
+            }
+        }
+        try {
+            idEq.setString(1, eq.getNom());
+            idEq.setString(2, eq.tempToString());
+            idEq.setString(3, String.valueOf(eq.getTipus()));
+            idEq.setInt(4, eq.getCat());
+            ResultSet rs= idEq.executeQuery();
+            if (rs.next()) {
+                id=rs.getInt("id");
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            throw new GestorBDEquipException("Error en intentar recuperar l'ID de l'equip.", ex);
+        }
+        return id;
+    }
+    @Override
     public void afegirEquip(Equip eq) throws GestorBDEquipException {
         if (insertEq == null) {
             try {
-                insertEq = conn.prepareStatement("INSERT INTO EQUIP (NOM, TEMP, TIPUS, CAT) VALUES (?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+                insertEq = conn.prepareStatement("INSERT INTO EQUIP (NOM, TEMP, TIPUS, CAT) VALUES (?,?,?,?)");
             } catch (SQLException ex) {
                 throw new GestorBDEquipException("Error en preparar sentència insertTemp", ex);
             }
         }
-        int id=0;
         try {
             insertEq.setString(1, eq.getNom());
             insertEq.setString(2, eq.tempToString());
             insertEq.setString(3, String.valueOf(eq.getTipus()));
             insertEq.setInt(4, eq.getCat());
-            int affectedRows=insertEq.executeUpdate();
-            System.out.println(affectedRows);
-            try (ResultSet generatedKeys = insertEq.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    System.out.println(generatedKeys.getLong(1));
-                }
-                else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
-                }
-            }
+            insertEq.executeUpdate();
+
         } catch (SQLException ex) {
             throw new GestorBDEquipException("Error en intentar inserir l'equip " + eq.getNom(), ex);
         }
@@ -666,7 +684,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
     @Override
     public List<Jugador> llistatPossiblesJugadors(Categoria cat, Equip eq) throws GestorBDEquipException {
         List<Jugador> jugadors = new ArrayList<>();
-        String dLimit=(Integer.parseInt(eq.getTemp().toString().substring(0,4))-cat.getEdat_Max())+"-12-31";
+        String dLimit=(Integer.parseInt(eq.getTemp().toString().substring(0,4))-cat.getEdat_Max())+"-01-01";
 
         try {
             llistJugPos = conn.prepareStatement(queryPossiblesJugadors(eq.getTipus()));
@@ -737,14 +755,14 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
     public void modificarTitular(Titular tit) throws GestorBDEquipException {
         if (modTit == null) {
             try {
-                modTit = conn.prepareStatement("UPDATE TITULARS SET TITULAR=?, "
+                modTit = conn.prepareStatement("UPDATE TITULARS SET TITULAR=? "
                                                 + "WHERE EQUIP=? AND JUGADOR=?");
             } catch (SQLException ex) {
                 throw new GestorBDEquipException("Error en preparar sentència updEq", ex);
             }
         }
         try {
-            modTit.setBoolean(1, tit.isTitular());
+            modTit.setInt(1, (tit.isTitular()?1:0));
             modTit.setInt(2, tit.getEquip());
             modTit.setInt(3, tit.getJugador());
             int done = modTit.executeUpdate();

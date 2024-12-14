@@ -23,6 +23,7 @@ public interface IGestorBDEquip {
 
     List<Equip> llistatEquips(Temporada t, Map<String, String> filters) throws GestorBDEquipException;
     Equip infoEquip(int id) throws GestorBDEquipException;
+    int idEquip(Equip eq) throws GestorBDEquipException;
     void afegirEquip(Equip eq) throws GestorBDEquipException;
     void eliminarEquip(int eq) throws GestorBDEquipException;
     void modificarEquip(Equip eq) throws GestorBDEquipException;

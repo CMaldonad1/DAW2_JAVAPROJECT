@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -29,9 +31,10 @@ import org.milaifontanals.equip.model.*;
  * @author MAVI
  */
 public class VistaEquip extends javax.swing.JFrame {
-    private String[] tableTitles= new String[]{"ID","Nom","Cognom","Categoria","Sexe","Assignar","Titular","Altres Equips?"};
+    private String[] tableTitles= new String[]{"ID","Nom","Cognom","Categoria","Sexe","Assignar","Titular","Titular altres Equips?"};
     private List<JRadioButton> rbList = new ArrayList<>();
     private Equip eqSel;
+    private Equip eqAux=new Equip(); //equip auxiliar per fer tracking dels canvis
     private List<Titular> titulars;
     private boolean existeix;
     private MainPage mp;
@@ -44,7 +47,9 @@ public class VistaEquip extends javax.swing.JFrame {
         if(existeix){
             try {
                 eqSel=Constants.getgBD().infoEquip(idEq);
-                titulars=Constants.getgBD().llistatTitularsEquip(eqSel);
+                eqAux.setCat(eqSel.getCat());
+                eqAux.setTipus(eqSel.getTipus());
+                carregarTitularsEquip();
             } catch (GestorBDEquipException ex) {
                 errGE.setText(ex.getMessage());
             }
@@ -57,11 +62,18 @@ public class VistaEquip extends javax.swing.JFrame {
         prepararFinestra();
         crearTableModel();
     }
+    //aquet programa s'ha fet perque hem costa controlar la List de Titulars
+    public void carregarTitularsEquip(){
+        try {
+            titulars=Constants.getgBD().llistatTitularsEquip(eqSel);
+        } catch (GestorBDEquipException ex) {
+            errGE.setText(ex.getMessage());
+        }
+    }
     public void carregarLlistatRb(){
         rbList.add(rbFem);
         rbList.add(rbMasc);
         rbList.add(rbMixt);
-
     }
     public void activarBotonsiCerca(){
         //únicament estarán abilitats aquest botons si l'equip es nou
@@ -74,14 +86,7 @@ public class VistaEquip extends javax.swing.JFrame {
     }
     //preparem l'informació de la finestra
     public void prepararFinestra(){
-        //titol per default si es una alta nova
-        String titol = "Alta Equip";
-        if(existeix){
-            String nomEq=eqSel.getNom();
-            titol="Edició Equip - "+nomEq;
-            nom.setText(nomEq);
-        }
-        titolLabel.setText(titol); //fiquel el titol
+        actualitzarTitol();
         activarBotonsiCerca();
         buttonGroup.add(rbMixt);
         buttonGroup.add(rbMasc);
@@ -90,7 +95,17 @@ public class VistaEquip extends javax.swing.JFrame {
         listTemp.setEnabled(false);
         comboboxCategoria();//carregem el combobox de categoria
     }
-        //carregem l'info al comboBox
+    public void actualitzarTitol(){
+        //titol per default si es una alta nova
+        String titol = "Alta Equip";
+        if(existeix){
+            String nomEq=eqSel.getNom();
+            titol="Edició Equip - "+nomEq;
+            nom.setText(nomEq);
+        }
+        titolLabel.setText(titol); //fiquel el titol
+    }
+    //carregem l'info al comboBox
     public void comboboxCategoria(){
         //si el combobox no esta carregat el carregem
         if(categoria.getItemCount()==0){
@@ -112,10 +127,10 @@ public class VistaEquip extends javax.swing.JFrame {
             rbList.get(i).setSelected(existeix);
             conteJugadors(); //verifiquem si conté jugadors per deixar-li editar certs camps
         }else{
-            eqSel.setCat(Constants.idCategoria(categoria.getModel().getElementAt(0)));
+            eqAux.setCat(Constants.idCategoria(categoria.getModel().getElementAt(0)));
             //per defecte masculi si es un equip nou
             rbMasc.setSelected(true);
-            eqSel.setTipus(rbMasc.getName().charAt(0));
+            eqAux.setTipus(rbMasc.getName().charAt(0));
         }
         categoria.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -149,7 +164,6 @@ public class VistaEquip extends javax.swing.JFrame {
         jugTable = new javax.swing.JTable();
         errGE = new javax.swing.JLabel();
         filtrarJug = new javax.swing.JButton();
-        tempError = new javax.swing.JLabel();
         rbMasc = new javax.swing.JRadioButton();
         rbFem = new javax.swing.JRadioButton();
         rbMixt = new javax.swing.JRadioButton();
@@ -274,8 +288,6 @@ public class VistaEquip extends javax.swing.JFrame {
             }
         });
 
-        tempError.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
-
         rbMasc.setText("Masculí");
         rbMasc.setName("H"); // NOI18N
         rbMasc.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -343,52 +355,48 @@ public class VistaEquip extends javax.swing.JFrame {
         infoEquip.setLayout(infoEquipLayout);
         infoEquipLayout.setHorizontalGroup(
             infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(infoEquipLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(infoEquipLayout.createSequentialGroup()
-                        .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 588, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nomLabel)
+                            .addComponent(catLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(infoEquipLayout.createSequentialGroup()
-                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nomLabel)
-                                    .addComponent(catLabel))
-                                .addGap(18, 18, 18)
-                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(69, 69, 69)
-                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(infoEquipLayout.createSequentialGroup()
-                                        .addComponent(tipusLabel)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(rbMasc)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(rbFem)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(rbMixt)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
-                                        .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, infoEquipLayout.createSequentialGroup()
-                                .addComponent(idLegalLable)
+                                .addComponent(tipusLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(rbMasc)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(rbFem)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(nomJugLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(29, 29, 29)
-                                .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(rbMixt)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                                .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(infoEquipLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(guardarTitulars1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(23, 23, 23))))
+                                .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, infoEquipLayout.createSequentialGroup()
+                        .addComponent(idLegalLable)
+                        .addGap(18, 18, 18)
+                        .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(nomJugLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(infoEquipLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(guardarTitulars1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(23, 23, 23))
         );
         infoEquipLayout.setVerticalGroup(
             infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -403,14 +411,12 @@ public class VistaEquip extends javax.swing.JFrame {
                         .addComponent(rbFem)
                         .addComponent(rbMixt)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(catLabel)
                         .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(10, 10, 10)
-                .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                    .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(idLegalLable)
@@ -554,42 +560,55 @@ public class VistaEquip extends javax.swing.JFrame {
 
     private void guardarCanvis(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarCanvis
         String err="";
-        if(Optional.ofNullable(eqSel.getId()).orElse(0) == 0){
-            try {
+        eqSel.setTipus(eqAux.getTipus());
+        eqSel.setCat(eqAux.getCat());
+        int equipNou=Optional.ofNullable(eqSel.getId()).orElse(0);
+        try {
+            if(equipNou == 0){
                 Constants.getgBD().afegirEquip(eqSel);
-            } catch (GestorBDEquipException ex) {
-                err=ex.getMessage();
-            }
-        }else{
-            try {
+            }else{
                 Constants.getgBD().modificarEquip(eqSel);
-            } catch (GestorBDEquipException ex) {
-                err=ex.getMessage();
             }
+        } catch (GestorBDEquipException ex) {
+            err=ex.getMessage();
         }
         confirmarCanvis(err);
-        
-    }//GEN-LAST:event_guardarCanvis
-    private void confirmarCanvis(String err){
-        if(err.isBlank()){
-            errGE.setText(err);
+        //cambiarem el titol únicament si es un equip nou i ara existeix
+        if(equipNou==0){
             try {
-                Constants.getgBD().desferCanvis();
+                eqSel.setId(Constants.getgBD().idEquip(eqSel));
+                existeix=true; //ara l'equip existeix
+                prepararFinestra();
             } catch (GestorBDEquipException ex) {
-                errGE.setText(ex.getMessage());
-            }
-        }else{
-            try {
-                Constants.getgBD().confirmarCanvis();
-            } catch (GestorBDEquipException ex) {
-                errGE.setText(ex.getMessage());
+                err=ex.getMessage();
             }
         }
+
+        if(err.isBlank()){
+            crearTableModel();
+            guardarTitulars.setEnabled(true);
+            jugTable.setEnabled(true);
+        }
+    }//GEN-LAST:event_guardarCanvis
+    private void confirmarCanvis(String err){
+        try {
+            errGE.setText(err);
+            if(err.isBlank()){
+                Constants.getgBD().confirmarCanvis();
+            }else{
+                Constants.getgBD().desferCanvis();
+            }
+        } catch (GestorBDEquipException ex) {
+            errGE.setText(ex.getMessage());
+        }
+    }
+    public void deixemLaFinestra(){
+        this.dispose();
+        mp.setVisible(true);
     }
     //tornem al menú principal
     private void tornar(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tornar
-        this.dispose();
-        mp.setVisible(true);
+        deixemLaFinestra();
     }//GEN-LAST:event_tornar
     private void activarGuardar(){
         boolean activarGuardar=false;
@@ -597,10 +616,16 @@ public class VistaEquip extends javax.swing.JFrame {
             activarGuardar=true;
         }
         guardarCanvis.setEnabled(activarGuardar);
+        Boolean enabled=true;
+        if(eqSel.getTipus()!=eqAux.getTipus() || eqSel.getCat()!=eqAux.getCat()){
+            enabled=false;
+        }
+        guardarTitulars.setEnabled(enabled);
+        jugTable.setEnabled(enabled);
     }
     private void seleccioItem(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_seleccioItem
         String tipus=evt.getComponent().getName();
-        eqSel.setTipus(tipus.charAt(0));
+        eqAux.setTipus(tipus.charAt(0));
         activarGuardar();
     }//GEN-LAST:event_seleccioItem
 
@@ -610,7 +635,7 @@ public class VistaEquip extends javax.swing.JFrame {
         activarGuardar();
     }//GEN-LAST:event_controlNom
     private void selCategoria(java.awt.event.ItemEvent evt) {                              
-       eqSel.setCat(Constants.idCategoria(categoria.getSelectedItem().toString()));
+       eqAux.setCat(Constants.idCategoria(categoria.getSelectedItem().toString()));
        activarGuardar();
     }                   //programa per guardar titulars
     private void guardarTitulars(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarTitulars
@@ -619,39 +644,44 @@ public class VistaEquip extends javax.swing.JFrame {
         for(int i=0;i<jugTable.getRowCount();i++){
             //recuperem l'ID del jugador
             int idJug=Integer.valueOf(((DefaultTableModel)jugTable.getModel()).getValueAt(i,0).toString());
-            //verifiquem si era, o no, previament titular
-            int j=0;
-            while(titulars.get(j).getJugador()!=idJug && titulars.size()<j){
-                j++;
-            }
             //mirarem l'estat en la taula, si s'ha seleccionat com que pertany o no a l'equip
             boolean pertany=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,5);
+            //mirarem l'estat en la taula, si s'ha seleccionat a titular de l'equip.
             boolean esTitular=(Boolean)((DefaultTableModel)jugTable.getModel()).getValueAt(i,6);
             Titular titAux=new Titular(eqSel.getId(),idJug, esTitular); //titular aux per facilitar el treball de INSERT, UPDATE, DELETE
-                try {
+            int j=0;
+            boolean trobat=false;
+            try {
+                //verifiquem si ja pertenyia al equip per ajudar a decidir si fem un Insert, Update or Delete
+                while(!trobat && titulars.size()!=j){
                     if(titulars.get(j).getJugador()==idJug){
-                        /**
-                        * si era de l'equip farem que es fagi update o delte segons 
-                        * si segueix marcat que partanya l'equip, si no ho era farem insert
-                        */
-                        if(pertany){
-                            Constants.getgBD().modificarTitular(titAux);
-                        }else{
-                            Constants.getgBD().eliminarTitular(titAux);
-                        }
-                    }else if(pertany){
-                        Constants.getgBD().afegirTitular(titAux);
+                        trobat=true;
                     }
-                } catch (GestorBDEquipException ex) {
-                    err=ex.getMessage();
+                    j++;
                 }
-
+                /**
+                * si era de l'equip farem que es fagi update o delte segons 
+                * si segueix marcat que partanya l'equip, si no ho era farem insert
+                */
+                if(!trobat && pertany){
+                    Constants.getgBD().afegirTitular(titAux);
+                }else if(trobat){
+                    if(pertany){
+                        Constants.getgBD().modificarTitular(titAux);
+                    }else{
+                        Constants.getgBD().eliminarTitular(titAux);
+                    }
+                }
+            } catch (GestorBDEquipException ex) {
+                err=ex.getMessage();
+            }
         }
         errGE.setText(err);
         //confirmem canvis
         confirmarCanvis(err);
         //mirarem si continua amb titulars
         verificarCanvisTituars(jugTable);
+        carregarTitularsEquip();//carregem novament la variable global de titulars
     }//GEN-LAST:event_guardarTitulars
 
     private void desmarcarTitulars(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_desmarcarTitulars
@@ -770,6 +800,7 @@ public class VistaEquip extends javax.swing.JFrame {
         if(resposta==0){
             try {
                 Constants.getgBD().confirmarCanvis();
+                deixemLaFinestra();
             } catch (GestorBDEquipException ex) {
                 err=ex.getMessage();
                 resposta=1;
@@ -855,7 +886,6 @@ public class VistaEquip extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbFem;
     private javax.swing.JRadioButton rbMasc;
     private javax.swing.JRadioButton rbMixt;
-    private javax.swing.JLabel tempError;
     private javax.swing.JLabel temporadaLabel;
     private javax.swing.JLabel tipusLabel;
     private javax.swing.JLabel titolLabel;
