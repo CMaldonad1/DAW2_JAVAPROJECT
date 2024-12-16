@@ -30,9 +30,11 @@ public interface IGestorBDEquip {
     
     List<Jugador> llistatJugadors(Map<String, String> filters) throws GestorBDEquipException;
     Jugador infoJugador(int id) throws GestorBDEquipException;
+    int idJugador(String idLegal) throws GestorBDEquipException;
     void afegirJugador(Jugador jug) throws GestorBDEquipException;
     void eliminarJugador(int jug) throws GestorBDEquipException;
     void modificarJugador(Jugador jug) throws GestorBDEquipException;
+    List<Equip> llistatEquipParticipa(int id) throws GestorBDEquipException;
     
     List<Titular> llistatTitularsEquip(Equip eq) throws GestorBDEquipException;
     List<Jugador> llistatJugadorsTitulars(Equip eq, Map<String, String> filters) throws GestorBDEquipException;

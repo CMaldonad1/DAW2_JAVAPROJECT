@@ -258,7 +258,7 @@
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="guardarTitulars1" min="-2" pref="185" max="-2" attributes="0"/>
+                              <Component id="afegirTreureTitulars" min="-2" pref="185" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
@@ -283,7 +283,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="catLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="categoria" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="categoria" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                           </Group>
                           <Component id="errGE" min="-2" pref="60" max="-2" attributes="0"/>
                       </Group>
@@ -299,7 +299,7 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jScrollPane1" min="-2" pref="145" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="guardarTitulars1" min="-2" pref="25" max="-2" attributes="0"/>
+                      <Component id="afegirTreureTitulars" min="-2" pref="25" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -346,9 +346,15 @@
                   </Border>
                 </Property>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[72, 22]"/>
+                  <Dimension value="[64, 18]"/>
+                </Property>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[64, 18]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="cat" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[64, 18]"/>
+                </Property>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -535,7 +541,7 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="guardarTitulars"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="guardarTitulars1">
+            <Component class="javax.swing.JButton" name="afegirTreureTitulars">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="33" green="99" red="0" type="rgb"/>

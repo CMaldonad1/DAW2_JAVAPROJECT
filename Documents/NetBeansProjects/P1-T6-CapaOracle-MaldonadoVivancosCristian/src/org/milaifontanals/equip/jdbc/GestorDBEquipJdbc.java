@@ -36,15 +36,17 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
     private PreparedStatement insertTemp;
 
     private PreparedStatement insertJug;
+    private PreparedStatement idJug;
     private PreparedStatement infoJug;
     private PreparedStatement delJug;
     private PreparedStatement updJug; 
+    private PreparedStatement eqPart;
     
     private PreparedStatement insertEq;
     private PreparedStatement idEq;
     private PreparedStatement infoEq;
     private PreparedStatement delEq;
-    private PreparedStatement updEq; 
+    private PreparedStatement updEq;
     
     private PreparedStatement llistTit; 
     private PreparedStatement llistJugTit;
@@ -571,6 +573,29 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         return jug;
     }
     @Override
+    public int idJugador(String idLegal) throws GestorBDEquipException{
+        int id=0;
+        if (idJug == null) {
+            try {
+                idJug = conn.prepareStatement("SELECT ID FROM JUGADOR "
+                                            + "WHERE ID_LEGAL=?");
+            } catch (SQLException ex) {
+                throw new GestorBDEquipException("Error en preparar sentència idEq", ex);
+            }
+        }
+        try {
+            idJug.setString(1, idLegal);
+            ResultSet rs= idEq.executeQuery();
+            if (rs.next()) {
+                id=rs.getInt("id");
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            throw new GestorBDEquipException("Error en intentar recuperar l'ID del jugador.", ex);
+        }
+        return id;
+    }
+    @Override
     public void afegirJugador(Jugador jug) throws GestorBDEquipException {
         if (insertJug == null) {
             try {
@@ -650,6 +675,33 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         } catch (SQLException ex) {
             throw new GestorBDEquipException("Error en intentar modificar el/la jugador/a " + jug.getNom(), ex);
         }
+    }
+    @Override
+    public List<Equip> llistatEquipParticipa(int id) throws GestorBDEquipException{
+        List <Equip> equipsParticipa=new ArrayList<>();
+        if(eqPart==null){
+            try {
+                eqPart = conn.prepareStatement("SELECT * FROM EQUIP "
+                                                    + "WHERE ID IN (SELECT EQUIP "
+                                                    + "FROM TITULARS WHERE JUGADOR=?) "
+                                                    + "ORDER BY NOM ASC");
+            } catch (SQLException ex) {
+                throw new GestorBDEquipException("Error en preparar sentència eqPart", ex);
+            }
+        }
+        try {
+            eqPart.setInt(1, id);
+            ResultSet rs= eqPart.executeQuery();
+            if(rs.next()) {
+                equipsParticipa.add(prepararInfoEquip(rs));
+            }else{
+                throw new GestorBDEquipException("Equip inexistent!");
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            throw new GestorBDEquipException("Error en intentar recuperar la llista de jugadors.", ex);
+        } 
+        return equipsParticipa;
     }
     @Override
     public List<Titular> llistatTitularsEquip(Equip eq) throws GestorBDEquipException {

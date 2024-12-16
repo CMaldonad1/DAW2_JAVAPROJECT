@@ -39,6 +39,7 @@ public class MainPage extends javax.swing.JFrame {
             entry("gj",new String[]{"Nom","Cognom","Categoria","Sexe","Data Naixement","Revisió Médica",""}));
     private List<JCheckBox> geCB = new ArrayList<>();
     private List<JCheckBox> gjCB = new ArrayList<>();
+    private String[] botonsAlta = new String[]{"Alta Equip","Alta Jugador"};
     
     public MainPage() {
         initComponents();
@@ -126,7 +127,7 @@ public class MainPage extends javax.swing.JFrame {
         tempInput = new javax.swing.JTextField();
         insertTemp = new javax.swing.JButton();
         infoInsertTemp = new javax.swing.JLabel();
-        altaEquip = new javax.swing.JButton();
+        botoAltas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -385,16 +386,16 @@ public class MainPage extends javax.swing.JFrame {
                 .addComponent(infoInsertTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        altaEquip.setBackground(new java.awt.Color(0, 153, 51));
-        altaEquip.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
-        altaEquip.setForeground(new java.awt.Color(255, 255, 255));
-        altaEquip.setText("Alta Equip");
-        altaEquip.setToolTipText("");
-        altaEquip.setAlignmentX(0.5F);
-        altaEquip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        altaEquip.addMouseListener(new java.awt.event.MouseAdapter() {
+        botoAltas.setBackground(new java.awt.Color(0, 153, 51));
+        botoAltas.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        botoAltas.setForeground(new java.awt.Color(255, 255, 255));
+        botoAltas.setText("Alta Equip");
+        botoAltas.setToolTipText("");
+        botoAltas.setAlignmentX(0.5F);
+        botoAltas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        botoAltas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                altaEquip(evt);
+                ferAltas(evt);
             }
         });
 
@@ -418,7 +419,7 @@ public class MainPage extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(botoAltas, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16))
             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -443,7 +444,7 @@ public class MainPage extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                .addComponent(altaEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(botoAltas, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
@@ -469,6 +470,7 @@ public class MainPage extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -478,7 +480,7 @@ public class MainPage extends javax.swing.JFrame {
      */
     private void settingComponents(){
         llistatEqPanel.setVisible(false);
-        altaEquip.setVisible(false);
+        botoAltas.setVisible(false);
     }
     private void logOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOut
         this.dispose();
@@ -516,10 +518,16 @@ public class MainPage extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tempSelected
 
-    private void altaEquip(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_altaEquip
-        this.setVisible(false);
-        carregarVistaEquip(-1);
-    }//GEN-LAST:event_altaEquip
+    private void ferAltas(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ferAltas
+        if(botoAltas.getText().contains(botonsAlta[0])){
+            this.setVisible(false);
+            carregarVistaEquip(-1);
+        }else{
+            this.setVisible(false);
+            carregarVistaJugador(-1);
+        }
+
+    }//GEN-LAST:event_ferAltas
     //únicament permitim números per afegir Temporades
     private void controlTemp(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlTemp
         int key=evt.getKeyChar();
@@ -580,13 +588,17 @@ public class MainPage extends javax.swing.JFrame {
         boolean show=true;
         JButton btn = (JButton)evt.getSource();
         String bPressed = btn.getName();
+        int i=0;
+        String auxNomBoto=botonsAlta[0];
         if(bPressed!="ge"){
             show=false;
+            auxNomBoto=botonsAlta[1];
         }
         //si el panel d'equips es visible el de botó está desactivat
         gestioEq.setEnabled(!show);
         llistatEqPanel.setVisible(show);
-        altaEquip.setVisible(show);
+        botoAltas.setText(auxNomBoto);
+        botoAltas.setVisible(true);
         //el mateix per als equips pero fan servir l'inversa del show
         gestioJug.setEnabled(show);
         crearTableModel(bPressed);
@@ -709,21 +721,18 @@ public class MainPage extends javax.swing.JFrame {
         int resposta=JOptionPane.showConfirmDialog(null, "Estas segur que vols eliminar a "+nom+"?", "Compte!",
 			JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         String err="";
-        if(resposta==0){
-            try {
+        
+        try {
+            if(resposta==0){
                 Constants.getgBD().confirmarCanvis();
-            } catch (GestorBDEquipException ex) {
-                err=ex.getMessage();
-                resposta=1;
-            }
-        }else{
-            try {
+            }else{
                 Constants.getgBD().desferCanvis();
-            } catch (GestorBDEquipException ex) {
-                 err=ex.getMessage();
-                 resposta=1;
             }
+        } catch (GestorBDEquipException ex) {
+            err=ex.getMessage();
+            resposta=1;
         }
+        
         if(tName=="geTable"){
             errGE.setText(err);
         }else{
@@ -734,6 +743,10 @@ public class MainPage extends javax.swing.JFrame {
     private void carregarVistaEquip(int id){
         this.setVisible(false);
         new VistaEquip(id, this).setVisible(true);
+    }
+    private void carregarVistaJugador(int id){
+        this.setVisible(false);
+        new VistaJugador(id, this).setVisible(true);
     }
     //Font: https://tips4java.wordpress.com/2009/07/12/table-button-column/
     Action selEq= new AbstractAction(){
@@ -787,7 +800,7 @@ public class MainPage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel afegirTempPanel;
-    private javax.swing.JButton altaEquip;
+    private javax.swing.JButton botoAltas;
     private javax.swing.JLabel catLabel;
     private javax.swing.JComboBox<String> categoria;
     private javax.swing.JCheckBox donaCheck;

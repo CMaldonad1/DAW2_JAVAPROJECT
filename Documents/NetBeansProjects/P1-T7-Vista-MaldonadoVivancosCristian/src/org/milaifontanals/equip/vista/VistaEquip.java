@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -38,6 +36,7 @@ public class VistaEquip extends javax.swing.JFrame {
     private List<Titular> titulars;
     private boolean existeix;
     private MainPage mp;
+    private String[] nomBotons= new String[]{"Fer tots de l'equip","Treure tots de l'equip"};
     
     public VistaEquip(int idEq, MainPage view) {
         //si s'ha pasat un id == -1 vol dir que esta creant un nou equip
@@ -83,6 +82,7 @@ public class VistaEquip extends javax.swing.JFrame {
         idLegal.setEnabled(existeix);
         nomJug.setEnabled(existeix);
         guardarTitulars.setEnabled(existeix);
+        afegirTreureTitulars.setEnabled(existeix);
     }
     //preparem l'informació de la finestra
     public void prepararFinestra(){
@@ -131,6 +131,8 @@ public class VistaEquip extends javax.swing.JFrame {
             //per defecte masculi si es un equip nou
             rbMasc.setSelected(true);
             eqAux.setTipus(rbMasc.getName().charAt(0));
+            //per defecte el botó d'afegir titulars estará setejat a "Afegir tots titular"
+            afegirTreureTitulars.setText(nomBotons[0]);
         }
         categoria.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -172,7 +174,7 @@ public class VistaEquip extends javax.swing.JFrame {
         nomJugLabel = new javax.swing.JLabel();
         nomJug = new javax.swing.JTextField();
         guardarTitulars = new javax.swing.JButton();
-        guardarTitulars1 = new javax.swing.JButton();
+        afegirTreureTitulars = new javax.swing.JButton();
         eliminarEquip = new javax.swing.JButton();
         titolLabel = new javax.swing.JLabel();
 
@@ -234,8 +236,10 @@ public class VistaEquip extends javax.swing.JFrame {
         tipusLabel.setText("Tipus:");
 
         categoria.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        categoria.setMaximumSize(new java.awt.Dimension(72, 22));
+        categoria.setMaximumSize(new java.awt.Dimension(64, 18));
+        categoria.setMinimumSize(new java.awt.Dimension(64, 18));
         categoria.setName("cat"); // NOI18N
+        categoria.setPreferredSize(new java.awt.Dimension(64, 18));
 
         catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         catLabel.setText("Categories:");
@@ -336,16 +340,16 @@ public class VistaEquip extends javax.swing.JFrame {
             }
         });
 
-        guardarTitulars1.setBackground(new java.awt.Color(0, 153, 51));
-        guardarTitulars1.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
-        guardarTitulars1.setForeground(new java.awt.Color(255, 255, 255));
-        guardarTitulars1.setText("Treure tots de l'equip");
-        guardarTitulars1.setToolTipText("");
-        guardarTitulars1.setActionCommand("");
-        guardarTitulars1.setAlignmentX(0.5F);
-        guardarTitulars1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        guardarTitulars1.setName("filtrarJug"); // NOI18N
-        guardarTitulars1.addMouseListener(new java.awt.event.MouseAdapter() {
+        afegirTreureTitulars.setBackground(new java.awt.Color(0, 153, 51));
+        afegirTreureTitulars.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        afegirTreureTitulars.setForeground(new java.awt.Color(255, 255, 255));
+        afegirTreureTitulars.setText("Treure tots de l'equip");
+        afegirTreureTitulars.setToolTipText("");
+        afegirTreureTitulars.setActionCommand("");
+        afegirTreureTitulars.setAlignmentX(0.5F);
+        afegirTreureTitulars.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        afegirTreureTitulars.setName("filtrarJug"); // NOI18N
+        afegirTreureTitulars.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 desmarcarTitulars(evt);
             }
@@ -395,7 +399,7 @@ public class VistaEquip extends javax.swing.JFrame {
                         .addComponent(guardarTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(infoEquipLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(guardarTitulars1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(afegirTreureTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(23, 23, 23))
         );
         infoEquipLayout.setVerticalGroup(
@@ -414,7 +418,7 @@ public class VistaEquip extends javax.swing.JFrame {
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(catLabel)
-                        .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -427,7 +431,7 @@ public class VistaEquip extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(guardarTitulars1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(afegirTreureTitulars, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7))
         );
 
@@ -525,6 +529,7 @@ public class VistaEquip extends javax.swing.JFrame {
         if(conteJugadors==0){
             activar=true;
         }
+        afegirTreureTitulars.setText((conteJugadors==0)?nomBotons[0]:nomBotons[1]);
         activarCatTipus(activar);
     }
     private void activarCatTipus(boolean activar){
@@ -689,9 +694,9 @@ public class VistaEquip extends javax.swing.JFrame {
         Boolean activar=false;
         JButton boto=(JButton)evt.getSource();
         String oldtextButton=boto.getText();
-        String newtextButton="Fer tots de l'equip";
+        String newtextButton=nomBotons[0];
         if(oldtextButton.equals(newtextButton)){
-            newtextButton="Treure tots de l'equip";
+            newtextButton=nomBotons[1];
             activar=true;
         }
         for(int i=0;i<jugTable.getRowCount();i++){
@@ -726,9 +731,9 @@ public class VistaEquip extends javax.swing.JFrame {
         Map<String, String> filtres= filtresAplicats();
         errGE.setText("");//ens asegurem que no queda cap error a la finestra
         jugTable.setModel(mt);//setejem columnes
+        //amagem la columna ID que la farem servir per a eliminar/
+        jugTable.removeColumn(jugTable.getColumnModel().getColumn(0));
         if(existeix){
-            //amagem la columna ID que la farem servir per a eliminar/
-            jugTable.removeColumn(jugTable.getColumnModel().getColumn(0));
             try {
                 //Centrem les columnes necesaries (Categoria, tipus, te jugadors):
                 for(int i=3; i<(numColumns-1);i++){
@@ -864,6 +869,7 @@ public class VistaEquip extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton afegirTreureTitulars;
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JLabel catLabel;
     private javax.swing.JComboBox<String> categoria;
@@ -872,7 +878,6 @@ public class VistaEquip extends javax.swing.JFrame {
     private javax.swing.JButton filtrarJug;
     private javax.swing.JButton guardarCanvis;
     private javax.swing.JButton guardarTitulars;
-    private javax.swing.JButton guardarTitulars1;
     private javax.swing.JTextField idLegal;
     private javax.swing.JLabel idLegalLable;
     private javax.swing.JPanel infoEquip;
