@@ -162,7 +162,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
                      * ja afegit al valor del string i per aixó el+tractament
                      * es diferent als dels altres filtres
                      */
-                    query+=(keys[i]=="data_naix")?keys[i]+" "+filters.get(keys[i]):keys[i]+" = '"+filters.get(keys[i])+"'";
+                    query+=(keys[i]=="data_naix")?keys[i]+" "+filters.get(keys[i]):"UPPER("+keys[i]+") LIKE "+filters.get(keys[i]);
                 }else{
                     //obtindrem les categories amb valors d'anys concatenats
                     query+=" EXTRACT(YEAR FROM data_naix) in ("+filters.get(keys[i])+")";
@@ -557,8 +557,8 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         Jugador jug=new Jugador();
         try {
             sp = conn.setSavepoint();
-            infoEq.setInt(1, id);
-            ResultSet rs=infoEq.executeQuery();
+            infoJug.setInt(1, id);
+            ResultSet rs=infoJug.executeQuery();
             
             if(rs.next()) {
                 jug=prepararInfoJugador(rs);

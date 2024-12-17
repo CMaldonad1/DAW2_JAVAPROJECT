@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -36,10 +38,11 @@ import org.milaifontanals.equip.model.*;
 public class MainPage extends javax.swing.JFrame {
     private Map <String, String[]> headers= Map.ofEntries(
             entry("ge",new String[]{"","ID","Nom","Categoria","Tipus","Té Jugadors",""}),
-            entry("gj",new String[]{"Nom","Cognom","Categoria","Sexe","Data Naixement","Revisió Médica",""}));
+            entry("gj",new String[]{"","ID","Nom","Cognom","NIE/NIF","Categoria","Sexe","Data Naixement",""}));
     private List<JCheckBox> geCB = new ArrayList<>();
     private List<JCheckBox> gjCB = new ArrayList<>();
     private String[] botonsAlta = new String[]{"Alta Equip","Alta Jugador"};
+    private String majorOmenor;
     
     public MainPage() {
         initComponents();
@@ -48,6 +51,7 @@ public class MainPage extends javax.swing.JFrame {
         loadCategories();
         gestorEqListCheckBox();
         gestorJugListCheckBox();
+        carregarRBGroup();
         //FONT: https://stackoverflow.com/questions/22713093/how-to-listen-for-visible-property-of-window-in-swing-awt
         this.addComponentListener(new ComponentAdapter(){
             @Override
@@ -68,7 +72,18 @@ public class MainPage extends javax.swing.JFrame {
     }
     //fem un llistat dels comboboxs relacionats amb gestio de Jugadors per iterar-los
     public void gestorJugListCheckBox(){
-
+        gjCB.add(benjCheck);
+        gjCB.add(aleviCheck);
+        gjCB.add(infCheck);
+        gjCB.add(cadetCheck);
+        gjCB.add(juvCheck);
+        gjCB.add(seniorCheck);
+    }
+    public void carregarRBGroup(){
+        //valor per defecte
+        majorOmenor=majorIg.getName();
+        datNaixGr.add(majorIg);
+        datNaixGr.add(inferIg);
     }
     //carregem l'info al comboBox
     public void loadTemporadas(){
@@ -101,12 +116,21 @@ public class MainPage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        datNaixGr = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         temporadaLabel = new javax.swing.JLabel();
         logOut = new javax.swing.JButton();
         listTemp = new javax.swing.JComboBox<>();
         gestioEq = new javax.swing.JButton();
         gestioJug = new javax.swing.JButton();
+        tempError = new javax.swing.JLabel();
+        afegirTempPanel = new javax.swing.JPanel();
+        novaTempLabel = new javax.swing.JLabel();
+        tempInput = new javax.swing.JTextField();
+        insertTemp = new javax.swing.JButton();
+        infoInsertTemp = new javax.swing.JLabel();
+        botoAltas = new javax.swing.JButton();
+        layeredPanel = new javax.swing.JLayeredPane();
         llistatEqPanel = new javax.swing.JPanel();
         nomLabel = new javax.swing.JLabel();
         nom = new javax.swing.JTextField();
@@ -121,13 +145,29 @@ public class MainPage extends javax.swing.JFrame {
         geTable = new javax.swing.JTable();
         errGE = new javax.swing.JLabel();
         treureFiltres = new javax.swing.JButton();
-        tempError = new javax.swing.JLabel();
-        afegirTempPanel = new javax.swing.JPanel();
-        novaTempLabel = new javax.swing.JLabel();
-        tempInput = new javax.swing.JTextField();
-        insertTemp = new javax.swing.JButton();
-        infoInsertTemp = new javax.swing.JLabel();
-        botoAltas = new javax.swing.JButton();
+        llistatJugPanel = new javax.swing.JPanel();
+        nomJugLabel = new javax.swing.JLabel();
+        idLegal = new javax.swing.JTextField();
+        jugCatLabel = new javax.swing.JLabel();
+        nlegalLabel = new javax.swing.JLabel();
+        benjCheck = new javax.swing.JCheckBox();
+        infCheck = new javax.swing.JCheckBox();
+        aleviCheck = new javax.swing.JCheckBox();
+        filtrarJug = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jugTable = new javax.swing.JTable();
+        errJUG = new javax.swing.JLabel();
+        treureJugFiltres = new javax.swing.JButton();
+        nomJug = new javax.swing.JTextField();
+        cadetCheck = new javax.swing.JCheckBox();
+        juvCheck = new javax.swing.JCheckBox();
+        seniorCheck = new javax.swing.JCheckBox();
+        dNaixLabel = new javax.swing.JLabel();
+        majorIg = new javax.swing.JRadioButton();
+        inferIg = new javax.swing.JRadioButton();
+        csv = new javax.swing.JButton();
+        xml = new javax.swing.JButton();
+        datNaix = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -183,142 +223,6 @@ public class MainPage extends javax.swing.JFrame {
                 panelVisibility(evt);
             }
         });
-
-        llistatEqPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "LLISTAT D'EQUIPS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 14), new java.awt.Color(0, 153, 0))); // NOI18N
-        llistatEqPanel.setMaximumSize(new java.awt.Dimension(782, 297));
-        llistatEqPanel.setMinimumSize(new java.awt.Dimension(782, 297));
-
-        nomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        nomLabel.setText("Nom:");
-
-        nom.setName("nom"); // NOI18N
-
-        tipusLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        tipusLabel.setText("Tipus:");
-
-        categoria.setName("cat"); // NOI18N
-
-        catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        catLabel.setText("Categories:");
-
-        homeCheck.setText("Masculí");
-        homeCheck.setName("H"); // NOI18N
-
-        mixtCheck.setText("Mixt");
-        mixtCheck.setName("M"); // NOI18N
-
-        donaCheck.setText("Femení");
-        donaCheck.setName("D"); // NOI18N
-
-        filtrarEquip.setBackground(new java.awt.Color(0, 153, 51));
-        filtrarEquip.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
-        filtrarEquip.setForeground(new java.awt.Color(255, 255, 255));
-        filtrarEquip.setText("Filtrar");
-        filtrarEquip.setToolTipText("");
-        filtrarEquip.setAlignmentX(0.5F);
-        filtrarEquip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        filtrarEquip.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                filtrarEquip(evt);
-            }
-        });
-
-        geTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        geTable.setGridColor(new java.awt.Color(51, 153, 0));
-        geTable.setMaximumSize(new java.awt.Dimension(300, 80));
-        geTable.setMinimumSize(new java.awt.Dimension(300, 80));
-        geTable.setName("geTable"); // NOI18N
-        geTable.setShowVerticalLines(true);
-        jScrollPane1.setViewportView(geTable);
-
-        errGE.setForeground(new java.awt.Color(255, 0, 0));
-        errGE.setName("errGE"); // NOI18N
-
-        treureFiltres.setBackground(new java.awt.Color(0, 153, 51));
-        treureFiltres.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
-        treureFiltres.setForeground(new java.awt.Color(255, 255, 255));
-        treureFiltres.setText("Treure Filtres");
-        treureFiltres.setToolTipText("");
-        treureFiltres.setAlignmentX(0.5F);
-        treureFiltres.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        treureFiltres.setName("treureFiltres"); // NOI18N
-        treureFiltres.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                treureFiltres(evt);
-            }
-        });
-
-        javax.swing.GroupLayout llistatEqPanelLayout = new javax.swing.GroupLayout(llistatEqPanel);
-        llistatEqPanel.setLayout(llistatEqPanelLayout);
-        llistatEqPanelLayout.setHorizontalGroup(
-            llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nomLabel)
-                            .addComponent(catLabel))
-                        .addGap(18, 18, 18)
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(69, 69, 69)
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                                .addComponent(tipusLabel)
-                                .addGap(26, 26, 26)
-                                .addComponent(homeCheck)
-                                .addGap(18, 18, 18)
-                                .addComponent(donaCheck)
-                                .addGap(18, 18, 18)
-                                .addComponent(mixtCheck))
-                            .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(filtrarEquip, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(treureFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
-        );
-        llistatEqPanelLayout.setVerticalGroup(
-            llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nomLabel)
-                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tipusLabel)
-                    .addComponent(homeCheck)
-                    .addComponent(mixtCheck)
-                    .addComponent(donaCheck)
-                    .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(catLabel)
-                                .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46))
-                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                        .addComponent(treureFiltres, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-
-        treureFiltres.getAccessibleContext().setAccessibleName("desfiltrar");
 
         tempError.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
 
@@ -399,32 +303,432 @@ public class MainPage extends javax.swing.JFrame {
             }
         });
 
+        llistatEqPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "LLISTAT D'EQUIPS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 14), new java.awt.Color(0, 153, 0))); // NOI18N
+        llistatEqPanel.setMaximumSize(new java.awt.Dimension(782, 300));
+        llistatEqPanel.setMinimumSize(new java.awt.Dimension(782, 300));
+        llistatEqPanel.setPreferredSize(new java.awt.Dimension(782, 300));
+
+        nomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        nomLabel.setText("Nom:");
+
+        nom.setName("nom"); // NOI18N
+
+        tipusLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        tipusLabel.setText("Tipus:");
+
+        categoria.setName("cat"); // NOI18N
+
+        catLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        catLabel.setText("Categories:");
+
+        homeCheck.setText("Masculí");
+        homeCheck.setName("H"); // NOI18N
+
+        mixtCheck.setText("Mixt");
+        mixtCheck.setName("M"); // NOI18N
+
+        donaCheck.setText("Femení");
+        donaCheck.setName("D"); // NOI18N
+
+        filtrarEquip.setBackground(new java.awt.Color(0, 153, 51));
+        filtrarEquip.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        filtrarEquip.setForeground(new java.awt.Color(255, 255, 255));
+        filtrarEquip.setText("Filtrar");
+        filtrarEquip.setToolTipText("");
+        filtrarEquip.setAlignmentX(0.5F);
+        filtrarEquip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        filtrarEquip.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                filtrarEquip(evt);
+            }
+        });
+
+        geTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        geTable.setGridColor(new java.awt.Color(51, 153, 0));
+        geTable.setMaximumSize(new java.awt.Dimension(300, 80));
+        geTable.setMinimumSize(new java.awt.Dimension(300, 80));
+        geTable.setName("geTable"); // NOI18N
+        geTable.setShowVerticalLines(true);
+        jScrollPane1.setViewportView(geTable);
+
+        errGE.setForeground(new java.awt.Color(255, 0, 0));
+        errGE.setName("errGE"); // NOI18N
+
+        treureFiltres.setBackground(new java.awt.Color(0, 153, 51));
+        treureFiltres.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        treureFiltres.setForeground(new java.awt.Color(255, 255, 255));
+        treureFiltres.setText("Treure Filtres");
+        treureFiltres.setToolTipText("");
+        treureFiltres.setAlignmentX(0.5F);
+        treureFiltres.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        treureFiltres.setName("treureFiltres"); // NOI18N
+        treureFiltres.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                treureFiltres(evt);
+            }
+        });
+
+        javax.swing.GroupLayout llistatEqPanelLayout = new javax.swing.GroupLayout(llistatEqPanel);
+        llistatEqPanel.setLayout(llistatEqPanelLayout);
+        llistatEqPanelLayout.setHorizontalGroup(
+            llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, llistatEqPanelLayout.createSequentialGroup()
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addContainerGap(14, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 752, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nomLabel)
+                            .addComponent(catLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(69, 69, 69)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                                .addComponent(tipusLabel)
+                                .addGap(26, 26, 26)
+                                .addComponent(homeCheck)
+                                .addGap(18, 18, 18)
+                                .addComponent(donaCheck)
+                                .addGap(18, 18, 18)
+                                .addComponent(mixtCheck))
+                            .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(filtrarEquip, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(treureFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+        llistatEqPanelLayout.setVerticalGroup(
+            llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nomLabel)
+                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tipusLabel)
+                    .addComponent(homeCheck)
+                    .addComponent(mixtCheck)
+                    .addComponent(donaCheck)
+                    .addComponent(filtrarEquip, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(catLabel)
+                            .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(treureFiltres, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
+        );
+
+        treureFiltres.getAccessibleContext().setAccessibleName("desfiltrar");
+
+        llistatJugPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 0)), "LLISTAT DE JUGADORS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Bauhaus 93", 0, 14), new java.awt.Color(0, 153, 0))); // NOI18N
+        llistatJugPanel.setMaximumSize(new java.awt.Dimension(782, 300));
+        llistatJugPanel.setMinimumSize(new java.awt.Dimension(782, 300));
+        llistatJugPanel.setPreferredSize(new java.awt.Dimension(782, 300));
+
+        nomJugLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        nomJugLabel.setText("Nom:");
+
+        idLegal.setName("ID_LEGAL"); // NOI18N
+
+        jugCatLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        jugCatLabel.setText("Categoria:");
+
+        nlegalLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        nlegalLabel.setText("NIF/NIE:");
+
+        benjCheck.setText("Benjamí");
+        benjCheck.setName("H"); // NOI18N
+
+        infCheck.setText("Infantil");
+        infCheck.setName("M"); // NOI18N
+
+        aleviCheck.setText("Aleví");
+        aleviCheck.setName("D"); // NOI18N
+
+        filtrarJug.setBackground(new java.awt.Color(0, 153, 51));
+        filtrarJug.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        filtrarJug.setForeground(new java.awt.Color(255, 255, 255));
+        filtrarJug.setText("Filtrar");
+        filtrarJug.setToolTipText("");
+        filtrarJug.setAlignmentX(0.5F);
+        filtrarJug.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        filtrarJug.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                filtrarJug(evt);
+            }
+        });
+
+        jugTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jugTable.setGridColor(new java.awt.Color(51, 153, 0));
+        jugTable.setMaximumSize(new java.awt.Dimension(300, 80));
+        jugTable.setMinimumSize(new java.awt.Dimension(300, 80));
+        jugTable.setName("juTable"); // NOI18N
+        jugTable.setShowVerticalLines(true);
+        jScrollPane2.setViewportView(jugTable);
+
+        errJUG.setForeground(new java.awt.Color(255, 0, 0));
+        errJUG.setName("errGE"); // NOI18N
+        errJUG.setOpaque(true);
+
+        treureJugFiltres.setBackground(new java.awt.Color(0, 153, 51));
+        treureJugFiltres.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        treureJugFiltres.setForeground(new java.awt.Color(255, 255, 255));
+        treureJugFiltres.setText("Treure Filtres");
+        treureJugFiltres.setToolTipText("");
+        treureJugFiltres.setAlignmentX(0.5F);
+        treureJugFiltres.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        treureJugFiltres.setName("treureFiltres"); // NOI18N
+        treureJugFiltres.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                treureJugFiltres(evt);
+            }
+        });
+
+        nomJug.setName("nom"); // NOI18N
+
+        cadetCheck.setText("Cadet");
+        cadetCheck.setName("H"); // NOI18N
+
+        juvCheck.setText("Juvenil");
+        juvCheck.setName("D"); // NOI18N
+
+        seniorCheck.setText("Senior");
+        seniorCheck.setName("M"); // NOI18N
+
+        dNaixLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
+        dNaixLabel.setText("D.Naix:");
+
+        majorIg.setSelected(true);
+        majorIg.setText("Superior/Igual a..");
+        majorIg.setName(">="); // NOI18N
+        majorIg.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                superiorInferior(evt);
+            }
+        });
+
+        inferIg.setText("Inferior/Igual a..");
+        inferIg.setName("<="); // NOI18N
+        inferIg.setOpaque(true);
+        inferIg.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                superiorInferior(evt);
+            }
+        });
+
+        csv.setBackground(new java.awt.Color(0, 153, 51));
+        csv.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        csv.setForeground(new java.awt.Color(255, 255, 255));
+        csv.setText("CSV");
+        csv.setToolTipText("");
+        csv.setAlignmentX(0.5F);
+        csv.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        csv.setName("treureFiltres"); // NOI18N
+        csv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                csv(evt);
+            }
+        });
+
+        xml.setBackground(new java.awt.Color(0, 153, 51));
+        xml.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        xml.setForeground(new java.awt.Color(255, 255, 255));
+        xml.setText("XML");
+        xml.setToolTipText("");
+        xml.setAlignmentX(0.5F);
+        xml.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        xml.setName("treureFiltres"); // NOI18N
+        xml.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                xml(evt);
+            }
+        });
+
+        datNaix.setName("data_naix"); // NOI18N
+
+        javax.swing.GroupLayout llistatJugPanelLayout = new javax.swing.GroupLayout(llistatJugPanel);
+        llistatJugPanel.setLayout(llistatJugPanelLayout);
+        llistatJugPanelLayout.setHorizontalGroup(
+            llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nomJugLabel)
+                            .addComponent(nlegalLabel)
+                            .addComponent(dNaixLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(majorIg, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(inferIg, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(datNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                                .addComponent(errJUG, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
+                            .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jugCatLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cadetCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(benjCheck))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(aleviCheck, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(juvCheck))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(infCheck)
+                                    .addComponent(seniorCheck))))
+                        .addGap(18, 18, 18)
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, llistatJugPanelLayout.createSequentialGroup()
+                                .addComponent(xml, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(csv, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(filtrarJug, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(treureJugFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, llistatJugPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2)))
+                .addContainerGap())
+        );
+        llistatJugPanelLayout.setVerticalGroup(
+            llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nomJugLabel)
+                            .addComponent(filtrarJug, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nomJug, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(treureJugFiltres, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(nlegalLabel))))
+                    .addComponent(jugCatLabel)
+                    .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(benjCheck)
+                            .addComponent(infCheck)
+                            .addComponent(aleviCheck))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(seniorCheck)
+                                .addComponent(juvCheck))
+                            .addComponent(cadetCheck))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(errJUG, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                            .addComponent(datNaix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(10, 10, 10))
+                        .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(xml, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(csv, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(inferIg))
+                    .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(majorIg, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dNaixLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(8, 8, 8)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+
+        layeredPanel.setLayer(llistatEqPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        layeredPanel.setLayer(llistatJugPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout layeredPanelLayout = new javax.swing.GroupLayout(layeredPanel);
+        layeredPanel.setLayout(layeredPanelLayout);
+        layeredPanelLayout.setHorizontalGroup(
+            layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layeredPanelLayout.createSequentialGroup()
+                    .addComponent(llistatJugPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
+        );
+        layeredPanelLayout.setVerticalGroup(
+            layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layeredPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+            .addGroup(layeredPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layeredPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(llistatJugPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(9, Short.MAX_VALUE)))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(105, 105, 105)
-                .addComponent(temporadaLabel)
-                .addGap(18, 18, 18)
-                .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
-                .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botoAltas, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16))
-            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(llistatEqPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(layeredPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 782, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(12, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(botoAltas, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(gestioEq, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(105, 105, 105)
+                        .addComponent(temporadaLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(listTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(16, 16, 16))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(62, 62, 62)
@@ -443,11 +747,11 @@ public class MainPage extends javax.swing.JFrame {
                     .addComponent(gestioJug, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addComponent(tempError, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                .addComponent(botoAltas, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(botoAltas, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(llistatEqPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34))
+                .addComponent(layeredPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(3, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(63, 63, 63)
@@ -480,6 +784,7 @@ public class MainPage extends javax.swing.JFrame {
      */
     private void settingComponents(){
         llistatEqPanel.setVisible(false);
+        llistatJugPanel.setVisible(false);
         botoAltas.setVisible(false);
     }
     private void logOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOut
@@ -601,6 +906,7 @@ public class MainPage extends javax.swing.JFrame {
         botoAltas.setVisible(true);
         //el mateix per als equips pero fan servir l'inversa del show
         gestioJug.setEnabled(show);
+        llistatJugPanel.setVisible(!show);
         crearTableModel(bPressed);
     }//GEN-LAST:event_panelVisibility
 
@@ -616,12 +922,41 @@ public class MainPage extends javax.swing.JFrame {
     }
     private void treureFiltres(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treureFiltres
         nom.setText("");
-        for(JCheckBox c : geCB){
-            c.setSelected(false);
-        }
+        desmarcarCB(geCB);
         categoria.setSelectedIndex(0);
         crearTableModel(modeActual());
     }//GEN-LAST:event_treureFiltres
+
+    private void treureJugFiltres(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treureJugFiltres
+        nomJug.setText("");
+        idLegal.setText("");
+        desmarcarCB(gjCB);
+        datNaix.setCalendar(null);
+        crearTableModel(modeActual());
+    }//GEN-LAST:event_treureJugFiltres
+    private void desmarcarCB(List<JCheckBox> cb){
+        for(JCheckBox c : cb){
+            c.setSelected(false);
+        }
+    }
+    private void filtrarJug(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarJug
+        crearTableModel(modeActual());
+    }//GEN-LAST:event_filtrarJug
+
+    private void csv(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_csv
+        // TODO add your handling code here:
+    }//GEN-LAST:event_csv
+
+    private void xml(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_xml
+        // TODO add your handling code here:
+    }//GEN-LAST:event_xml
+
+    private void superiorInferior(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_superiorInferior
+        String auxFiltreDNaix=evt.getComponent().getName();
+        if(auxFiltreDNaix.isEmpty()){
+            majorOmenor=auxFiltreDNaix;
+        }
+    }//GEN-LAST:event_superiorInferior
     //programa per revisar els filtres tant per equips com per jugadors
     private Map<String, String> filtresAplicats(String btn){
         Map<String, String> auxFilt= new HashMap<>();
@@ -644,6 +979,35 @@ public class MainPage extends javax.swing.JFrame {
                 }
                 break;
             case "gj":
+                //verifiquem si han afegit un nom
+                String nj=nomJug.getText();
+                if(!nj.isEmpty()){
+                    auxFilt.put(nomJug.getName(), "'%"+nj.toUpperCase()+"%'");
+                }
+                String idLeg=idLegal.getText();
+                if(!idLeg.isEmpty()){
+                    auxFilt.put(idLegal.getName(), "'%"+idLeg.toUpperCase()+"%'");
+                }
+                String llistatCat="";
+                for(JCheckBox c : gjCB){
+                    if(c.isSelected()){
+                        //recuperem la categoria
+                        Categoria cat=Constants.objecteCategoria(Constants.idCategoria(c.getText()));
+                        //el toString esta sobreescrit per retornar els anys que corresponen a la categoria
+                        if(!llistatCat.isEmpty()){
+                            llistatCat+=",";
+                        }
+                        llistatCat+=cat.anysCategoria();
+                    }
+                }
+                if(!llistatCat.isEmpty()){
+                    auxFilt.put("categoria", llistatCat);
+                }
+                String dNaixSel="";
+                if(datNaix.getDate()!=null){
+                    dNaixSel+=majorOmenor+"'"+Constants.calendarToString(datNaix.getCalendar())+"'";
+                    auxFilt.put(datNaix.getName(), dNaixSel);
+                }
                 break;
         }
         return auxFilt;
@@ -698,24 +1062,44 @@ public class MainPage extends javax.swing.JFrame {
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
-        }/*else{
+        }else{
+            errJUG.setText("");//ens asegurem que no queda cap error a la finestra
+            del=7;//setejem la columna que fará de botó de delete
+            jugTable.setModel(mt);//setejem columnes
+            //amagem la columna ID que la farem servir per a eliminar/
+            jugTable.removeColumn(jugTable.getColumnModel().getColumn(1));
             try {
+                //Centrem les columnes necesaries (Categoria, tipus, te jugadors):
+                for(int i=3; i<(numColumns-1);i++){
+                    jugTable.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
+                }
                 List<Jugador> infoJug =Constants.getgBD().llistatJugadors(filters);
+                for(Jugador j : infoJug){
+                    Object[] info= new Object[]{
+                        "Seleccionar",
+                        j.getId(),
+                        j.getNom(),
+                        j.getCognom(),
+                        j.getId_legal(),
+                        Constants.jugCategoria(j.getData_naix()),
+                        j.getSexe(),
+                        Constants.calendarToString(j.getData_naix()),
+                        "Eliminar"
+                        };
+                    mt.addRow(info);
+                }
+                taulaConfiguration(jugTable,sel,del);
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
-        }*/
-
+        }
     }
     private void taulaConfiguration(JTable t, int sel, int del){
         t.setAutoCreateRowSorter(true);
-        if(t.getName()=="geTable"){
-            //fem la primera columna sigui button per seleccionar
-            ButtonColumn buttonSel = new ButtonColumn(t,selEq,sel);
-            //fem la última columna sigui button per eliminar
-            ButtonColumn buttonDel= new ButtonColumn(t,delEq,del);
-        }
-
+        //fem la primera columna sigui button per seleccionar
+        ButtonColumn buttonSel = new ButtonColumn(t,selEq,sel);
+        //fem la última columna sigui button per eliminar
+        ButtonColumn buttonDel= new ButtonColumn(t,delEq,del);
     }
     private int confirmacióEliminar(String nom, String tName){
         int resposta=JOptionPane.showConfirmDialog(null, "Estas segur que vols eliminar a "+nom+"?", "Compte!",
@@ -736,7 +1120,7 @@ public class MainPage extends javax.swing.JFrame {
         if(tName=="geTable"){
             errGE.setText(err);
         }else{
-            
+            errJUG.setText(err);
         }
         return resposta;
     }
@@ -746,7 +1130,11 @@ public class MainPage extends javax.swing.JFrame {
     }
     private void carregarVistaJugador(int id){
         this.setVisible(false);
-        new VistaJugador(id, this).setVisible(true);
+        try {
+            new VistaJugador(id, this).setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(MainPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     //Font: https://tips4java.wordpress.com/2009/07/12/table-button-column/
     Action selEq= new AbstractAction(){
@@ -759,7 +1147,7 @@ public class MainPage extends javax.swing.JFrame {
             if(name=="geTable"){
                 carregarVistaEquip(id);
             }else{
-                
+                carregarVistaJugador(id);
             }
         }
     };
@@ -770,26 +1158,26 @@ public class MainPage extends javax.swing.JFrame {
             int row = Integer.valueOf( e.getActionCommand() );
             int id= Integer.valueOf(((DefaultTableModel)table.getModel()).getValueAt(row, 1).toString());
             String nom= ((DefaultTableModel)table.getModel()).getValueAt(row, 2).toString();
-            Boolean err=false;
+            String err="";
             //depenent de la taula eliminarem un jugador (gjTable) o un equip (geTable)
-            if(tName=="geTable"){
-                try {
+            try {
+                if(tName=="geTable"){
                     Constants.getgBD().eliminarEquip(id);
-                } catch (GestorBDEquipException ex) {
-                    errGE.setText(ex.getMessage());
-                    err=true;
-                }
-            }else{
-                try {
+                }else{
                     Constants.getgBD().eliminarJugador(id);
-                } catch (GestorBDEquipException ex) {
-                    Logger.getLogger(MainPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            } catch (GestorBDEquipException ex) {
+                err=ex.getMessage();
+            }
+            if(tName=="geTable"){
+                 errGE.setText(err);
+            }else{
+                 errJUG.setText(err);
             }
             //si no hi ha hagut capp error en intentar eliminar el jugador/equip
-            if(!err){
+            if(err.isBlank()){
                 //demanem confirmació abans d'eliminar, si tot ha anat bé retorna 0
-                if(confirmacióEliminar(nom, tName)==0 && !err){
+                if(confirmacióEliminar(nom, tName)==0){
                     //si confirma, després de fer el delete a la BBDD, ens carregem la row.
                     ((DefaultTableModel)table.getModel()).removeRow(row);
                 }
@@ -800,31 +1188,56 @@ public class MainPage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel afegirTempPanel;
+    private javax.swing.JCheckBox aleviCheck;
+    private javax.swing.JCheckBox benjCheck;
     private javax.swing.JButton botoAltas;
+    private javax.swing.JCheckBox cadetCheck;
     private javax.swing.JLabel catLabel;
     private javax.swing.JComboBox<String> categoria;
+    private javax.swing.JButton csv;
+    private javax.swing.JLabel dNaixLabel;
+    private com.toedter.calendar.JDateChooser datNaix;
+    private javax.swing.ButtonGroup datNaixGr;
     private javax.swing.JCheckBox donaCheck;
     private javax.swing.JLabel errGE;
+    private javax.swing.JLabel errJUG;
     private javax.swing.JButton filtrarEquip;
+    private javax.swing.JButton filtrarJug;
     private javax.swing.JTable geTable;
     private javax.swing.JButton gestioEq;
     private javax.swing.JButton gestioJug;
     private javax.swing.JCheckBox homeCheck;
+    private javax.swing.JTextField idLegal;
+    private javax.swing.JCheckBox infCheck;
+    private javax.swing.JRadioButton inferIg;
     private javax.swing.JLabel infoInsertTemp;
     private javax.swing.JButton insertTemp;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel jugCatLabel;
+    private javax.swing.JTable jugTable;
+    private javax.swing.JCheckBox juvCheck;
+    private javax.swing.JLayeredPane layeredPanel;
     private javax.swing.JComboBox<String> listTemp;
     private javax.swing.JPanel llistatEqPanel;
+    private javax.swing.JPanel llistatJugPanel;
     private javax.swing.JButton logOut;
+    private javax.swing.JRadioButton majorIg;
     private javax.swing.JCheckBox mixtCheck;
+    private javax.swing.JLabel nlegalLabel;
     private javax.swing.JTextField nom;
+    private javax.swing.JTextField nomJug;
+    private javax.swing.JLabel nomJugLabel;
     private javax.swing.JLabel nomLabel;
     private javax.swing.JLabel novaTempLabel;
+    private javax.swing.JCheckBox seniorCheck;
     private javax.swing.JLabel tempError;
     private javax.swing.JTextField tempInput;
     private javax.swing.JLabel temporadaLabel;
     private javax.swing.JLabel tipusLabel;
     private javax.swing.JButton treureFiltres;
+    private javax.swing.JButton treureJugFiltres;
+    private javax.swing.JButton xml;
     // End of variables declaration//GEN-END:variables
 }

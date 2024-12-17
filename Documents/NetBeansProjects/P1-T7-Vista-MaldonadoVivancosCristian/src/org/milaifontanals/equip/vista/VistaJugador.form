@@ -213,7 +213,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="dNaixLabel" min="-2" pref="82" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="dataNaix" min="-2" pref="156" max="-2" attributes="0"/>
+                                  <Component id="dNaix" min="-2" pref="110" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="ibanLabel1" min="-2" pref="82" max="-2" attributes="0"/>
@@ -221,9 +221,9 @@
                                   <Component id="iban" min="-2" pref="156" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="pujarFoto" min="-2" pref="69" max="-2" attributes="0"/>
+                                  <Component id="pujarFoto" min="-2" pref="90" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="jLabel1" min="-2" pref="136" max="-2" attributes="0"/>
+                                  <Component id="jugImatge" min="-2" pref="119" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -235,11 +235,8 @@
                                   <Component id="dRevMedLabel" min="-2" pref="122" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="idLegal1" min="-2" pref="81" max="-2" attributes="0"/>
-                                  <Component id="dataRevMed" alignment="0" min="-2" pref="156" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="idLegal1" min="-2" pref="81" max="-2" attributes="0"/>
+                              <EmptySpace pref="248" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -259,8 +256,12 @@
                                               <EmptySpace pref="23" max="32767" attributes="0"/>
                                               <Component id="guardarCanvis" min="-2" pref="64" max="-2" attributes="0"/>
                                           </Group>
-                                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                                              <Component id="feta" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                              <Group type="102" attributes="0">
+                                                  <Component id="revMedica" min="-2" pref="161" max="-2" attributes="0"/>
+                                                  <EmptySpace max="32767" attributes="0"/>
+                                                  <Component id="feta" min="-2" max="-2" attributes="0"/>
+                                              </Group>
                                               <Component id="idLegal3" min="-2" pref="219" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -321,9 +322,9 @@
                               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="feta" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="dRevMedLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="dataRevMed" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="dRevMedLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -335,21 +336,25 @@
                                   <Component id="rbFem" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="dNaixLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="dataNaix" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="dNaixLabel" max="32767" attributes="0"/>
+                                  <Component id="dNaix" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="iban" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                                   <Component id="ibanLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="revMedica" min="-2" pref="22" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="pujarFoto" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Component id="jLabel1" pref="119" max="32767" attributes="0"/>
+                          <Component id="jugImatge" pref="119" max="32767" attributes="0"/>
                           <Component id="jScrollPane1" alignment="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="19" max="32767" attributes="0"/>
@@ -605,32 +610,6 @@
                 <Property name="text" type="java.lang.String" value="Data Rev.Medica:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="dataNaix">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                    <LineBorder/>
-                  </Border>
-                </Property>
-                <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
-              </Properties>
-              <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="dataNaixcontrolNom"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JTextField" name="dataRevMed">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                    <LineBorder/>
-                  </Border>
-                </Property>
-                <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
-              </Properties>
-              <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="dataRevMedcontrolNom"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JCheckBox" name="feta">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -671,7 +650,7 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pujarFoto"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel1">
+            <Component class="javax.swing.JLabel" name="jugImatge">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -688,6 +667,24 @@
                   <Color blue="0" green="0" red="ff" type="rgb"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="errGJ" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="com.toedter.calendar.JDateChooser" name="dNaix">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder/>
+                  </Border>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="com.toedter.calendar.JDateChooser" name="revMedica">
+              <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder/>
+                  </Border>
+                </Property>
               </Properties>
             </Component>
           </SubComponents>

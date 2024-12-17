@@ -4,9 +4,14 @@
  */
 package org.milaifontanals.equip.vista;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,19 +19,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
 
 import org.milaifontanals.equip.model.*;
@@ -43,8 +50,9 @@ public class VistaJugador extends javax.swing.JFrame {
     private MainPage mp;
     DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     JFormattedTextField txtDate = new JFormattedTextField(df);
+    BufferedImage getImg;
     
-    public VistaJugador(int idJug, MainPage view) {
+    public VistaJugador(int idJug, MainPage view) throws IOException {
         //si s'ha pasat un id == -1 vol dir que esta creant un nou jugador
         existeix=(idJug==-1)?false:true;
         mp=view;
@@ -58,6 +66,8 @@ public class VistaJugador extends javax.swing.JFrame {
             }
         }else{
             jugSel=new Jugador();
+            /*BufferedImage img = ImageIO.read(new File("./img/default.png"));
+            fotoEnRecuadre(img);*/
         }
         initComponents();
         carregarLlistatRb();
@@ -92,18 +102,6 @@ public class VistaJugador extends javax.swing.JFrame {
             nom.setText(nomJug);
         }
         titolLabel.setText(titol); //fiquel el titol
-        dataNaix.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-              char c = e.getKeyChar();
-              if (!((c >= '0') && (c <= '9') ||
-                 (c == KeyEvent.VK_BACK_SPACE) ||
-                 (c == KeyEvent.VK_DELETE) || (c == KeyEvent.VK_SLASH)))        
-              {
-                JOptionPane.showMessageDialog(null, "Please Enter Valid");
-                e.consume();
-              }
-            }
-        });
     }
     public void sexeDefault(){
         //si es una modificació d'un equip o l'equiup s'ha donat d'alta fixem la categoria
@@ -155,13 +153,13 @@ public class VistaJugador extends javax.swing.JFrame {
         idLegal2 = new javax.swing.JTextField();
         idLegal3 = new javax.swing.JTextField();
         dRevMedLabel = new javax.swing.JLabel();
-        dataNaix = new javax.swing.JTextField();
-        dataRevMed = new javax.swing.JTextField();
         feta = new javax.swing.JCheckBox();
         ibanLabel1 = new javax.swing.JLabel();
         pujarFoto = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jugImatge = new javax.swing.JLabel();
         errGJ = new javax.swing.JLabel();
+        dNaix = new com.toedter.calendar.JDateChooser();
+        revMedica = new com.toedter.calendar.JDateChooser();
         eliminarJugador = new javax.swing.JButton();
         titolLabel = new javax.swing.JLabel();
         infoLabel = new javax.swing.JLabel();
@@ -331,22 +329,6 @@ public class VistaJugador extends javax.swing.JFrame {
         dRevMedLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         dRevMedLabel.setText("Data Rev.Medica:");
 
-        dataNaix.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        dataNaix.setName("nom"); // NOI18N
-        dataNaix.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                dataNaixcontrolNom(evt);
-            }
-        });
-
-        dataRevMed.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        dataRevMed.setName("nom"); // NOI18N
-        dataRevMed.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                dataRevMedcontrolNom(evt);
-            }
-        });
-
         feta.setForeground(new java.awt.Color(51, 153, 0));
         feta.setEnabled(false);
 
@@ -366,10 +348,14 @@ public class VistaJugador extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 1, true));
+        jugImatge.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 1, true));
 
         errGJ.setForeground(new java.awt.Color(255, 0, 0));
         errGJ.setName("errGJ"); // NOI18N
+
+        dNaix.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        revMedica.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout infoEquipLayout = new javax.swing.GroupLayout(infoEquip);
         infoEquip.setLayout(infoEquipLayout);
@@ -398,15 +384,15 @@ public class VistaJugador extends javax.swing.JFrame {
                         .addGroup(infoEquipLayout.createSequentialGroup()
                             .addComponent(dNaixLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(dataNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(infoEquipLayout.createSequentialGroup()
                             .addComponent(ibanLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
-                            .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jugImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(42, 42, 42)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(infoEquipLayout.createSequentialGroup()
@@ -414,10 +400,8 @@ public class VistaJugador extends javax.swing.JFrame {
                             .addComponent(cpLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(dRevMedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(idLegal1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dataRevMed, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(idLegal1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(248, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(infoEquipLayout.createSequentialGroup()
@@ -433,8 +417,11 @@ public class VistaJugador extends javax.swing.JFrame {
                                         .addComponent(idLegal2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                                         .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(feta)
+                                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(infoEquipLayout.createSequentialGroup()
+                                            .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(feta))
                                         .addComponent(idLegal3, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(23, 23, 23))))
             .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -476,9 +463,9 @@ public class VistaJugador extends javax.swing.JFrame {
                         .addGap(7, 7, 7)
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(feta, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addGroup(infoEquipLayout.createSequentialGroup()
                                 .addComponent(dRevMedLabel)
-                                .addComponent(dataRevMed, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(2, 2, 2))))
                     .addGroup(infoEquipLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -486,17 +473,20 @@ public class VistaJugador extends javax.swing.JFrame {
                             .addComponent(rbMasc)
                             .addComponent(rbFem))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(dNaixLabel)
-                            .addComponent(dataNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(dNaixLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(9, 9, 9)
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ibanLabel1))))
+                            .addComponent(ibanLabel1)))
+                    .addGroup(infoEquipLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                    .addComponent(jugImatge, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap(19, Short.MAX_VALUE))
             .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -607,19 +597,40 @@ public class VistaJugador extends javax.swing.JFrame {
             confirmacióEliminar();
         }
     }//GEN-LAST:event_eliminarJugador
-
+    //Font: https://www.youtube.com/watch?v=YZ_tQFTMYoQ & 
+    //https://stackoverflow.com/questions/72240246/jlabel-not-displaying-image-after-choosing-from-jfilechooser-in-java-netbeans-id
     private void pujarFoto(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pujarFoto
-        // TODO add your handling code here:
+        FileFilter imageFilter=new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
+        JFileChooser imageUpload=new JFileChooser();
+        imageUpload.setAcceptAllFileFilterUsed(false); //no permitim cap tipus de file...
+        imageUpload.addChoosableFileFilter(imageFilter); //...a excepció d'imatges
+        int res =imageUpload.showSaveDialog(null); //guardem la resposta després d'obrir el panell
+        
+        if(res==JFileChooser.APPROVE_OPTION){
+            File imgFile = imageUpload.getSelectedFile();
+            String imgPath = imgFile.getAbsolutePath();
+            BufferedImage img = null;
+            try {
+                //carregem la imatge al recuadre
+                img = ImageIO.read(new File(imgPath));
+                fotoEnRecuadre(img);
+                //Obtením l'extensio del file:
+                String extension=imgPath.substring(imgPath.indexOf("."));
+                //generem el path per guardar l'imatge al projecte i per guardar la ruta a la BBDD.
+                File pathToSave= new File("./img/test"+extension);
+                //guardem la imatge a la carpeta del projecte anomenada img
+                ImageIO.write(img, "jpg", pathToSave);
+            } catch (IOException e) {
+                errGJ.setText(e.getMessage());
+            }
+        }
     }//GEN-LAST:event_pujarFoto
-
-    private void dataRevMedcontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dataRevMedcontrolNom
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dataRevMedcontrolNom
-
-    private void dataNaixcontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dataNaixcontrolNom
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dataNaixcontrolNom
-
+    private void fotoEnRecuadre(BufferedImage img){
+            //carregem l'imatge per a visualitzar-la a la JLable jugImatge
+            Image dimg  = img.getScaledInstance(jugImatge.getWidth(), jugImatge.getHeight(),img.SCALE_SMOOTH);
+            ImageIcon icon = new ImageIcon(dimg);
+            jugImatge.setIcon(icon);
+    }
     private void idLegal3controlNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idLegal3controlNom
         // TODO add your handling code here:
     }//GEN-LAST:event_idLegal3controlNom
@@ -832,10 +843,9 @@ public class VistaJugador extends javax.swing.JFrame {
     private javax.swing.JTextField cognom;
     private javax.swing.JLabel cognomLabel;
     private javax.swing.JLabel cpLabel;
+    private com.toedter.calendar.JDateChooser dNaix;
     private javax.swing.JLabel dNaixLabel;
     private javax.swing.JLabel dRevMedLabel;
-    private javax.swing.JTextField dataNaix;
-    private javax.swing.JTextField dataRevMed;
     private javax.swing.JButton eliminarJugador;
     private javax.swing.JTable eqTable;
     private javax.swing.JLabel errGJ;
@@ -850,9 +860,9 @@ public class VistaJugador extends javax.swing.JFrame {
     private javax.swing.JLabel idLegalLable;
     private javax.swing.JPanel infoEquip;
     private javax.swing.JLabel infoLabel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jugImatge;
     private javax.swing.JButton logOut;
     private javax.swing.JTextField nom;
     private javax.swing.JLabel nomLabel;
@@ -860,6 +870,7 @@ public class VistaJugador extends javax.swing.JFrame {
     private javax.swing.JButton pujarFoto;
     private javax.swing.JRadioButton rbFem;
     private javax.swing.JRadioButton rbMasc;
+    private com.toedter.calendar.JDateChooser revMedica;
     private javax.swing.JLabel sexeLabel;
     private javax.swing.JLabel titolLabel;
     private javax.swing.JButton tornar;

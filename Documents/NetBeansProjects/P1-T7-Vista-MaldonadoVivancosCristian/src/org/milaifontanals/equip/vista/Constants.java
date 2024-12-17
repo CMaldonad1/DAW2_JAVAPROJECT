@@ -4,6 +4,7 @@
  */
 package org.milaifontanals.equip.vista;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -183,6 +184,10 @@ public class Constants {
         }
         return info;
     }
-
+    public static String calendarToString(Calendar date){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        String formated=format.format(date.getTime());
+        return formated;
+    }
 }
     
