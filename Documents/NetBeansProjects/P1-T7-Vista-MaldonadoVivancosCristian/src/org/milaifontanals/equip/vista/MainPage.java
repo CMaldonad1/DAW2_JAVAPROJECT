@@ -5,10 +5,15 @@
 package org.milaifontanals.equip.vista;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +36,13 @@ import javax.swing.table.DefaultTableModel;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
 import org.milaifontanals.equip.model.*;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.Properties;
 import javax.swing.table.TableColumn;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
@@ -42,15 +54,21 @@ public class MainPage extends javax.swing.JFrame {
     private Map <String, String[]> headers= Map.ofEntries(
             entry("ge",new String[]{"","ID","Nom","Categoria","Tipus","Té Jugadors","*JasperReport",""}),
             entry("gj",new String[]{"","ID","Nom","Cognom","NIE/NIF","Categoria","Sexe","Data Naixement",""}));
+    //list dels JCheckbox per a poder treballar-los millor
     private List<JCheckBox> geCB = new ArrayList<>();
     private List<JCheckBox> gjCB = new ArrayList<>();
     private String[] botonsAlta = new String[]{"Alta Equip","Alta Jugador"};
-    private String majorOmenor;
+    private String majorOmenor; //per a la vista equip saber com filtra l'edat de Naixement
     private String pathToSave=System.getProperty("user.home")+"\\Desktop";
+    // Variables per dades de connexió amb JRS
+    private String urlJRS;
+    private String userJRS;
+    private String passwordJRS;
     
     public MainPage() {
         initComponents();
         settingComponents();
+        carregarDadesJasperReport();
         loadTemporadas();
         loadCategories();
         gestorEqListCheckBox();
@@ -67,6 +85,29 @@ public class MainPage extends javax.swing.JFrame {
                 crearTableModel(tableToUpdate);
             }
         });
+    }
+    //carregem l'informació per a poder fer la conexió a JasperReport
+    private void carregarDadesJasperReport(){
+            String fitxerConfigJRS = "informesJRS.xml";
+            try {
+                Properties props = new Properties();
+                props.loadFromXML(new FileInputStream(fitxerConfigJRS));
+                String[] claus = {"url", "user", "password"};
+                String[] valors = new String[3];
+                for (int i = 0; i < claus.length; i++) {
+                    valors[i] = props.getProperty(claus[i]);
+                    if (valors[i] == null || valors[i].isEmpty()) {
+                        errGE.setText(errGE.getText() + "\nNo es troba clau " + valors[i] + " en fitxer " + fitxerConfigJRS);
+                    }
+                }
+                urlJRS = valors[0];
+                userJRS = valors[1];
+                passwordJRS = valors[2];
+            } catch (FileNotFoundException ex) {
+                errGE.setText(errGE.getText() + "\nNo es troba fitxer " + fitxerConfigJRS + " - No es podrà executar cap informe");
+            } catch (IOException ex) {
+                errGE.setText(errGE.getText() + "\n"+ " - Probablement no es podrà executar cap informe");
+            }
     }
     //fem un llistat dels comboboxs relacionats amb gestio d'equips per iterar-los
     public void gestorEqListCheckBox(){
@@ -864,7 +905,6 @@ public class MainPage extends javax.swing.JFrame {
             this.setVisible(false);
             carregarVistaJugador(-1);
         }
-
     }//GEN-LAST:event_ferAltas
     //únicament permitim números per afegir Temporades
     private void controlTemp(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlTemp
@@ -1130,7 +1170,87 @@ public class MainPage extends javax.swing.JFrame {
     }//GEN-LAST:event_superiorInferior
 
     private void jasperReport(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jasperReport
-        // TODO add your handling code here:
+        String tempAux=Constants.gettSel().toString();
+        Boolean varisFiltres=false;
+        //preguntem si vol de totes les temporades o només de la selecionada
+        int resposta=JOptionPane.showConfirmDialog(null, "Vols fer servir la temporada "+tempAux+"? \n "
+            + "Si escolleix:\n- NO='totes les temporades'\n- Cancel='No fer el report'", "Confirmar temporada",
+            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        System.out.println(resposta);
+        if(resposta!=2){
+            int BUFFER_SIZE = 4096;
+            String url = urlJRS + "Equips_jugadors.pdf?";
+            if(resposta==0){
+                varisFiltres=true;
+                url+="anyTemporada="+tempAux;
+            }
+            if(categoria.getSelectedIndex()>0){
+                if(varisFiltres){
+                    url+="&";
+                }
+                url+="codiCategoria="+ Constants.idCategoria(categoria.getSelectedItem().toString());
+            }
+            int rows=geTable.getRowCount(), i=0;
+            Boolean actiu=(Boolean)((DefaultTableModel)geTable.getModel()).getValueAt(i,6);
+            while(i<rows && !actiu){
+                System.out.println(actiu);
+                i++;
+                actiu=(Boolean)((DefaultTableModel)geTable.getModel()).getValueAt(i,6);
+            }
+            if(i<rows){
+                if(varisFiltres){
+                    url+="&";
+                }
+                url+="codiEquip="+Integer.valueOf(((DefaultTableModel)geTable.getModel()).getValueAt(i, 1).toString());
+            }
+            try {
+                URL obj = new URL(url);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("GET");
+                String autenticacio = Base64.getEncoder().encodeToString((userJRS + ":" + passwordJRS).getBytes());
+                con.setRequestProperty("Authorization", "Basic " + autenticacio);
+                int responseCode = con.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    String fileName = "FitxaProducte.pdf";
+                    // Una vegada decidit el nom, seguim:
+                    // Obrim InputStream des de HTTP connection
+                    InputStream inputStream = con.getInputStream();
+                    // Obrim OutputStream per enregistrar el fitxer
+                    FileOutputStream outputStream = new FileOutputStream(fileName);
+
+                    // Llegim de inputStrem i escrivima outputStream, byte a byte:
+                    int bytesRead = -1;
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    outputStream.close();
+                    inputStream.close();
+
+                    JOptionPane.showMessageDialog(null, "JasperReport generat correctament!", "InfoBox: " + "Report Created", JOptionPane.INFORMATION_MESSAGE);
+                    // Intentem obrir-lo en alguna aplicació del SO
+                    if (Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().open(new File(fileName));
+                        } catch (IOException ex) {
+                            errGE.setText("No hi ha aplicacions disponibles per obrir el fitxer");
+                        }
+                    }
+                } else {
+                    errGE.setText("Mètode 'GET' : " + url);
+                    errGE.setText(errGE.getText() + "\nCodi resposta: " + responseCode);
+                    errGE.setText(errGE.getText() + "\nCap fitxer a descarregar");
+                }
+                con.disconnect();
+            } catch (MalformedURLException ex) {
+                errGE.setText(errGE.getText());
+            } catch (ProtocolException ex) {
+                errGE.setText(errGE.getText());
+            } catch (IOException ex) {
+                errGE.setText(errGE.getText());
+            }
+        }
     }//GEN-LAST:event_jasperReport
     //programa per revisar els filtres tant per equips com per jugadors
     private Map<String, String> filtresAplicats(String btn){
@@ -1326,7 +1446,6 @@ public class MainPage extends javax.swing.JFrame {
             TableCellListener tcl = (TableCellListener)e.getSource();
             //column que l'ha cridat
             int col=tcl.getColumn();
-            System.out.println(col);
             //només importa les columnes del checkbox, sino no farem res.
             if(col==6){
                 //row que l'ha cridat i mirarem en quin estat es troba.

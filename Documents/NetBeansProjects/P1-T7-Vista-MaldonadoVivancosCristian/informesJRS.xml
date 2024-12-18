@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Propietats per connectar amb servidor JRS</comment>
+    <entry key="url">http://10.2.222.133:8080/jasperserver/rest_v2/reports/InformesEquips/</entry>
+    <!--En aquesta url es suposa que JRS està escoltant perl port 8080 
+        i a l'arrel de l'usuari té una carpeta "informes" 
+        on hi haurà els informes a invocar-->
+    <entry key="user">jasperadmin</entry>
+    <entry key="password">jasperadmin</entry>
+</properties>
