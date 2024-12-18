@@ -89,7 +89,7 @@
                           <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                           <Component id="titolLabel" min="-2" pref="55" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="infoLabel" max="32767" attributes="0"/>
+                          <Component id="infoLabel" pref="17" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -235,7 +235,7 @@
                                   <Component id="dRevMedLabel" min="-2" pref="122" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="idLegal1" min="-2" pref="81" max="-2" attributes="0"/>
+                              <Component id="codiPostal" min="-2" pref="81" max="-2" attributes="0"/>
                               <EmptySpace pref="248" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
@@ -252,7 +252,7 @@
                                       <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" attributes="0">
-                                              <Component id="idLegal2" min="-2" pref="219" max="-2" attributes="0"/>
+                                              <Component id="adreca" min="-2" pref="219" max="-2" attributes="0"/>
                                               <EmptySpace pref="23" max="32767" attributes="0"/>
                                               <Component id="guardarCanvis" min="-2" pref="64" max="-2" attributes="0"/>
                                           </Group>
@@ -262,7 +262,7 @@
                                                   <EmptySpace max="32767" attributes="0"/>
                                                   <Component id="feta" min="-2" max="-2" attributes="0"/>
                                               </Group>
-                                              <Component id="idLegal3" min="-2" pref="219" max="-2" attributes="0"/>
+                                              <Component id="poblacio" min="-2" pref="219" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -288,7 +288,7 @@
                               <Component id="guardarCanvis" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                               <Component id="idLegalLable" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="idLegal" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
-                              <Component id="idLegal2" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                              <Component id="adreca" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                           </Group>
                           <Component id="adrecaLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -299,7 +299,7 @@
                               <Component id="nomLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="nom" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="idLegal3" alignment="0" min="-2" pref="21" max="-2" attributes="0"/>
+                          <Component id="poblacio" alignment="0" min="-2" pref="21" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
@@ -313,42 +313,38 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="cpLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="idLegal1" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                                  <Component id="codiPostal" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="feta" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="dRevMedLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="dRevMedLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="sexeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="rbMasc" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="rbFem" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="dNaixLabel" max="32767" attributes="0"/>
-                                  <Component id="dNaix" pref="0" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="iban" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
-                                  <Component id="ibanLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="revMedica" min="-2" pref="22" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="sexeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="rbMasc" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="rbFem" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="dNaixLabel" max="32767" attributes="0"/>
+                                          <Component id="dNaix" pref="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="iban" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                                          <Component id="ibanLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Component id="feta" min="-2" max="-2" attributes="0"/>
+                                  <Component id="revMedica" min="-2" pref="22" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -563,7 +559,7 @@
                 <Property name="text" type="java.lang.String" value="Codi Postal:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="idLegal1">
+            <Component class="javax.swing.JTextField" name="codiPostal">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -573,10 +569,10 @@
                 <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="idLegal1controlNom"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="verificarCodiPostal"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JTextField" name="idLegal2">
+            <Component class="javax.swing.JTextField" name="adreca">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -586,10 +582,10 @@
                 <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="idLegal2controlNom"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="adrecacontrolNom"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JTextField" name="idLegal3">
+            <Component class="javax.swing.JTextField" name="poblacio">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -599,7 +595,7 @@
                 <Property name="name" type="java.lang.String" value="nom" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="idLegal3controlNom"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="verificarDada"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="dRevMedLabel">

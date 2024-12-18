@@ -6,8 +6,6 @@ package org.milaifontanals.equip.vista;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,15 +13,12 @@ import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -87,19 +82,29 @@ public class VistaJugador extends javax.swing.JFrame {
     }
     //preparem l'informació de la finestra
     public void prepararFinestra(){
-        actualitzarTitol();
+        actualitzarTitoliDades();
         activarBotonsiCerca();
         buttonGroup.add(rbMasc);
         buttonGroup.add(rbFem);
         sexeDefault();
     }
-    public void actualitzarTitol(){
+    public void actualitzarTitoliDades(){
         //titol per default si es una alta nova
         String titol = "Alta Jugador";
         if(existeix){
+            //carregem les dades
             String nomJug=jugSel.getNom();
             titol="Edició Jugador - "+nomJug;
             nom.setText(nomJug);
+            cognom.setText(jugSel.getCognom());
+            idLegal.setText(jugSel.getId_legal());
+            dNaix.setCalendar(jugSel.getData_naix());
+            iban.setText(jugSel.getIban());
+            adreca.setText(jugSel.getAdreca());
+            poblacio.setText(jugSel.getPoblacio());
+            codiPostal.setText(jugSel.getCp());
+            revMedica.setCalendar(jugSel.getAny_fi_revisio_medica());
+            feta.setSelected(revMedica.getDate()!=null);
         }
         titolLabel.setText(titol); //fiquel el titol
     }
@@ -149,9 +154,9 @@ public class VistaJugador extends javax.swing.JFrame {
         adrecaLabel = new javax.swing.JLabel();
         poblacioLabel = new javax.swing.JLabel();
         cpLabel = new javax.swing.JLabel();
-        idLegal1 = new javax.swing.JTextField();
-        idLegal2 = new javax.swing.JTextField();
-        idLegal3 = new javax.swing.JTextField();
+        codiPostal = new javax.swing.JTextField();
+        adreca = new javax.swing.JTextField();
+        poblacio = new javax.swing.JTextField();
         dRevMedLabel = new javax.swing.JLabel();
         feta = new javax.swing.JCheckBox();
         ibanLabel1 = new javax.swing.JLabel();
@@ -302,27 +307,27 @@ public class VistaJugador extends javax.swing.JFrame {
         cpLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         cpLabel.setText("Codi Postal:");
 
-        idLegal1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        idLegal1.setName("nom"); // NOI18N
-        idLegal1.addKeyListener(new java.awt.event.KeyAdapter() {
+        codiPostal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        codiPostal.setName("nom"); // NOI18N
+        codiPostal.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                idLegal1controlNom(evt);
+                verificarCodiPostal(evt);
             }
         });
 
-        idLegal2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        idLegal2.setName("nom"); // NOI18N
-        idLegal2.addKeyListener(new java.awt.event.KeyAdapter() {
+        adreca.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        adreca.setName("nom"); // NOI18N
+        adreca.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                idLegal2controlNom(evt);
+                adrecacontrolNom(evt);
             }
         });
 
-        idLegal3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        idLegal3.setName("nom"); // NOI18N
-        idLegal3.addKeyListener(new java.awt.event.KeyAdapter() {
+        poblacio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        poblacio.setName("nom"); // NOI18N
+        poblacio.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                idLegal3controlNom(evt);
+                verificarDada(evt);
             }
         });
 
@@ -400,7 +405,7 @@ public class VistaJugador extends javax.swing.JFrame {
                             .addComponent(cpLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(dRevMedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(idLegal1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(codiPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(248, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -414,7 +419,7 @@ public class VistaJugador extends javax.swing.JFrame {
                                 .addGap(47, 47, 47)
                                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(infoEquipLayout.createSequentialGroup()
-                                        .addComponent(idLegal2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(adreca, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                                         .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -422,7 +427,7 @@ public class VistaJugador extends javax.swing.JFrame {
                                             .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(feta))
-                                        .addComponent(idLegal3, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(poblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(23, 23, 23))))
             .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
@@ -438,7 +443,7 @@ public class VistaJugador extends javax.swing.JFrame {
                         .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(idLegalLable)
                         .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(idLegal2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(adreca, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(adrecaLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -446,7 +451,7 @@ public class VistaJugador extends javax.swing.JFrame {
                     .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(nomLabel)
                         .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(idLegal3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(poblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(infoEquipLayout.createSequentialGroup()
                         .addGap(11, 11, 11)
@@ -457,32 +462,29 @@ public class VistaJugador extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cpLabel)
-                            .addComponent(idLegal1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(codiPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(infoEquipLayout.createSequentialGroup()
                         .addGap(7, 7, 7)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(feta, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(infoEquipLayout.createSequentialGroup()
-                                .addComponent(dRevMedLabel)
-                                .addGap(2, 2, 2))))
-                    .addGroup(infoEquipLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(sexeLabel)
-                            .addComponent(rbMasc)
-                            .addComponent(rbFem))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(dNaixLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(9, 9, 9)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ibanLabel1)))
+                        .addComponent(dRevMedLabel))
                     .addGroup(infoEquipLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(infoEquipLayout.createSequentialGroup()
+                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(sexeLabel)
+                                    .addComponent(rbMasc)
+                                    .addComponent(rbFem))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(dNaixLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                .addGap(9, 9, 9)
+                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ibanLabel1)))
+                            .addComponent(feta)
+                            .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -551,7 +553,7 @@ public class VistaJugador extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 17, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -631,17 +633,17 @@ public class VistaJugador extends javax.swing.JFrame {
             ImageIcon icon = new ImageIcon(dimg);
             jugImatge.setIcon(icon);
     }
-    private void idLegal3controlNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idLegal3controlNom
+    private void verificarDada(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_verificarDada
         // TODO add your handling code here:
-    }//GEN-LAST:event_idLegal3controlNom
+    }//GEN-LAST:event_verificarDada
 
-    private void idLegal2controlNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idLegal2controlNom
+    private void adrecacontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adrecacontrolNom
         // TODO add your handling code here:
-    }//GEN-LAST:event_idLegal2controlNom
+    }//GEN-LAST:event_adrecacontrolNom
 
-    private void idLegal1controlNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idLegal1controlNom
+    private void verificarCodiPostal(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_verificarCodiPostal
         // TODO add your handling code here:
-    }//GEN-LAST:event_idLegal1controlNom
+    }//GEN-LAST:event_verificarCodiPostal
 
     private void ibancontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ibancontrolNom
         // TODO add your handling code here:
@@ -697,7 +699,7 @@ public class VistaJugador extends javax.swing.JFrame {
     }//GEN-LAST:event_controlNom
 
 //GEN-FIRST:event_tornar
- 
+
 //GEN-LAST:event_tornar
 
     private void logOut(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOut
@@ -838,8 +840,10 @@ public class VistaJugador extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField adreca;
     private javax.swing.JLabel adrecaLabel;
     private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.JTextField codiPostal;
     private javax.swing.JTextField cognom;
     private javax.swing.JLabel cognomLabel;
     private javax.swing.JLabel cpLabel;
@@ -854,9 +858,6 @@ public class VistaJugador extends javax.swing.JFrame {
     private javax.swing.JTextField iban;
     private javax.swing.JLabel ibanLabel1;
     private javax.swing.JTextField idLegal;
-    private javax.swing.JTextField idLegal1;
-    private javax.swing.JTextField idLegal2;
-    private javax.swing.JTextField idLegal3;
     private javax.swing.JLabel idLegalLable;
     private javax.swing.JPanel infoEquip;
     private javax.swing.JLabel infoLabel;
@@ -866,6 +867,7 @@ public class VistaJugador extends javax.swing.JFrame {
     private javax.swing.JButton logOut;
     private javax.swing.JTextField nom;
     private javax.swing.JLabel nomLabel;
+    private javax.swing.JTextField poblacio;
     private javax.swing.JLabel poblacioLabel;
     private javax.swing.JButton pujarFoto;
     private javax.swing.JRadioButton rbFem;

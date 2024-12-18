@@ -692,10 +692,8 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         try {
             eqPart.setInt(1, id);
             ResultSet rs= eqPart.executeQuery();
-            if(rs.next()) {
+            while (rs.next()) {
                 equipsParticipa.add(prepararInfoEquip(rs));
-            }else{
-                throw new GestorBDEquipException("Equip inexistent!");
             }
             rs.close();
         } catch (SQLException ex) {

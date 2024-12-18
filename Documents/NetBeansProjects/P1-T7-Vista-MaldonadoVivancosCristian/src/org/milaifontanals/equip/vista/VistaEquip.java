@@ -86,7 +86,7 @@ public class VistaEquip extends javax.swing.JFrame {
     }
     //preparem l'informació de la finestra
     public void prepararFinestra(){
-        actualitzarTitol();
+        actualitzarTitoliDades();
         activarBotonsiCerca();
         buttonGroup.add(rbMixt);
         buttonGroup.add(rbMasc);
@@ -95,7 +95,7 @@ public class VistaEquip extends javax.swing.JFrame {
         listTemp.setEnabled(false);
         comboboxCategoria();//carregem el combobox de categoria
     }
-    public void actualitzarTitol(){
+    public void actualitzarTitoliDades(){
         //titol per default si es una alta nova
         String titol = "Alta Equip";
         if(existeix){
@@ -851,12 +851,11 @@ public class VistaEquip extends javax.swing.JFrame {
                 }
             }
         }
-        /**
-         * verifiquem si ha fet a algun jugador de l'equip per desactivar l'opció de cambiar la
-         * categoria i el tipus d'equip per a no generar inconsistencies.
-         */
-
     };
+    /**
+     * verifiquem si ha fet a algun jugador de l'equip per desactivar l'opció de cambiar la
+     * categoria i el tipus d'equip per a no generar inconsistencies.
+     */
     public void verificarCanvisTituars(JTable tab){
         boolean activar=false;
         int i=0;

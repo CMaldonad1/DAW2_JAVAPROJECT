@@ -30,19 +30,23 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.milaifontanals.equip.interficiepersistencia.GestorBDEquipException;
 import org.milaifontanals.equip.model.*;
-
+import java.io.FileWriter;
+import javax.swing.table.TableColumn;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 /**
  *
  * @author MAVI
  */
 public class MainPage extends javax.swing.JFrame {
     private Map <String, String[]> headers= Map.ofEntries(
-            entry("ge",new String[]{"","ID","Nom","Categoria","Tipus","Té Jugadors",""}),
+            entry("ge",new String[]{"","ID","Nom","Categoria","Tipus","Té Jugadors","*JasperReport",""}),
             entry("gj",new String[]{"","ID","Nom","Cognom","NIE/NIF","Categoria","Sexe","Data Naixement",""}));
     private List<JCheckBox> geCB = new ArrayList<>();
     private List<JCheckBox> gjCB = new ArrayList<>();
     private String[] botonsAlta = new String[]{"Alta Equip","Alta Jugador"};
     private String majorOmenor;
+    private String pathToSave=System.getProperty("user.home")+"\\Desktop";
     
     public MainPage() {
         initComponents();
@@ -145,6 +149,8 @@ public class MainPage extends javax.swing.JFrame {
         geTable = new javax.swing.JTable();
         errGE = new javax.swing.JLabel();
         treureFiltres = new javax.swing.JButton();
+        jasperReport = new javax.swing.JButton();
+        infoInsertTemp1 = new javax.swing.JLabel();
         llistatJugPanel = new javax.swing.JPanel();
         nomJugLabel = new javax.swing.JLabel();
         idLegal = new javax.swing.JTextField();
@@ -378,39 +384,62 @@ public class MainPage extends javax.swing.JFrame {
             }
         });
 
+        jasperReport.setBackground(new java.awt.Color(0, 153, 51));
+        jasperReport.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        jasperReport.setForeground(new java.awt.Color(255, 255, 255));
+        jasperReport.setText("Jasper Report");
+        jasperReport.setToolTipText("");
+        jasperReport.setAlignmentX(0.5F);
+        jasperReport.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jasperReport.setName("treureFiltres"); // NOI18N
+        jasperReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jasperReport(evt);
+            }
+        });
+
+        infoInsertTemp1.setFont(new java.awt.Font("Arial", 2, 10)); // NOI18N
+        infoInsertTemp1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        infoInsertTemp1.setText("<html>*JASPER_REPORT: el botó generará el report segons la temporada on es treballa, la categoria seleccionada i/o l'equip escollit<html>");
+        infoInsertTemp1.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
         javax.swing.GroupLayout llistatEqPanelLayout = new javax.swing.GroupLayout(llistatEqPanel);
         llistatEqPanel.setLayout(llistatEqPanelLayout);
         llistatEqPanelLayout.setHorizontalGroup(
             llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, llistatEqPanelLayout.createSequentialGroup()
-                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+            .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, llistatEqPanelLayout.createSequentialGroup()
                         .addContainerGap(14, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 752, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(llistatEqPanelLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nomLabel)
-                            .addComponent(catLabel))
-                        .addGap(18, 18, 18)
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(69, 69, 69)
-                        .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(llistatEqPanelLayout.createSequentialGroup()
-                                .addComponent(tipusLabel)
-                                .addGap(26, 26, 26)
-                                .addComponent(homeCheck)
+                                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nomLabel)
+                                    .addComponent(catLabel))
                                 .addGap(18, 18, 18)
-                                .addComponent(donaCheck)
-                                .addGap(18, 18, 18)
-                                .addComponent(mixtCheck))
-                            .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(69, 69, 69)
+                                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(llistatEqPanelLayout.createSequentialGroup()
+                                        .addComponent(tipusLabel)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(homeCheck)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(donaCheck)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(mixtCheck))
+                                    .addComponent(errGE, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(infoInsertTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 607, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(filtrarEquip, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(treureFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(treureFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jasperReport, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         llistatEqPanelLayout.setVerticalGroup(
@@ -432,9 +461,13 @@ public class MainPage extends javax.swing.JFrame {
                             .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(errGE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(treureFiltres, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(llistatEqPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jasperReport, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(infoInsertTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
 
         treureFiltres.getAccessibleContext().setAccessibleName("desfiltrar");
@@ -579,8 +612,11 @@ public class MainPage extends javax.swing.JFrame {
         llistatJugPanel.setLayout(llistatJugPanelLayout);
         llistatJugPanelLayout.setHorizontalGroup(
             llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(llistatJugPanelLayout.createSequentialGroup()
-                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, llistatJugPanelLayout.createSequentialGroup()
+                .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(llistatJugPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE))
                     .addGroup(llistatJugPanelLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addGroup(llistatJugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -623,10 +659,7 @@ public class MainPage extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(csv, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(filtrarJug, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(treureJugFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, llistatJugPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2)))
+                            .addComponent(treureJugFiltres, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         llistatJugPanelLayout.setVerticalGroup(
@@ -942,21 +975,163 @@ public class MainPage extends javax.swing.JFrame {
     private void filtrarJug(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filtrarJug
         crearTableModel(modeActual());
     }//GEN-LAST:event_filtrarJug
-
+    //PROGRAMA TRET DE CHATGPT I ADAPTAT
     private void csv(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_csv
-        // TODO add your handling code here:
+        String err="";
+        //retornar llistat de jugadors requereix de filtres, li pasem un llistat vuit perque torni tot
+        Map<String, String> auxFilt= new HashMap<>();
+        String pthCSV=pathToSave+"\\llistatJugadors.csv";
+        try (FileWriter writer = new FileWriter(pthCSV)) {
+            writer.append("ID,Nom,Cognoms,Sexe,DataNaixement,NIF/NIE,AnyFiRevisioMedica,IBAN,Adreça,CodiPostal,Poblacio,Foto,Equips\n");
+            List<Jugador> jugadors= Constants.getgBD().llistatJugadors(auxFilt);
+            for (Jugador j : jugadors) {
+                int id=j.getId();
+                String llistatEquips=tractarEquipsJugador(id);
+
+                writer.append(id + ",")
+                        .append(j.getNom() + ",")
+                        .append(j.getCognom() + ",")
+                        .append(j.getSexe() + ",")
+                        .append(Constants.calendarToString(j.getData_naix()) + ",")
+                        .append(j.getId_legal() + ",")
+                        .append(Constants.calendarToString(j.getAny_fi_revisio_medica()) + ",")
+                        .append(j.getIban() + ",")
+                        .append(j.getAdreca() + ",")
+                        .append("'"+j.getCp() + ",")
+                        .append(j.getPoblacio() + ",")
+                        .append(j.getFoto() + ",")
+                        .append(llistatEquips + "\n");
+            }
+
+            System.out.println("Jugadors exportats correctament a " + pathToSave);
+        } catch (IOException e) {
+            err="Error al exportar a CSV: "+e.getMessage();
+        }catch (GestorBDEquipException ex) {
+            err="Error en generar el CSV degut a la conexió amb la BBDD";
+        }
+        if(err.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Fitxer CSV s'ha generat a l'escriptori", "InfoBox: " + "CSV Created", JOptionPane.INFORMATION_MESSAGE);
+        }
+        errJUG.setText(err);
     }//GEN-LAST:event_csv
-
+    //PROGRAMA TRET DE CHATGPT I ADAPTAT
     private void xml(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_xml
-        // TODO add your handling code here:
-    }//GEN-LAST:event_xml
+        String pthXML=pathToSave+"\\llistatJugadors.xml";
+        //retornar llistat de jugadors requereix de filtres, li pasem un llistat vuit perque torni tot
+        Map<String, String> auxFilt= new HashMap<>();
+        String err="";
+        try {
+            List<Jugador> jugadors= Constants.getgBD().llistatJugadors(auxFilt);
+            XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+            try (FileWriter fileWriter = new FileWriter(pthXML)) {
+                XMLStreamWriter xmlWriter = xmlOutputFactory.createXMLStreamWriter(fileWriter);
+                xmlWriter.writeStartDocument("UTF-8", "1.0");
+                xmlWriter.writeStartElement("Jugadors");
 
+                for (Jugador j : jugadors) {
+                    List<Equip> ej = Constants.getgBD().llistatEquipParticipa(j.getId());
+                    
+                    xmlWriter.writeStartElement("Jugador");
+
+                    xmlWriter.writeStartElement("ID");
+                    xmlWriter.writeCharacters(String.valueOf(j.getId()));
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("Nom");
+                    xmlWriter.writeCharacters(j.getNom());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("Cognom");
+                    xmlWriter.writeCharacters(j.getCognom());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("Sexe");
+                    xmlWriter.writeCharacters(String.valueOf(j.getSexe()));
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("DataNaixement");
+                    xmlWriter.writeCharacters(Constants.calendarToString(j.getData_naix()));
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("IdLegal");
+                    xmlWriter.writeCharacters(j.getId_legal());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("AnyFiRevisioMedica");
+                    xmlWriter.writeCharacters(Constants.calendarToString(j.getAny_fi_revisio_medica()));
+                    xmlWriter.writeEndElement();
+                    
+                    xmlWriter.writeStartElement("IBAN");
+                    xmlWriter.writeCharacters(j.getIban());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("Adreça");
+                    xmlWriter.writeCharacters(j.getAdreca());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("CodiPostal");
+                    xmlWriter.writeCharacters(j.getCp());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("Poblacio");
+                    xmlWriter.writeCharacters(j.getPoblacio());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("Foto");
+                    xmlWriter.writeCharacters(j.getFoto());
+                    xmlWriter.writeEndElement();
+
+                    xmlWriter.writeStartElement("Equips");
+                    for(Equip e: ej){
+                        xmlWriter.writeStartElement("Equip");
+                        xmlWriter.writeCharacters(e.getNom());
+                        xmlWriter.writeEndElement();
+                    }
+                    xmlWriter.writeEndElement();
+                    xmlWriter.writeEndElement();
+                }
+                xmlWriter.writeEndElement();
+                xmlWriter.writeEndDocument();
+            }
+            
+        } catch (Exception e) {
+            err="Error al exportar a XML: " + e.getMessage();
+        }
+        if(err.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Fitxer XML s'ha generat a l'escriptori", "InfoBox: " + "XML Created", JOptionPane.INFORMATION_MESSAGE);
+        }
+        errJUG.setText(err);
+    }//GEN-LAST:event_xml
+    private String tractarEquipsJugador(int jug){
+        String aux="";
+        List<Equip> ej;
+        try {
+            ej = Constants.getgBD().llistatEquipParticipa(jug);
+            int numEq=ej.size();
+            if(numEq!=0){
+                for(int i=0; i<numEq;i++){
+                    aux+=ej.get(i).getNom();
+                    if(i!=numEq-1){
+                        aux+="&";
+                    }
+                }
+            }
+        } catch (GestorBDEquipException ex) {
+            errJUG.setText(ex.getMessage());
+        }
+        return aux;
+    }
+ 
     private void superiorInferior(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_superiorInferior
         String auxFiltreDNaix=evt.getComponent().getName();
         if(auxFiltreDNaix.isEmpty()){
             majorOmenor=auxFiltreDNaix;
         }
     }//GEN-LAST:event_superiorInferior
+
+    private void jasperReport(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jasperReport
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jasperReport
     //programa per revisar els filtres tant per equips com per jugadors
     private Map<String, String> filtresAplicats(String btn){
         Map<String, String> auxFilt= new HashMap<>();
@@ -1036,7 +1211,7 @@ public class MainPage extends javax.swing.JFrame {
         int del=0, sel=0;
         if(btn=="ge"){
             errGE.setText("");//ens asegurem que no queda cap error a la finestra
-            del=5;//setejem la columna que fará de botó de delete
+            del=6;//setejem la columna que fará de botó de delete
             geTable.setModel(mt);//setejem columnes
             //amagem la columna ID que la farem servir per a eliminar/
             geTable.removeColumn(geTable.getColumnModel().getColumn(1));
@@ -1054,11 +1229,14 @@ public class MainPage extends javax.swing.JFrame {
                         Constants.nomCategoria(e.getCat()),
                         Constants.tipusNom(e.getTipus()),
                         (Constants.getgBD().equipTeTitulars(e)==0)?"No":"Si",
+                        false,
                         "Eliminar"
                         };
                     mt.addRow(info);
                 }
+                TableCellListener tcl = new TableCellListener(geTable, controlCheckbox);
                 taulaConfiguration(geTable,sel,del);
+                
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -1096,6 +1274,11 @@ public class MainPage extends javax.swing.JFrame {
     }
     private void taulaConfiguration(JTable t, int sel, int del){
         t.setAutoCreateRowSorter(true);
+        if(t.getName()=="geTable"){
+            TableColumn tc=t.getColumnModel().getColumn(5);
+            tc.setCellEditor(t.getDefaultEditor(Boolean.class));
+            tc.setCellRenderer(t.getDefaultRenderer(Boolean.class));
+        }
         //fem la primera columna sigui button per seleccionar
         ButtonColumn buttonSel = new ButtonColumn(t,selEq,sel);
         //fem la última columna sigui button per eliminar
@@ -1136,6 +1319,29 @@ public class MainPage extends javax.swing.JFrame {
             Logger.getLogger(MainPage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    //source: https://tips4java.wordpress.com/2009/06/07/table-cell-listener/
+    Action controlCheckbox= new AbstractAction(){
+        public void actionPerformed(ActionEvent e){
+            //per veure qui ha fet el canvi
+            TableCellListener tcl = (TableCellListener)e.getSource();
+            //column que l'ha cridat
+            int col=tcl.getColumn();
+            System.out.println(col);
+            //només importa les columnes del checkbox, sino no farem res.
+            if(col==6){
+                //row que l'ha cridat i mirarem en quin estat es troba.
+                int row=tcl.getRow();
+                //retornem la taula per a poder editar-la
+                JTable table = tcl.getTable(); 
+                for(int i=0;i<table.getRowCount();i++){
+                    if(i!=row){
+                        table.setValueAt(false, i, col-1);
+                    }
+                    
+                }
+            }
+        }
+    };
     //Font: https://tips4java.wordpress.com/2009/07/12/table-button-column/
     Action selEq= new AbstractAction(){
         public void actionPerformed(ActionEvent e){
@@ -1211,10 +1417,12 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JCheckBox infCheck;
     private javax.swing.JRadioButton inferIg;
     private javax.swing.JLabel infoInsertTemp;
+    private javax.swing.JLabel infoInsertTemp1;
     private javax.swing.JButton insertTemp;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton jasperReport;
     private javax.swing.JLabel jugCatLabel;
     private javax.swing.JTable jugTable;
     private javax.swing.JCheckBox juvCheck;
