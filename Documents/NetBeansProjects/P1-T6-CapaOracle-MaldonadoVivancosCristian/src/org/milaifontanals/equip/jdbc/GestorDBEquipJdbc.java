@@ -585,7 +585,7 @@ public class GestorDBEquipJdbc implements IGestorBDEquip{
         }
         try {
             idJug.setString(1, idLegal);
-            ResultSet rs= idEq.executeQuery();
+            ResultSet rs= idJug.executeQuery();
             if (rs.next()) {
                 id=rs.getInt("id");
             }

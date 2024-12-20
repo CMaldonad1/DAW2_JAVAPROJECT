@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -27,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -106,11 +109,13 @@ public class VistaJugador extends javax.swing.JFrame {
     }
     //preparem l'informació de la finestra
     public void prepararFinestra(){
-        actualitzarTitoliDades();
         activarBotonsiCerca();
         buttonGroup.add(rbMasc);
         buttonGroup.add(rbFem);
         sexeDefault();
+        revMedica.setCalendar(Calendar.getInstance());
+        dNaix.setCalendar(Calendar.getInstance());
+        actualitzarTitoliDades();
     }
     public void actualitzarTitoliDades(){
         //titol per default si es una alta nova
@@ -127,7 +132,6 @@ public class VistaJugador extends javax.swing.JFrame {
             adreca.setText(jugSel.getAdreca());
             poblacio.setText(jugSel.getPoblacio());
             cp.setText(jugSel.getCp());
-            System.out.println(jugSel.getAny_fi_revisio_medica());
             revMedica.setCalendar(jugSel.getAny_fi_revisio_medica());
             feta.setSelected(revMedica.getDate()!=null);
             carregarFoto(jugSel.getFoto());
@@ -203,6 +207,7 @@ public class VistaJugador extends javax.swing.JFrame {
         infoLabel = new javax.swing.JLabel();
         jugImatge = new javax.swing.JLabel();
         pujarFoto = new javax.swing.JButton();
+        errFoto = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -636,6 +641,10 @@ public class VistaJugador extends javax.swing.JFrame {
             }
         });
 
+        errFoto.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errFoto.setForeground(new java.awt.Color(255, 0, 0));
+        errFoto.setName("errGJ"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -643,28 +652,31 @@ public class VistaJugador extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(infoEquip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(infoEquip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(6, 6, 6))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(eliminarJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(79, 79, 79)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(tornar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(51, 51, 51)
                                 .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(jugImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(44, 44, 44)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jugImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(23, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 17, Short.MAX_VALUE)))))
-                .addContainerGap())
+                                .addComponent(errFoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(15, 15, 15))))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -672,25 +684,23 @@ public class VistaJugador extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tornar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(tornar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(eliminarJugador)
-                        .addGap(11, 11, 11))
+                        .addComponent(eliminarJugador))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
+                        .addGap(22, 112, Short.MAX_VALUE)
+                        .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40)
-                                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jugImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jugImatge, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(errFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0)
                 .addComponent(infoEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10))
         );
@@ -736,7 +746,7 @@ public class VistaJugador extends javax.swing.JFrame {
         imageUpload.setAcceptAllFileFilterUsed(false); //no permitim cap tipus de file...
         imageUpload.addChoosableFileFilter(imageFilter); //...a excepció d'imatges
         int res =imageUpload.showSaveDialog(null); //guardem la resposta després d'obrir el panell
-        
+        String err="";
         if(res==JFileChooser.APPROVE_OPTION){
             File imgFile = imageUpload.getSelectedFile();
             String imgPath = imgFile.getAbsolutePath();
@@ -753,15 +763,17 @@ public class VistaJugador extends javax.swing.JFrame {
                     String imageName=imgFile.getName();
                     pathToSave= new File("./img/"+imageName);
                 }else{
-                    pathToSave= new File(jugAux.getFoto());
+                    pathToSave= new File("./img/"+jugAux.getId_legal()+".png");
                 }
                 jugAux.setFoto(pathToSave.toString());
                 pathFoto=jugAux.getFoto();
                 //guardem la imatge a la carpeta del projecte anomenada img
                 ImageIO.write(img, "jpg", pathToSave);
+                
             } catch (IOException e) {
-                errGJ.setText(e.getMessage());
+                err=e.getMessage();
             }
+            errFoto.setText(err);
         }
     }//GEN-LAST:event_pujarFoto
     private void fotoEnRecuadre(BufferedImage img){
@@ -781,9 +793,21 @@ public class VistaJugador extends javax.swing.JFrame {
         errAdreca.setText(jugAux.setAdreca(adreca.getText()));
         errCP.setText(jugAux.setCp(cp.getText()));
         errPoblacio.setText(jugAux.setPoblacio(poblacio.getText()));
-        errIban.setText(jugAux.setIban(iban.getText()));
-        errDN.setText(jugAux.setData_naix(dNaix.getCalendar()));
-        errRevMed.setText(jugAux.setAny_fi_revisio_medica(revMedica.getCalendar()));
+        if(iban.getText().length()!=0){
+            errIban.setText(jugAux.setIban(iban.getText()));
+        }
+        Date drm=dNaix.getDate();
+        if(drm==null){
+            errDN.setText("La data de naix es obligatoria");
+        }else{
+            errDN.setText(jugAux.setData_naix(dNaix.getCalendar()));
+        }
+       Date dnaix=revMedica.getDate();
+        if(dnaix==null){
+            errRevMed.setText("La Revisió Médica es obligatoria");
+        }else{
+            jugAux.setAny_fi_revisio_medica(revMedica.getCalendar());
+        }
     }
     private void guardarCanvis(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarCanvis
         String err="";
@@ -817,9 +841,11 @@ public class VistaJugador extends javax.swing.JFrame {
             }
              errGJ.setText(err);
         }else{
+            String errF="";
             if(pathFoto.isEmpty()){
-                errGJ.setText("Falta la foto!");
-            }            
+                errF="Falta la foto!";
+            }
+            errFoto.setText(errF);
         }
     }//GEN-LAST:event_guardarCanvis
 
@@ -882,10 +908,8 @@ public class VistaJugador extends javax.swing.JFrame {
             if(!errList.get(i).getText().isEmpty()){
                 senseErrors=true;
             }
-            System.out.println(i+" "+errList.size());
             i++;
         }
-        System.out.println(i+" "+errList.size());
         return !senseErrors;
     }
     //creem dinámicament la taula
@@ -917,6 +941,13 @@ public class VistaJugador extends javax.swing.JFrame {
                         };
                     mt.addRow(info);
                 }
+                boolean enable=true;
+                if(equipParticipa.size()!=0){
+                    enable=false;
+                }  
+                dNaix.setEnabled(enable);
+                rbMasc.setEnabled(enable);
+                rbFem.setEnabled(enable);
                 taulaConfiguration(eqTable,4);
             } catch (GestorBDEquipException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "InfoBox: " + "DB Connection Error", JOptionPane.INFORMATION_MESSAGE);
@@ -932,8 +963,8 @@ public class VistaJugador extends javax.swing.JFrame {
             JTable table = (JTable)e.getSource(); 
             String tName= table.getName();
             int row = Integer.valueOf( e.getActionCommand() );
-            int id= Integer.valueOf(((DefaultTableModel)table.getModel()).getValueAt(row, 1).toString());
-            String nom= ((DefaultTableModel)table.getModel()).getValueAt(row, 2).toString();
+            int id= Integer.valueOf(((DefaultTableModel)table.getModel()).getValueAt(row, 0).toString());
+            String nom= ((DefaultTableModel)table.getModel()).getValueAt(row, 1).toString();
             Boolean err=false;
             try {
                 Constants.getgBD().eliminarTitular(new Titular(id,jugSel.getId(),false));
@@ -948,12 +979,17 @@ public class VistaJugador extends javax.swing.JFrame {
                     //si confirma, després de fer el delete a la BBDD, ens carregem la row.
                     ((DefaultTableModel)table.getModel()).removeRow(row);
                 }
+                if(table.getRowCount()==0){
+                    dNaix.setEnabled(true);
+                    rbMasc.setEnabled(true);
+                    rbFem.setEnabled(true);
+                }
             }
 
         }
     };
     private int confirmacióEliminarTitularitat(String nom, String tName){
-        int resposta=JOptionPane.showConfirmDialog(null, "Estas segur que vols que el jugador "+jugSel.getNom()+"deixi de ser titular de l'equip "+nom+"?", "Compte!",
+        int resposta=JOptionPane.showConfirmDialog(null, "Estas segur que vols que el jugador "+jugSel.getNom()+" deixi de ser titular de l'equip "+nom+"?", "Compte!",
 			JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         String err="";
         try {
@@ -1009,6 +1045,7 @@ public class VistaJugador extends javax.swing.JFrame {
     private javax.swing.JLabel errCP;
     private javax.swing.JLabel errCognom;
     private javax.swing.JLabel errDN;
+    private javax.swing.JLabel errFoto;
     private javax.swing.JLabel errGJ;
     private javax.swing.JLabel errIban;
     private javax.swing.JLabel errIdLegal;

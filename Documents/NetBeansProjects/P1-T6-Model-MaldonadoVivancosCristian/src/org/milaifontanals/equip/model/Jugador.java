@@ -28,7 +28,7 @@ public class Jugador {
     private String foto;
     
     //Aqui tením totes les REGEX per a verificar dades
-    private String ptrnIban ="^\\w{2}(\\d{22})$" ; /*El compte ha de ser Espanyol per fer l'inscripció*/
+    private String ptrnIban ="^[A-Za-z]{2}\\d{22}$" ;
     private String ptrnNomCog="^\\w{2,}(\\s{1}\\w{2,}){0,1}$"; /*Patern per al nom i cognom*/
     private String ptrnIdLegal="^([XYZ]\\d{7,8}[A-Z]|(\\d{8})([A-Z]))$"; /*Patern per al ID legal on contemplo DNI i NIE*/
     private String codiPostal="^\\d{5}$";
@@ -149,15 +149,12 @@ public class Jugador {
         this.data_naix = data_naix;
         return "";
     }
-    public String setAny_fi_revisio_medica(Calendar any_fi_revisio_medica) {
-        if(today.before(any_fi_revisio_medica)){
-            this.any_fi_revisio_medica = any_fi_revisio_medica;
-        }
-        return "No pot ser una data futura";
+    public void setAny_fi_revisio_medica(Calendar any_fi_revisio_medica) {
+        this.any_fi_revisio_medica = any_fi_revisio_medica;
     }
     public String setIban(String iban) {
         /*Eliminem qualsevol espai que pugi haber en blanc en el iban*/
-        if(iban!=null){
+        if(!iban.isBlank()){
             iban=iban.replaceAll("\\s", "");
             iban=(iban.length()==0?null:iban);
             Matcher mtx = Pattern.compile(ptrnIban,Pattern.CASE_INSENSITIVE).matcher(iban);
