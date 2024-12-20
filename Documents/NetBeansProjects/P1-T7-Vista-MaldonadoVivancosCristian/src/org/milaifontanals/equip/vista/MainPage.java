@@ -1200,7 +1200,7 @@ public class MainPage extends javax.swing.JFrame {
                 actiu=(Boolean)((DefaultTableModel)geTable.getModel()).getValueAt(i,6);
                 i++;
             }
-            if(i-1<rows){
+            if(actiu){
                 if(varisFiltres){
                     varisFiltres=true;
                     url+="&";
