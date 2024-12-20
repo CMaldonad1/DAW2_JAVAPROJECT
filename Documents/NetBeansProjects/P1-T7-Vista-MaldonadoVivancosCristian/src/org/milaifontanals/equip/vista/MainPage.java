@@ -1172,37 +1172,43 @@ public class MainPage extends javax.swing.JFrame {
     private void jasperReport(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jasperReport
         String tempAux=Constants.gettSel().toString();
         Boolean varisFiltres=false;
+        String err="";
         //preguntem si vol de totes les temporades o només de la selecionada
         int resposta=JOptionPane.showConfirmDialog(null, "Vols fer servir la temporada "+tempAux+"? \n "
             + "Si escolleix:\n- NO='totes les temporades'\n- Cancel='No fer el report'", "Confirmar temporada",
             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-        System.out.println(resposta);
         if(resposta!=2){
+            String fileName = "Informe Equip";
             int BUFFER_SIZE = 4096;
-            String url = urlJRS + "Equips_jugadors.pdf?";
+            String url = urlJRS + "FitxaEquip.pdf?";
             if(resposta==0){
                 varisFiltres=true;
                 url+="anyTemporada="+tempAux;
+                fileName+=" "+tempAux.replace("/", "_");
             }
             if(categoria.getSelectedIndex()>0){
                 if(varisFiltres){
                     url+="&";
                 }
-                url+="codiCategoria="+ Constants.idCategoria(categoria.getSelectedItem().toString());
+                String nomCat=categoria.getSelectedItem().toString();
+                url+="codiCategoria="+ Constants.idCategoria(nomCat);
+                fileName+=" "+nomCat;
             }
             int rows=geTable.getRowCount(), i=0;
-            Boolean actiu=(Boolean)((DefaultTableModel)geTable.getModel()).getValueAt(i,6);
-            while(i<rows && !actiu){
-                System.out.println(actiu);
-                i++;
+            Boolean actiu=false;
+            while(i!=rows && !actiu){
                 actiu=(Boolean)((DefaultTableModel)geTable.getModel()).getValueAt(i,6);
+                i++;
             }
-            if(i<rows){
+            if(i-1<rows){
                 if(varisFiltres){
+                    varisFiltres=true;
                     url+="&";
                 }
-                url+="codiEquip="+Integer.valueOf(((DefaultTableModel)geTable.getModel()).getValueAt(i, 1).toString());
+                url+="codiEquip="+Integer.valueOf(((DefaultTableModel)geTable.getModel()).getValueAt(i-1, 1).toString());
+                fileName+=" "+((DefaultTableModel)geTable.getModel()).getValueAt(i-1, 2).toString();
             }
+            fileName+=".pdf";
             try {
                 URL obj = new URL(url);
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -1212,7 +1218,7 @@ public class MainPage extends javax.swing.JFrame {
                 int responseCode = con.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    String fileName = "FitxaProducte.pdf";
+                    
                     // Una vegada decidit el nom, seguim:
                     // Obrim InputStream des de HTTP connection
                     InputStream inputStream = con.getInputStream();
@@ -1244,12 +1250,13 @@ public class MainPage extends javax.swing.JFrame {
                 }
                 con.disconnect();
             } catch (MalformedURLException ex) {
-                errGE.setText(errGE.getText());
+               err=errGE.getText();
             } catch (ProtocolException ex) {
-                errGE.setText(errGE.getText());
+                err=errGE.getText();
             } catch (IOException ex) {
-                errGE.setText(errGE.getText());
+                err=errGE.getText();
             }
+             errGE.setText(err);
         }
     }//GEN-LAST:event_jasperReport
     //programa per revisar els filtres tant per equips com per jugadors

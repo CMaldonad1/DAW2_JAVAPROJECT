@@ -14,9 +14,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
@@ -37,6 +40,7 @@ import org.milaifontanals.equip.model.*;
  */
 public class VistaJugador extends javax.swing.JFrame {
     private List<JRadioButton> rbList = new ArrayList<>();
+    private List<JLabel> errList= new ArrayList<>();
     private String[] tableTitles= new String[]{"ID","Equip","Temporada","Categ.","Tipus","Eliminar Titularitat"};
     private Jugador jugSel;
     private Jugador jugAux=new Jugador(); //equip auxiliar per fer tracking dels canvis
@@ -45,8 +49,10 @@ public class VistaJugador extends javax.swing.JFrame {
     DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     JFormattedTextField txtDate = new JFormattedTextField(df);
     BufferedImage getImg;
+    private String pathFoto="";
     
     public VistaJugador(int idJug, MainPage view) throws IOException {
+        initComponents();
         //si s'ha pasat un id == -1 vol dir que esta creant un nou jugador
         existeix=(idJug==-1)?false:true;
         mp=view;
@@ -55,15 +61,15 @@ public class VistaJugador extends javax.swing.JFrame {
             try {
                 jugSel=Constants.getgBD().infoJugador(idJug);
                 jugAux=jugSel;
+                pathFoto=jugSel.getFoto();
             } catch (GestorBDEquipException ex) {
                 errGJ.setText(ex.getMessage());
             }
         }else{
             jugSel=new Jugador();
-            /*BufferedImage img = ImageIO.read(new File("./img/default.png"));
-            fotoEnRecuadre(img);*/
+            carregarFoto("./img/default.png");
         }
-        initComponents();
+        carregarLlistatErrors();
         carregarLlistatRb();
         prepararFinestra();
         crearTableModel();
@@ -73,11 +79,30 @@ public class VistaJugador extends javax.swing.JFrame {
         rbList.add(rbFem);
         rbList.add(rbMasc);
     }
+    
+    public void carregarLlistatErrors(){
+        errList.add(errNom);
+        errList.add(errCognom);
+        errList.add(errIdLegal);
+        errList.add(errAdreca);
+        errList.add(errCP);
+        errList.add(errPoblacio);
+        errList.add(errDN);
+        errList.add(errRevMed);
+    }
+    public void carregarFoto(String pth){
+        File defaultImg=new File(pth);
+        BufferedImage img;
+        try {
+            img = ImageIO.read(defaultImg);
+            fotoEnRecuadre(img);
+        } catch (IOException ex) {
+            errGJ.setText(ex.getMessage());
+        }
+    }
     public void activarBotonsiCerca(){
         //únicament estarán abilitats aquest botons si el jugador es nou
         eliminarJugador.setVisible(existeix);
-        guardarCanvis.setEnabled(existeix);
-        idLegal.setEnabled(existeix);
     }
     //preparem l'informació de la finestra
     public void prepararFinestra(){
@@ -101,9 +126,11 @@ public class VistaJugador extends javax.swing.JFrame {
             iban.setText(jugSel.getIban());
             adreca.setText(jugSel.getAdreca());
             poblacio.setText(jugSel.getPoblacio());
-            codiPostal.setText(jugSel.getCp());
+            cp.setText(jugSel.getCp());
+            System.out.println(jugSel.getAny_fi_revisio_medica());
             revMedica.setCalendar(jugSel.getAny_fi_revisio_medica());
             feta.setSelected(revMedica.getDate()!=null);
+            carregarFoto(jugSel.getFoto());
         }
         titolLabel.setText(titol); //fiquel el titol
     }
@@ -146,33 +173,42 @@ public class VistaJugador extends javax.swing.JFrame {
         rbFem = new javax.swing.JRadioButton();
         idLegalLable = new javax.swing.JLabel();
         cognomLabel = new javax.swing.JLabel();
-        idLegal = new javax.swing.JTextField();
         cognom = new javax.swing.JTextField();
         dNaixLabel = new javax.swing.JLabel();
         iban = new javax.swing.JTextField();
         adrecaLabel = new javax.swing.JLabel();
         poblacioLabel = new javax.swing.JLabel();
         cpLabel = new javax.swing.JLabel();
-        codiPostal = new javax.swing.JTextField();
+        cp = new javax.swing.JTextField();
         adreca = new javax.swing.JTextField();
         poblacio = new javax.swing.JTextField();
         dRevMedLabel = new javax.swing.JLabel();
         feta = new javax.swing.JCheckBox();
         ibanLabel1 = new javax.swing.JLabel();
-        pujarFoto = new javax.swing.JButton();
-        jugImatge = new javax.swing.JLabel();
         errGJ = new javax.swing.JLabel();
         dNaix = new com.toedter.calendar.JDateChooser();
         revMedica = new com.toedter.calendar.JDateChooser();
+        errIban = new javax.swing.JLabel();
+        errDN = new javax.swing.JLabel();
+        errCognom = new javax.swing.JLabel();
+        errNom = new javax.swing.JLabel();
+        errAdreca = new javax.swing.JLabel();
+        errIdLegal = new javax.swing.JLabel();
+        errPoblacio = new javax.swing.JLabel();
+        errCP = new javax.swing.JLabel();
+        errRevMed = new javax.swing.JLabel();
+        idLegal = new javax.swing.JTextField();
         eliminarJugador = new javax.swing.JButton();
         titolLabel = new javax.swing.JLabel();
         infoLabel = new javax.swing.JLabel();
+        jugImatge = new javax.swing.JLabel();
+        pujarFoto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setMaximumSize(new java.awt.Dimension(800, 500));
-        jPanel1.setMinimumSize(new java.awt.Dimension(800, 500));
-        jPanel1.setPreferredSize(new java.awt.Dimension(800, 500));
+        jPanel1.setMaximumSize(new java.awt.Dimension(800, 550));
+        jPanel1.setMinimumSize(new java.awt.Dimension(800, 550));
+        jPanel1.setPreferredSize(new java.awt.Dimension(800, 550));
 
         logOut.setBackground(new java.awt.Color(0, 153, 51));
         logOut.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
@@ -207,10 +243,11 @@ public class VistaJugador extends javax.swing.JFrame {
         nomLabel.setText("Nom:");
 
         nom.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        nom.setMaximumSize(new java.awt.Dimension(64, 18));
         nom.setName("nom"); // NOI18N
         nom.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                controlNom(evt);
+                entradaDada(evt);
             }
         });
 
@@ -270,19 +307,12 @@ public class VistaJugador extends javax.swing.JFrame {
         cognomLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         cognomLabel.setText("Cognom:");
 
-        idLegal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        idLegal.setName("nom"); // NOI18N
-        idLegal.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                idLegalcontrolNom(evt);
-            }
-        });
-
         cognom.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        cognom.setName("nom"); // NOI18N
+        cognom.setMaximumSize(new java.awt.Dimension(64, 18));
+        cognom.setName("cognom"); // NOI18N
         cognom.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                cognomcontrolNom(evt);
+                entradaDada(evt);
             }
         });
 
@@ -290,10 +320,11 @@ public class VistaJugador extends javax.swing.JFrame {
         dNaixLabel.setText("*Data Naix.:");
 
         iban.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        iban.setName("nom"); // NOI18N
+        iban.setMaximumSize(new java.awt.Dimension(64, 18));
+        iban.setName("iban"); // NOI18N
         iban.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                ibancontrolNom(evt);
+                entradaDada(evt);
             }
         });
 
@@ -306,32 +337,34 @@ public class VistaJugador extends javax.swing.JFrame {
         cpLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         cpLabel.setText("Codi Postal:");
 
-        codiPostal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        codiPostal.setName("nom"); // NOI18N
-        codiPostal.addKeyListener(new java.awt.event.KeyAdapter() {
+        cp.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        cp.setName("cp"); // NOI18N
+        cp.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                verificarCodiPostal(evt);
+                entradaDada(evt);
             }
         });
 
         adreca.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        adreca.setName("nom"); // NOI18N
+        adreca.setMaximumSize(new java.awt.Dimension(64, 18));
+        adreca.setName("adreca"); // NOI18N
         adreca.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                adrecacontrolNom(evt);
+                entradaDada(evt);
             }
         });
 
         poblacio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        poblacio.setName("nom"); // NOI18N
+        poblacio.setMaximumSize(new java.awt.Dimension(64, 18));
+        poblacio.setName("poblacio"); // NOI18N
         poblacio.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                verificarDada(evt);
+                entradaDada(evt);
             }
         });
 
         dRevMedLabel.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
-        dRevMedLabel.setText("Data Rev.Medica:");
+        dRevMedLabel.setText("Rev.Medica:");
 
         feta.setForeground(new java.awt.Color(51, 153, 0));
         feta.setEnabled(false);
@@ -339,162 +372,230 @@ public class VistaJugador extends javax.swing.JFrame {
         ibanLabel1.setFont(new java.awt.Font("Bauhaus 93", 0, 14)); // NOI18N
         ibanLabel1.setText("IBAN:");
 
-        pujarFoto.setBackground(new java.awt.Color(0, 153, 51));
-        pujarFoto.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
-        pujarFoto.setForeground(new java.awt.Color(255, 255, 255));
-        pujarFoto.setText("Pujar Foto");
-        pujarFoto.setToolTipText("");
-        pujarFoto.setAlignmentX(0.5F);
-        pujarFoto.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        pujarFoto.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                pujarFoto(evt);
-            }
-        });
-
-        jugImatge.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 1, true));
-
+        errGJ.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         errGJ.setForeground(new java.awt.Color(255, 0, 0));
         errGJ.setName("errGJ"); // NOI18N
 
         dNaix.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        dNaix.setName("dnaix"); // NOI18N
 
         revMedica.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        revMedica.setName("revmed"); // NOI18N
+
+        errIban.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errIban.setForeground(new java.awt.Color(255, 0, 0));
+        errIban.setName("errGJ"); // NOI18N
+
+        errDN.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errDN.setForeground(new java.awt.Color(255, 0, 0));
+        errDN.setMaximumSize(new java.awt.Dimension(64, 18));
+        errDN.setMinimumSize(new java.awt.Dimension(64, 18));
+        errDN.setName("errGJ"); // NOI18N
+        errDN.setPreferredSize(new java.awt.Dimension(64, 18));
+
+        errCognom.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errCognom.setForeground(new java.awt.Color(255, 0, 0));
+        errCognom.setMaximumSize(new java.awt.Dimension(64, 18));
+        errCognom.setMinimumSize(new java.awt.Dimension(64, 18));
+        errCognom.setName("errGJ"); // NOI18N
+        errCognom.setPreferredSize(new java.awt.Dimension(64, 18));
+
+        errNom.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errNom.setForeground(new java.awt.Color(255, 0, 0));
+        errNom.setMaximumSize(new java.awt.Dimension(64, 18));
+        errNom.setMinimumSize(new java.awt.Dimension(64, 18));
+        errNom.setName("errGJ"); // NOI18N
+        errNom.setPreferredSize(new java.awt.Dimension(64, 18));
+
+        errAdreca.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errAdreca.setForeground(new java.awt.Color(255, 0, 0));
+        errAdreca.setName("errGJ"); // NOI18N
+
+        errIdLegal.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errIdLegal.setForeground(new java.awt.Color(255, 0, 0));
+        errIdLegal.setMaximumSize(new java.awt.Dimension(64, 18));
+        errIdLegal.setMinimumSize(new java.awt.Dimension(64, 18));
+        errIdLegal.setName("errGJ"); // NOI18N
+        errIdLegal.setPreferredSize(new java.awt.Dimension(64, 18));
+
+        errPoblacio.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errPoblacio.setForeground(new java.awt.Color(255, 0, 0));
+        errPoblacio.setName("errGJ"); // NOI18N
+
+        errCP.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errCP.setForeground(new java.awt.Color(255, 0, 0));
+        errCP.setName("errGJ"); // NOI18N
+
+        errRevMed.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        errRevMed.setForeground(new java.awt.Color(255, 0, 0));
+        errRevMed.setName("errGJ"); // NOI18N
+
+        idLegal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        idLegal.setMaximumSize(new java.awt.Dimension(64, 18));
+        idLegal.setName("idlegal"); // NOI18N
+        idLegal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                entradaDada(evt);
+            }
+        });
 
         javax.swing.GroupLayout infoEquipLayout = new javax.swing.GroupLayout(infoEquip);
         infoEquip.setLayout(infoEquipLayout);
         infoEquipLayout.setHorizontalGroup(
             infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(infoEquipLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(21, 21, 21)
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(infoEquipLayout.createSequentialGroup()
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(idLegalLable)
-                            .addComponent(cognomLabel)
-                            .addComponent(nomLabel))
-                        .addGap(32, 32, 32)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cognom, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                            .addComponent(nom)
-                            .addComponent(idLegal)))
-                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(infoEquipLayout.createSequentialGroup()
-                            .addComponent(sexeLabel)
-                            .addGap(57, 57, 57)
-                            .addComponent(rbMasc)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rbFem))
-                        .addGroup(infoEquipLayout.createSequentialGroup()
-                            .addComponent(dNaixLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(infoEquipLayout.createSequentialGroup()
-                            .addComponent(ibanLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
-                            .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jugImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(42, 42, 42)
-                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(infoEquipLayout.createSequentialGroup()
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cpLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dRevMedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(codiPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(248, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(infoEquipLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, infoEquipLayout.createSequentialGroup()
-                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(poblacioLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(adrecaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(47, 47, 47)
+                            .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(infoEquipLayout.createSequentialGroup()
-                                        .addComponent(adreca, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                                        .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(infoEquipLayout.createSequentialGroup()
-                                            .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(feta))
-                                        .addComponent(poblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(23, 23, 23))))
-            .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
-                    .addContainerGap(337, Short.MAX_VALUE)
-                    .addComponent(errGJ, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(22, 22, 22)))
+                                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(infoEquipLayout.createSequentialGroup()
+                                                .addComponent(dNaixLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(nomLabel)
+                                            .addComponent(cognomLabel)
+                                            .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(infoEquipLayout.createSequentialGroup()
+                                                    .addComponent(idLegalLable)
+                                                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(infoEquipLayout.createSequentialGroup()
+                                                            .addGap(39, 39, 39)
+                                                            .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
+                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                            .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                .addComponent(cognom, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(errIdLegal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(errNom, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(errCognom, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(2, 2, 2))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(errIban, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(errDN, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(infoEquipLayout.createSequentialGroup()
+                                    .addComponent(dRevMedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(feta)
+                                    .addGap(14, 14, 14)))
+                            .addComponent(errRevMed, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(53, 53, 53))
+                    .addGroup(infoEquipLayout.createSequentialGroup()
+                        .addComponent(ibanLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22)))
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(errGJ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, infoEquipLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(errPoblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(infoEquipLayout.createSequentialGroup()
+                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
+                                        .addComponent(poblacioLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(25, 25, 25))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
+                                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(cpLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(adrecaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                    .addGroup(infoEquipLayout.createSequentialGroup()
+                                        .addComponent(sexeLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(poblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(infoEquipLayout.createSequentialGroup()
+                                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(cp, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(rbMasc))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(rbFem)
+                                            .addComponent(errCP, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(infoEquipLayout.createSequentialGroup()
+                                        .addComponent(adreca, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(40, 40, 40)
+                                        .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(errAdreca, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(23, 23, 23))
         );
         infoEquipLayout.setVerticalGroup(
             infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(infoEquipLayout.createSequentialGroup()
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(idLegalLable)
+                    .addComponent(adreca, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(adrecaLabel)
+                    .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(guardarCanvis, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(idLegalLable)
-                        .addComponent(idLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(adreca, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(adrecaLabel))
+                    .addComponent(errIdLegal, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(errAdreca, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(poblacioLabel)
+                    .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(nomLabel)
-                        .addComponent(nom, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(poblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(poblacioLabel)
+                        .addComponent(poblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(infoEquipLayout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cognomLabel)
-                            .addComponent(cognom, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(infoEquipLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cpLabel)
-                            .addComponent(codiPostal, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(errNom, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoEquipLayout.createSequentialGroup()
+                        .addComponent(errPoblacio, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cognomLabel)
+                        .addComponent(cognom, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(errCP, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cp, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cpLabel)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(errCognom, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(rbMasc)
+                        .addComponent(rbFem)
+                        .addComponent(sexeLabel))
+                    .addComponent(dNaixLabel)
+                    .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
                 .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(infoEquipLayout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(dRevMedLabel))
-                    .addGroup(infoEquipLayout.createSequentialGroup()
+                        .addComponent(errDN, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(infoEquipLayout.createSequentialGroup()
-                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(sexeLabel)
-                                    .addComponent(rbMasc)
-                                    .addComponent(rbFem))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(dNaixLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(dNaix, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                                .addGap(9, 9, 9)
-                                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(ibanLabel1)))
-                            .addComponent(feta)
-                            .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jugImatge, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(19, Short.MAX_VALUE))
-            .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(infoEquipLayout.createSequentialGroup()
-                    .addGap(148, 148, 148)
-                    .addComponent(errGJ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(146, 146, 146)))
+                            .addComponent(iban, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ibanLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(errIban, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(infoEquipLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(dRevMedLabel)
+                            .addComponent(revMedica, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(feta, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(errRevMed, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(infoEquipLayout.createSequentialGroup()
+                        .addComponent(errGJ, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         eliminarJugador.setBackground(new java.awt.Color(0, 153, 51));
@@ -520,6 +621,21 @@ public class VistaJugador extends javax.swing.JFrame {
         infoLabel.setText("* camps nomès modificables si el jugador no pertany a cap equip");
         infoLabel.setName("infoLabel"); // NOI18N
 
+        jugImatge.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 153, 0), 1, true));
+
+        pujarFoto.setBackground(new java.awt.Color(0, 153, 51));
+        pujarFoto.setFont(new java.awt.Font("Bauhaus 93", 0, 12)); // NOI18N
+        pujarFoto.setForeground(new java.awt.Color(255, 255, 255));
+        pujarFoto.setText("Pujar Foto");
+        pujarFoto.setToolTipText("");
+        pujarFoto.setAlignmentX(0.5F);
+        pujarFoto.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        pujarFoto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pujarFoto(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -530,17 +646,24 @@ public class VistaJugador extends javax.swing.JFrame {
                     .addComponent(infoEquip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tornar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(eliminarJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(eliminarJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(79, 79, 79)
+                                .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(tornar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(51, 51, 51)
+                                .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jugImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 484, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(57, 57, 57)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76)))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 17, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -549,20 +672,27 @@ public class VistaJugador extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 17, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(logOut, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tornar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(eliminarJugador)
-                        .addGap(16, 16, 16)))
+                        .addGap(11, 11, 11))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(titolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(40, 40, 40)
+                                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(pujarFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jugImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infoEquip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                .addGap(10, 10, 10))
         );
 
         tornar.getAccessibleContext().setAccessibleName("gj");
@@ -618,7 +748,15 @@ public class VistaJugador extends javax.swing.JFrame {
                 //Obtením l'extensio del file:
                 String extension=imgPath.substring(imgPath.indexOf("."));
                 //generem el path per guardar l'imatge al projecte i per guardar la ruta a la BBDD.
-                File pathToSave= new File("./img/test"+extension);
+                File pathToSave;
+                if(pathFoto.isEmpty()){
+                    String imageName=imgFile.getName();
+                    pathToSave= new File("./img/"+imageName);
+                }else{
+                    pathToSave= new File(jugAux.getFoto());
+                }
+                jugAux.setFoto(pathToSave.toString());
+                pathFoto=jugAux.getFoto();
                 //guardem la imatge a la carpeta del projecte anomenada img
                 ImageIO.write(img, "jpg", pathToSave);
             } catch (IOException e) {
@@ -632,70 +770,58 @@ public class VistaJugador extends javax.swing.JFrame {
             ImageIcon icon = new ImageIcon(dimg);
             jugImatge.setIcon(icon);
     }
-    private void verificarDada(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_verificarDada
-        // TODO add your handling code here:
-    }//GEN-LAST:event_verificarDada
-
-    private void adrecacontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adrecacontrolNom
-        // TODO add your handling code here:
-    }//GEN-LAST:event_adrecacontrolNom
-
-    private void verificarCodiPostal(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_verificarCodiPostal
-        // TODO add your handling code here:
-    }//GEN-LAST:event_verificarCodiPostal
-
-    private void ibancontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ibancontrolNom
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ibancontrolNom
-
-    private void cognomcontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cognomcontrolNom
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cognomcontrolNom
-
-    private void idLegalcontrolNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idLegalcontrolNom
-        // TODO add your handling code here:
-    }//GEN-LAST:event_idLegalcontrolNom
-
     private void seleccioItem(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_seleccioItem
         String tipus=evt.getComponent().getName();
         jugAux.setSexe(tipus.charAt(0));
-        activarGuardar();
     }//GEN-LAST:event_seleccioItem
-
+    private void carregarDadesNoves(){
+        errNom.setText(jugAux.setNom(nom.getText()));
+        errCognom.setText(jugAux.setCognom(cognom.getText()));
+        errIdLegal.setText(jugAux.setId_legal(idLegal.getText()));
+        errAdreca.setText(jugAux.setAdreca(adreca.getText()));
+        errCP.setText(jugAux.setCp(cp.getText()));
+        errPoblacio.setText(jugAux.setPoblacio(poblacio.getText()));
+        errIban.setText(jugAux.setIban(iban.getText()));
+        errDN.setText(jugAux.setData_naix(dNaix.getCalendar()));
+        errRevMed.setText(jugAux.setAny_fi_revisio_medica(revMedica.getCalendar()));
+    }
     private void guardarCanvis(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_guardarCanvis
         String err="";
-        int equipNou=Optional.ofNullable(jugSel.getId()).orElse(0);
-        try {
-            if(equipNou == 0){
-                Constants.getgBD().afegirJugador(jugSel);
-            }else{
-                Constants.getgBD().modificarJugador(jugSel);
-            }
-        } catch (GestorBDEquipException ex) {
-            err=ex.getMessage();
-        }
-        confirmarCanvis(err);
-        //cambiarem el titol únicament si es un equip nou i ara existeix
-        if(equipNou==0){
+        carregarDadesNoves();
+        Boolean senseErrors=revisioErrors();
+        if(senseErrors && !pathFoto.isEmpty()){
+            int jugNou=Optional.ofNullable(jugAux.getId()).orElse(0);
             try {
-                jugSel.setId(Constants.getgBD().idJugador(jugSel.getId_legal()));
-                existeix=true; //ara el jugador existeix
-                prepararFinestra();
+                if(jugNou == 0){
+                    Constants.getgBD().afegirJugador(jugAux);
+                }else{
+                    Constants.getgBD().modificarJugador(jugAux);
+                }
             } catch (GestorBDEquipException ex) {
                 err=ex.getMessage();
             }
-        }
-
-        if(err.isBlank()){
-            crearTableModel();
+            confirmarCanvis(err);
+            //cambiarem el titol únicament si es un equip nou i ara existeix
+            if(jugNou==0){
+                try {
+                    jugAux.setId(Constants.getgBD().idJugador(jugAux.getId_legal()));
+                    jugSel=jugAux;
+                    existeix=true; //ara el jugador existeix
+                    prepararFinestra();
+                } catch (GestorBDEquipException ex) {
+                    err=ex.getMessage();
+                }
+            }
+            if(err.isBlank()){
+                crearTableModel();
+            }
+             errGJ.setText(err);
+        }else{
+            if(pathFoto.isEmpty()){
+                errGJ.setText("Falta la foto!");
+            }            
         }
     }//GEN-LAST:event_guardarCanvis
-
-    private void controlNom(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_controlNom
-        String err=jugSel.setNom(nom.getText());
-        errGJ.setText(err);
-        activarGuardar();
-    }//GEN-LAST:event_controlNom
 
 //GEN-FIRST:event_tornar
 
@@ -705,6 +831,34 @@ public class VistaJugador extends javax.swing.JFrame {
         this.dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_logOut
+
+    private void entradaDada(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_entradaDada
+        String objecte=evt.getComponent().getName();
+        switch (objecte){
+            case "nom":
+                errNom.setText(jugAux.setNom(nom.getText()));
+                break;
+            case "cognom":
+                errCognom.setText(jugAux.setCognom(cognom.getText()));
+                break;
+            case "idlegal":
+                errIdLegal.setText(jugAux.setId_legal(idLegal.getText()));
+                break;
+            case "adreca":
+                errAdreca.setText(jugAux.setAdreca(adreca.getText()));
+                break;
+            case "cp":
+                errCP.setText(jugAux.setCp(cp.getText()));
+                break;
+            case "poblacio":
+                errPoblacio.setText(jugAux.setPoblacio(poblacio.getText()));
+                break;
+            case "iban":
+                errIban.setText(jugAux.setIban(iban.getText()));
+                break;
+        }
+
+    }//GEN-LAST:event_entradaDada
     private void confirmarCanvis(String err){
         try {
             errGJ.setText(err);
@@ -720,20 +874,20 @@ public class VistaJugador extends javax.swing.JFrame {
     public void deixemLaFinestra(){
         this.dispose();
         mp.setVisible(true);
+    }           
+    private boolean revisioErrors(){
+        boolean senseErrors=false;
+        int i=0;
+        while(!senseErrors && i!=errList.size()){
+            if(!errList.get(i).getText().isEmpty()){
+                senseErrors=true;
+            }
+            System.out.println(i+" "+errList.size());
+            i++;
+        }
+        System.out.println(i+" "+errList.size());
+        return !senseErrors;
     }
-    private void activarGuardar(){
-        /*boolean activarGuardar=false;
-        if(eqSel.getNom()!=null && errGJ.getText().isEmpty()){
-            activarGuardar=true;
-        }
-        guardarCanvis.setEnabled(activarGuardar);
-        Boolean enabled=true;
-        if(eqSel.getTipus()!=jugAux.getTipus() || eqSel.getCat()!=jugAux.getCat()){
-            enabled=false;
-        }
-        guardarTitulars.setEnabled(enabled);
-        jugTable.setEnabled(enabled);*/
-    }            //programa per guardar titulars
     //creem dinámicament la taula
     private void crearTableModel(){
         int numColumns=tableTitles.length;
@@ -842,16 +996,25 @@ public class VistaJugador extends javax.swing.JFrame {
     private javax.swing.JTextField adreca;
     private javax.swing.JLabel adrecaLabel;
     private javax.swing.ButtonGroup buttonGroup;
-    private javax.swing.JTextField codiPostal;
     private javax.swing.JTextField cognom;
     private javax.swing.JLabel cognomLabel;
+    private javax.swing.JTextField cp;
     private javax.swing.JLabel cpLabel;
     private com.toedter.calendar.JDateChooser dNaix;
     private javax.swing.JLabel dNaixLabel;
     private javax.swing.JLabel dRevMedLabel;
     private javax.swing.JButton eliminarJugador;
     private javax.swing.JTable eqTable;
+    private javax.swing.JLabel errAdreca;
+    private javax.swing.JLabel errCP;
+    private javax.swing.JLabel errCognom;
+    private javax.swing.JLabel errDN;
     private javax.swing.JLabel errGJ;
+    private javax.swing.JLabel errIban;
+    private javax.swing.JLabel errIdLegal;
+    private javax.swing.JLabel errNom;
+    private javax.swing.JLabel errPoblacio;
+    private javax.swing.JLabel errRevMed;
     private javax.swing.JCheckBox feta;
     private javax.swing.JButton guardarCanvis;
     private javax.swing.JTextField iban;

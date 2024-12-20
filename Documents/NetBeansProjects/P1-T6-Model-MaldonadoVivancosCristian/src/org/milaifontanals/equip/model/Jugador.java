@@ -28,10 +28,11 @@ public class Jugador {
     private String foto;
     
     //Aqui tením totes les REGEX per a verificar dades
-    private String ptrnIban ="^\\w{2,}(\\d{24})$" ; /*El compte ha de ser Espanyol per fer l'inscripció*/
+    private String ptrnIban ="^\\w{2}(\\d{22})$" ; /*El compte ha de ser Espanyol per fer l'inscripció*/
     private String ptrnNomCog="^\\w{2,}(\\s{1}\\w{2,}){0,1}$"; /*Patern per al nom i cognom*/
     private String ptrnIdLegal="^([XYZ]\\d{7,8}[A-Z]|(\\d{8})([A-Z]))$"; /*Patern per al ID legal on contemplo DNI i NIE*/
-    private String codiPostal="\\d{5}";
+    private String codiPostal="^\\d{5}$";
+    static Calendar today=Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"));
     static int todayYear=Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid")).get(Calendar.YEAR);
     static SimpleDateFormat df=new SimpleDateFormat("dd/MM/yyyy");
     
@@ -75,8 +76,8 @@ public class Jugador {
         setSexe(sexe);
         setData_naix(data_naix);
         setAny_fi_revisio_medica(any_fi_revisio_medica);
-        setIban(null);
-        setFoto(null);
+        setIban("");
+        setFoto("");
     }
     /*SETTERS*/
     public void setId(int id) {
@@ -110,8 +111,7 @@ public class Jugador {
             this.id_legal = id_legal;
             return "";
         }
-        return "ID Legal no valid, no compleix amb els requisits del NIE "
-                + "(lletra, 7 números, lletra) o NIF (8 números i una lletra)";
+        return "ID Legal no valid";
     }
     public String setAdreca(String adreca) {
         int ln =adreca.length();
@@ -119,7 +119,7 @@ public class Jugador {
             this.adreca = adreca;
             return "";
         }
-        return "l'Adreça no pot contindre mes de 100 characters i no pot contindre simbols especials";
+        return "l'Adreça ha de contindre de 2 a 100 caràcters";
     }
     public String setCp(String cp) {
         Matcher mtx = Pattern.compile(codiPostal,Pattern.CASE_INSENSITIVE).matcher(cp);
@@ -135,7 +135,7 @@ public class Jugador {
             this.poblacio = poblacio;
             return "";
         }
-        return "la Població no pot contindre mes de 100 characters i no pot contindre simbols especials";
+        return "la Població ha de contindre de 2 a 100 caràcters";
     }
     public void setSexe(char sexe) {
         this.sexe = sexe;
@@ -144,13 +144,16 @@ public class Jugador {
         int anyNaix=data_naix.get(Calendar.YEAR);
         int edat=todayYear-anyNaix;
         if(edat<7 || edat>50){
-            return "El jugador no pot tindre menys de 7 anys ni mes de 50 anys.";
+            return "El jugador ha de tindre entre 7 anys i 50 anys.";
         }
         this.data_naix = data_naix;
         return "";
     }
-    public void setAny_fi_revisio_medica(Calendar any_fi_revisio_medica) {
-        this.any_fi_revisio_medica = any_fi_revisio_medica;
+    public String setAny_fi_revisio_medica(Calendar any_fi_revisio_medica) {
+        if(today.before(any_fi_revisio_medica)){
+            this.any_fi_revisio_medica = any_fi_revisio_medica;
+        }
+        return "No pot ser una data futura";
     }
     public String setIban(String iban) {
         /*Eliminem qualsevol espai que pugi haber en blanc en el iban*/
@@ -162,9 +165,9 @@ public class Jugador {
                 this.iban = iban;
                 return "";
             }
-            return "L'IBAN indicat no es correcte o compte no es nacional.";
+            return "L'IBAN indicat no es correcte.";
         }
-        return "";
+        return "IBAN no pot estar buit";
     }
     public void setFoto(String foto){
         if(foto!=null){
